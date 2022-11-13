@@ -1,0 +1,440 @@
+@import url("css/font_face.css");
+
+/* contient toutes les couleurs et autres parametres suceptibles de changer */
+@import url("css/var.css");
+
+/* CSS général */
+*
+{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+html
+{
+    scroll-behavior: smooth;
+}
+
+body
+{
+    padding-top: 60px;
+    font-size: var(--font-size);
+    width: 100%;
+    height: 100%;
+    background-color: rgb(237, 237, 237);
+}
+
+.btn {
+    color: white;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    vertical-align: middle;
+    user-select: none;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
+}
+
+
+/*                  media width 480px                   */
+
+header{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    height: 60px;
+    background-color: var(--header-color);
+    backdrop-filter: blur(var(--header-blur));
+    position: fixed ;
+    top: 0;
+    z-index: 2;
+    width: 100vw;
+}
+
+.network{
+   width: 100%;
+}
+.network svg{
+    /* aspect-ratio permet a la width ou height d'etre proportionnelle a l'autre 
+    ex: aspect-ratio:  1   /   1
+                     width    height
+    1/1 permet a la width et height recuperer une taille choisi par le dev ou la plus grande taille par default et de l'appliquer aux 2
+    */
+    text-align: center;
+    /* aspect-ratio: var(--ratio); */
+    width: var(--width-nav-network);
+}
+
+.header-network{
+    display: flex;
+    align-items: center;
+    width: 15%;
+}
+
+
+.header-network svg{
+    aspect-ratio: var(--ratio);
+    width: var(--width-header-network); 
+}
+
+
+
+/*          menu hamburger          */
+
+/* Le menu hamburger sera visible jusqu'à 900px */
+
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 2vw;
+    cursor: pointer;
+}
+ 
+/* les 3 barres du menu */
+
+.bar1,
+.bar2,
+.bar3 {
+    height: 6px;
+    width: 35px;
+    margin-top: 6px;
+    background-color: white;
+    border-radius: 5px;
+    transition: all 0.7s;
+}
+
+
+/* une fois le burger ouvert les barres 2 et 3 deviennent rouge et la 1 noir */
+.open .bar2,
+.open .bar3 {
+    background-color: rgb(252, 55, 55);
+}
+.open .bar1{
+    background-color: rgb(0, 0, 0);
+}
+/* la barre noir sert de shadow pour la 2 et la 3 utilise un box shadow */
+.open .bar1 {
+    transform: translateY(250%) rotate(-45deg);
+}
+
+.open .bar2 {
+    transform: rotate(-45deg);
+}
+
+.open .bar3 {
+    transform: translateY(-200%) rotate(45deg);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0);
+}
+
+.slide {
+    transform: translateX(-100%);
+}
+
+.noscroll {
+    overflow: hidden;
+}
+
+
+.nav-ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    position: fixed;
+    top: 60px;
+    width: var(--width-nav-ul);
+    right: var(--position-nav-ul);
+    z-index: 0;
+}
+
+.transition{
+    transition: transform var(--transition-nav);
+}
+
+.color {
+    background-color: var(--header-color);
+    backdrop-filter: blur(--header-blur); 
+}
+
+.haut {
+    height: calc(100vh - 60px);
+}
+
+.nav-ul li {
+    list-style: none;
+    padding-left: 0;
+    padding: var(--padding_nav_li);
+}
+
+.nav-ul a {
+    font-weight: bold;
+    font-family: var(--font-family-nav);
+    text-decoration: none;
+    color: white;
+    width: 50%;
+    justify-content: left;
+    padding-left: 10px;
+}
+
+/* .network une fois deplacé par js */
+
+.nav-ul .network {
+    margin: 10px , 0;
+}
+
+
+
+/*          fin menu            */
+
+
+
+
+/* Barre de navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.logo {
+    display: flex;
+    height: 60px;
+}
+
+.logo img {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    width: 244.61px;
+}
+
+.navbar {
+    display: flex;
+}
+
+
+/*              Fin navigation           */
+
+
+/* css pour les balises générales */
+
+.container{
+    padding: 0px 10px;
+}
+
+h1 {
+    text-align: center;
+    line-height: 30px;
+    margin: 15px 0;
+    font-size: calc(var(--font-size) * 2.5);
+    font-family: saira;
+}
+
+p {
+    font-family: pt;
+    text-align: left;
+    margin: 20px 0;
+}
+
+.banniere{
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--bannieres-ratio);
+    padding-top: 10px;
+}
+
+.banniere img {
+    /* empêchement de la selection et du drag de la banniere */
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    width: 100%;
+    border-radius: var(--radius-banieres);
+}
+
+/* fin css balises générales */
+
+
+/*              Footer                   */
+
+
+footer {
+    position: relative;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 100vw;
+    background-color: var(--footer-color);
+    padding: 20px 0;
+}
+
+.adress {
+    color: var(--font-color);  
+    font-family: var(--font-family-adresse);
+    font-size: var(--font-size);
+    text-align: center;
+}
+
+.network2 {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.network2 a {
+    margin-right: 5px;
+    width: 30px;
+}
+
+.appel{
+    text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
+}
+
+.mentions{
+    color: var(--font-color);
+    opacity: .4;
+    text-align: center;
+    width: 90%;
+    margin: auto;
+}
+
+/*              Fin footer               */
+
+/* redimension du logo sous 480px de vw 
+pour eviter la disparution du burger */
+
+@media  screen and (max-width:480px) {
+    body{
+        padding-top: 30px;
+    }
+    header {
+        height: 30px;
+    }
+    .logo{
+        height: 100%;
+    }
+    .logo img {
+        width: 100%;
+        height: 100%;
+        margin: auto 0;
+    }
+
+    .bar1, .bar2, .bar3{
+        height: 3px;
+        width: 17.5px;
+        margin-top: 3px;
+        background-color: white;
+        border-radius: 2.5px;
+        transition: all 0.7s;
+    }
+    .nav-ul{
+        top: 30px;
+    }
+}
+
+
+
+/*                      Fin media 480                    */
+
+
+
+
+
+@media screen and (min-width: 900px){
+    
+    /*              header                */
+    .hamburger{
+        display: none;
+    }
+
+    .nav-ul{
+        position: unset;
+        justify-content: space-around;
+        flex-direction: row;
+        align-items: center;
+    }
+    .network{
+        justify-content: center;
+    }
+    
+
+    /*              footer               */
+
+    footer {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        background-color: var(--footer-color);
+        padding: 20px 0px;
+    }
+    
+    .adress {
+        color: var(--font-color);  
+        font-family: var(--font-family-adresse);
+        font-size: var(--font-size);
+        /* font-size: calc(var(--font-size) - .2rem); */
+        text-align: unset;
+        margin: 0 10px 10px 10px;
+    }
+    
+    .network2 {
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 40px;
+    }
+    .network2 a {
+        width: 30px;
+        margin-top: 5px;
+    }
+    
+    .mentions{
+        color: var(--font-color);
+        opacity: .4;
+        text-align: center;
+        width: 30%;
+    }
+   
+}
+
+@media screen and (min-width: 900px) and (max-width: 1100px) {
+     .nav-ul {
+        font-size: calc(var(--font-size) - 0.3rem);
+    }
+    .nav-ul li{
+        padding: calc(var(--padding_nav_li) / 2);
+    }
+}
+
+
+@media screen and (min-width: 1200px) {
+    .container, header, footer {
+        width: var(--width-containers);
+        margin: auto;
+    }
+    .hamburger {
+        display: none;
+    }
+
+   
+
+}
+
+form{
+    margin-top: 100px;
+}

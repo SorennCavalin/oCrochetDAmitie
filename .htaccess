@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Règles de réécriture d'URL :
+
+# pour les routes
+RewriteRule ^$                          index.php
+RewriteRule ^(\w+)/?$                   index.php?controleur=$1 [L,QSA]
+RewriteRule ^(\w+)[/-](\w+)$            index.php?controleur=$1&methode=$2 [L,QSA]
+RewriteRule ^(\w+)[/-](\w+)[/-](\d+)$   index.php?controleur=$1&methode=$2&id=$3 [L,QSA]

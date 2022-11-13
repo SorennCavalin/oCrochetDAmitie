@@ -1,0 +1,58 @@
+:root {
+
+    /* tailles des conteneurs */
+    --width-containers: 100%;
+
+    /*font size*/
+    --font-size: 1rem;
+    /* couleur de font pour header et footer */
+    --font-color: white ;
+    /* font header et footer */
+    --font-family-nav: ormont ;
+    --font-family-adresse: pt ;
+    /*              variables du header                  */
+    
+    /* couleurs du header */
+    --header-color: rgba(52, 73, 94, 0.9);
+    --header-blur: 4px;
+
+    /* position et taille de nav-ul */
+    --width-nav-ul: 65%;
+    --position-nav-ul: -65%;
+
+    /*padding de nav-ul li*/
+
+    --padding_nav_li: 1vh;
+
+    /* durée de transition nav-ul */
+    --transition-nav: 0.5s;
+
+
+    /* taille et ratio des networks de nav */
+
+    --ratio: 1 / 1;
+    --width-header-network: 50%;
+    --width-nav-network: 30px;
+
+    /*          fin variables header          */
+
+    /*          variables accueil */
+
+    --taille-banniere: 400px ;
+
+    /* variables projets-accueil */
+
+    --bannieres-ratio : 3/1;
+    --radius-banieres: 50%;
+
+
+
+
+    /*                 variables footer                  */
+
+    /* couleurs footer */
+    --footer-color: rgba(72, 102, 132, 0.9);
+
+
+   
+}

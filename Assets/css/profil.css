@@ -1,0 +1,73 @@
+.profil{
+    position: relative;
+    width: 40%;
+    aspect-ratio: 1/.5;
+    border: .5px solid gray;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);
+    border-radius: 20px 0 0 0;
+}
+.profil h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000;
+}
+.ligne {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+.li_label {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+.adresse_label{
+    margin-top: 10px;
+}
+.adresse{
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #000;
+}
+ul{
+    border-bottom: 1px solid #000;
+    padding-bottom: 10px;
+}
+.modif {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+}
+svg {
+    width: 20px;
+    aspect-ratio: 1/1;
+}
+.liens{
+    display: flex;
+    justify-content: center;
+}
+.button{
+    margin-top: 10px;
+    background-color: rgba(52, 73, 94, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border: .5px solid white;
+    border-radius: 15px;
+}
+
+
+@media screen and (max-width:1000px) {
+    .profil{
+        width: 60%;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .profil{
+        width: 90%;
+        padding: 10px;
+    }
+}

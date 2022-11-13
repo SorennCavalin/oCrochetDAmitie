@@ -1,0 +1,42 @@
+
+
+
+.projets {
+    padding: 10px 0;
+}
+.projet{
+    overflow: hidden;
+    position: relative;
+    transition: .2s;
+    padding: 5px 10px 10px 10px;
+    height: auto;
+    border-right: .5px solid;
+    border-left: .5px solid;
+}
+.ferme {
+    max-height: 35px;
+}
+.arrow {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    margin: 0;
+    border-style: solid;
+    border-width: 10px 5px 0 5px;
+    border-color: #000000 transparent transparent transparent;
+    transition: .2s;
+}
+.retourne{
+    transform: rotate(180deg);
+}
+hr:last-of-type{
+    margin-bottom: 10px;
+}
+.lien_tout{
+    text-align: end;
+}
+.projet_titre{
+    margin-bottom: 23px;
+}

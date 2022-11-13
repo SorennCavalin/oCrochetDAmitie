@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "ormont";
+    src: url(../fonts/Ormont_Light.ttf) format("truetype")
+};
+
+@font-face {
+    font-family: "pt";
+    src: url(../fonts/PTSansCaption-Regular.ttf) format("truetype")
+}
+
+@font-face {
+    font-family: "saira";
+    src: url(../fonts/SairaCondensed-Regular.ttf) format("truetype")
+};
+
+@font-face {
+    font-family: "dancing";
+    src: url(../fonts/DancingScript-Regular.ttf) format("truetype")
+};
+
+@font-face {
+    font-family: "cinzel";
+    src: url(../fonts/Cinzel-Regular.ttf) format("truetype")
+};
+
+@font-face {
+    font-family: "roboto";
+    src: url(../fonts/Roboto-Regular.ttf) format("truetype")
+};
