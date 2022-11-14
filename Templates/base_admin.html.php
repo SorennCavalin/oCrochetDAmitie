@@ -23,6 +23,8 @@
         <script src="/oCrochetDAmitie/Assets/js/<?= $js ?>.js"></script>
     <?php endif ?>
 
+    <script src="/oCrochetDAmitie/Assets/js/recherche.js"></script>
+
 
 </head>
 <body>
@@ -41,5 +43,60 @@ include "navbar_admin.html.php";
     </div>
 
 <?php endforeach; endforeach; endif; ?>
+
+
+
+<form action="<?= lien("accueil","recherche") ?>" class="recherche">
+    <div class="row">
+        <div class="form-group col">
+            <label for="table">Quel type recherchez-vous ?</label>
+            <select id="table" class="form-control" name="table">
+                <option value='user'>utilisateur</option>
+                <option value="projet">projet</option>
+                <option value="concours">concours</option>
+                <option value="don">dons</option>
+                <option value="video">videos</option>
+            </select>
+        </div>
+        <div class="form-group col">
+            <label for="selecteur">par quoi rechercher ?</label>
+            <select id="selecteur" class="form-control">
+                <option value="id">Identifiant</option>
+                <option value="Nom">Nom</option>
+                <option value="Email">Email</option>
+                <option value="Role">Role</option>
+                <option value="Telephone">Telephone</option>
+                <option value="Adresse">Adresse</option>
+                <option value="Prenom">Prenom</option>
+                <option value="date_inscription">Date d'inscription</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div>
+            <label id="change">Les classer ?</label>
+        </div>
+      <div class="form-check form-check-inline" id="check">
+        <div id="checked">
+            <input class="form-check-input" type="checkbox" id="oui">
+            <label class="form-check-label" for="oui" >oui</label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-4">
+            <label for="classement">Par quoi ?</label>
+            <select id="classement" class="form-control">
+                <option value='id'>identifiant</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="classement">nombre de reponse max.</label>
+        <input type="range" class="form-control-range" id="formControlRange">
+        <small class="maximum"></small>
+    </div>
+</form>
 
 

@@ -18,4 +18,12 @@ class AccueilController extends BaseController {
         
         $this->affichageAdmin("stats.html.php");
     }
+
+    public function recherche(){
+        if($_POST){
+            extract($_POST);
+
+            
+        }
+    }
 }
