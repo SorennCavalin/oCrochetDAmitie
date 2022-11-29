@@ -1,0 +1,19 @@
+.recherche{
+    display: none;
+}
+
+#div_recherche{
+    position: fixed;
+    z-index: 5;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%,-50%);
+    background-color: white;
+    width: 60%;
+    aspect-ratio: 1/.5;
+    border: .5px solid gray;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 1px 1px 1px 100vw rgba(0,0,0,.1);
+}

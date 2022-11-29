@@ -18,13 +18,14 @@ class BaseController {
     }
 
 
-    public function affichageAdmin($fichier, array $parametres = [])
+    public function affichageAdmin($fichier, array $parametres = [], $navbar = true)
     {
         extract($parametres);
 
         include "Templates/base_admin.html.php";
         include "Templates/vues/$fichier";
     }
+    
 
     public function traitementString($string){
         return addslashes(trim($string));

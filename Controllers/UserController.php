@@ -267,6 +267,10 @@ class UserController extends BaseController{
                 Session::messages("danger","Une adresse mail est requise pour la connexion");
             }
 
+            if (Session::getItemSession("messages")){
+                return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
+            }
+
             if(isset($mdp)){
                 if( strlen($mdp) >= 5 || strlen($mdp) <= 16 ){
                     $caracteres = str_split($mdp, 1);
@@ -306,6 +310,10 @@ class UserController extends BaseController{
                     
                     $toutBon = false;
                     Session::messages("danger","Veuillez rentrer un mot de passe");
+                }
+
+                if (Session::getItemSession("messages")){
+                    return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
                 }
                 
                 

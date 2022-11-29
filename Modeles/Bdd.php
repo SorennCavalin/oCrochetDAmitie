@@ -51,6 +51,7 @@ class Bdd {
      * Envoyer un array avec les cléfs suivantes :
      * "select" => colonne de la bdd ex: id | si tout select laisser vide,
      * "table" => nom de l'entité desirée ex: user.
+     * "limit" => nombre de resultat max voulu
      */
 
     static function selectionId(array $para, int $id){
@@ -61,7 +62,7 @@ class Bdd {
             $select = "*";
         }
         
-        $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id");
+        $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id" . (isset($limit) ? "LIMIT $limit" : ""));
         
         if($requete) {
             //création du string nécessaire à la recupération des données sous forme d'entité
@@ -244,5 +245,23 @@ class Bdd {
             return false;
         }
        ;
+    }
+
+
+    public function recherche(array $array){
+        extract($array);
+        if (isset($table) && isset($where)){
+            
+            $text = "SELECT * FROM $table WHERE $where = $search";
+            if(isset($order)){
+                $text .= " ORDER BY $order";
+            }
+            if(isset($limit)){
+                $text .= " LIMIT $limit";
+            }
+            if($requete = self::connexion()->query($text)){
+                return $requete->fetchAll(PDO::FETCH_ASSOC);
+            }
+        }
     }
 }

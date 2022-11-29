@@ -17,12 +17,12 @@ window.addEventListener("load",() => {
     // version liste
 
     var ligne = $("tbody tr");
-    console.log(ligne);
 
     ligne.each((indice,valeur) => {
         let carre = valeur.children;
-        console.log(carre)
-        console.log(carre[carre.length - 1].children[2])
+        // carre représente les cases du tableau.
+        // le carré selectionné est le dernier (celui avec les boutons)
+        // children cible le 3eme (et dernier) bouton, celui qui supprime
         carre[carre.length - 1].children[2].addEventListener("click",(e) => {
             e.preventDefault();
             $popup.removeClass("closed")

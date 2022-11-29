@@ -50,8 +50,8 @@
         <a class="nav-link" href="<?= lienAdmin("accueil") ?>">Statistiques</a>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0" id="search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">effectuer un recherche</button>
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search">effectuer un recherche</button>
     </form>
   </div>
 </nav>

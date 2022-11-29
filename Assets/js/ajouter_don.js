@@ -1,10 +1,4 @@
-
-    
-
-
 window.addEventListener("load",() => {
-
-    console.log("ok")
     function message(type, message) {
         $("nav").after(`<div class="alert alert-${type}">${message}</div>`)
     }
@@ -24,7 +18,7 @@ window.addEventListener("load",() => {
      
 
 
-
+    // modification de l'input pour correspondre a la selection de l'utilisateur sur l'input #type
     $type.change(() => {
         if($('#type option:selected').text() === "Réception"){
             $date.css("display","block");
@@ -41,14 +35,14 @@ window.addEventListener("load",() => {
         }
     })
 
-
+    // rajout d'un input supplémentaire lors du clique sur le bouton #plus
     $plus.click((e) => {
         donNb++;
         e.preventDefault();
         $('.form-group').last().before(`<label for="nom" id="label_detail${donNb}">don n°${donNb}</label><div class='form-row mb-2' id="detail${donNb}"><div class="col">  <input name="don_nom" class="form-control noms" type="text" id='nom_don${donNb}' placeholder="nom de l'objet"> </div> <div class="col" > <input name="don${donNb}_qte" class="form-control qtes" type="text" id='qte_don${donNb}' placeholder='quantité'></div></div>`);
     }) 
 
-
+    // verification des valeurs et envoi d'un ou plusieurs messages si erreur 
     $("form").submit((e) => {
         e.preventDefault();
         clearMessages()
@@ -113,7 +107,8 @@ window.addEventListener("load",() => {
         })
 
 
-        if(!$("div.alert")[0]) {
+        if (!$("div.alert")[0]) {
+            // envoi d'une requete au serveur pour l'enregistrement des données et redirection sur la liste de tout les dons avec au moins une seconde de latence pour laisser le temps a php de traiter les données
             var requete = $.post(
                 "http://127.0.0.1/oCrochetDAmitie/don/ajouterDetails",
                 {
@@ -133,10 +128,5 @@ window.addEventListener("load",() => {
                 },1000)
         }
         
-
-        
-
-
-       
     })
 })

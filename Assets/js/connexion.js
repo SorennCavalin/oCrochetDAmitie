@@ -3,4 +3,14 @@ window.addEventListener("load",() => {
         // e.preventDefault();
         $("button").removeClass("unclicked").addClass("clicked");
     })
+
+    $('.loupe').click(() => {
+        let mdp = $('#mdp');
+        if (mdp.attr("type") == "text") {
+            mdp.attr("type","password")
+        } else {
+            mdp.attr("type","text")
+        }
+    })
+    
 })
