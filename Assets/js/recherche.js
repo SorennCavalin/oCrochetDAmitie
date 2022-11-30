@@ -2,7 +2,7 @@ var entities = {
     projet: 
         ["id","Nom", "date_fin", "date_debut"],
     user:
-        ["id","Nom","Email","Role","Telephone","Adresse","Prenom","date_inscription"],
+        ["id","Nom","Email","Telephone","Adresse","Prenom","date_inscription"],
     concours:
         ["id","Nom", "date_fin", "date_debut", "projet_id"],
     don:
@@ -10,8 +10,6 @@ var entities = {
     video:
         ["id","Nom","Type"]
 };
-
-var ouvert = false;
 
 
 window.addEventListener("load", () => {
@@ -27,16 +25,10 @@ window.addEventListener("load", () => {
     var maximum = $('#maximum')
 
 
-    $("#close2").click((e) => {
-        e.preventDefault();
-        if (!$('#div_recherche').hasClass('recherche')) {
-            $('#div_recherche').addClass('recherche')
-        }
-    })
-
     // ajout de l'evenement change a mon input table pour que tout les autres input contiennent les propriétés de la table selectionnée
     // suppression des option des select pour les remplacer par les nouvelles et condition avec le classement pour le laisser optionnel
     table.change(() => {
+        console.log(table.val())
 
         $('#classement').children().remove()
         $('#classement').append(`<option> Ne pas classer</option>`)
@@ -70,38 +62,40 @@ window.addEventListener("load", () => {
 
         // désactivation de classement et limit lors du changement de selecteur du fait que id est automatiquement choisi au changement
         $('#limit').attr("disabled", "true")
-        $('#classement').attr("disabled",'true')
+        $('#classement').attr("disabled", 'true')
+            
+        // modification du champs de saisie pour la cohérence avec le selecteur choisi
+        // desactivation du classement et de la limite pour la recherche d'identifiant 
+
+        selecteur.change((e) => {
+            console.log(selecteur.val())
+            if (selecteur.val().includes("date")) {
+                $('#text_search').attr("type", "date") 
+                $('#text_search').attr("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022") 
+                
+                $('#limit').removeAttr("disabled")
+                $('#classement').removeAttr("disabled")
+                
+            } else if (selecteur.val() === "id") {
+                $('#text_search').attr("type", "number") 
+                $('#text_search').attr("placeholder", "veuillez rentrer l'identifiant numérique recherché") 
+    
+                $('#limit').attr("disabled", "true")
+                $('#classement').attr("disabled",'true')
+            } else {
+                $('#text_search').attr("type", "text") 
+                $('#text_search').attr("placeholder", "")  
+    
+                $('#limit').removeAttr("disabled")
+                $('#classement').removeAttr("disabled")
+            }
+    
+            
+            
+        })
     })
 
-    // modification du champs de saisie pour la cohérence avec le selecteur choisi
-    // desactivation du classement et de la limite pour la recherche d'identifiant 
-
-    selecteur.change((e) => {
-        
-        if (selecteur.val().includes("date")) {
-            $('#text_search').attr("type", "date") 
-            $('#text_search').attr("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022") 
-            
-            $('#limit').removeAttr("disabled")
-            $('#classement').removeAttr("disabled")
-            
-        } else if (selecteur.val() === "id") {
-            $('#text_search').attr("type", "number") 
-            $('#text_search').attr("placeholder", "veuillez rentrer l'identifiant numérique recherché") 
-
-            $('#limit').attr("disabled", "true")
-            $('#classement').attr("disabled",'true')
-        } else {
-            $('#text_search').attr("type", "text") 
-            $('#text_search').attr("placeholder", "")  
-
-            $('#limit').removeAttr("disabled")
-            $('#classement').removeAttr("disabled")
-        }
-
-        
-        
-    })
+   
 
     // retiré
 
@@ -154,16 +148,35 @@ window.addEventListener("load", () => {
 
     // ajout de l'évènement click au bouton de la nav et affichage du pop up de recherche suivi d'une requete ajax pour l'affichage du résultat de la recherche
     $("#search").on("click", (e) => {
-        $(document).click((e) => {
-            if (!($('#div_recherche').is(e.target) || $('#div_recherche').has(e.target).length)) {
-                e.preventDefault()
-            }
-        })
         e.preventDefault();
         $('#div_recherche').removeClass('recherche')
     })
 
+    // empeche les clic externes au pop up de recherche
+    $(document).click((e) => {
+        if (!$('#div_recherche').hasClass("recherche")) {
+            // je n'ai pas réussi a le faire fonctionner dans l'autre sens alors bon...
+            if (!($('#div_recherche').is(e.target) || !$('#div_recherche').has(e.target).length)) {
+            } else {
+                e.preventDefault()
+            }
+        }
+    })
+
+    // ajout du bouton de fermeture (span)
+    $(".span-bouton-2").click((e) => {
+        if (!$('#div_recherche').hasClass('recherche')) {
+            $('#div_recherche').addClass('recherche')
+        }
+    })
+    
+
+    // clonage du formulaire vierge pour le retour en arrière si nouvelle recherche voulu
+    var retour = $('#recherche').clone(true);
+
     $('#recherche').submit((e) => {
+        
+        // annulation de l'envoi du formulaire et retire les messages d'erreur lors d'un nouveau submit pour permettre l'envoi si plus d'erreur
         e.preventDefault();
         $("div.alert").remove()
 
@@ -173,14 +186,17 @@ window.addEventListener("load", () => {
         let $limit = $('#limit')
         let $tableau = new Object;
 
-        
+        // verification de table selecteur et classement pour empecher l'entrée de donnée non-prévues dans le système mais permet tout de meme de ne pas classer ou de ne pas mettre une limite à la recherche
         if ($table = $table.val()) {
             if ($table === "user" || $table === "projet" || $table === "concours" || $table === "don" || $table === "video") {
                 $tableau["table"] = $table;
             } else {
                 message("danger","Aucun enregistrement de ce type n'existe",".table")
             }
+        } else {
+            message("danger","Une recherche ne peut pas s'effectuer sans savoir quoi chercher.",".selecteur")
         }
+
         if (($selecteur = $selecteur.val())) {
             if (typeof $selecteur === "string") {
                 if(entities[$table].includes($selecteur)) {
@@ -189,6 +205,8 @@ window.addEventListener("load", () => {
                     message("danger","le selecteur choisi n'est pas reconnu",".selecteur")
                 }
             }
+        } else {
+            message("danger","Un selecteur est obligatoire.",".selecteur")
         }
         
         if (($classement = $classement.val())) {
@@ -202,12 +220,6 @@ window.addEventListener("load", () => {
             }
         }
 
-        if (($recherche = $('#text_search').val()) !== "") {
-            $tableau["search"] = $recherche
-        } else {
-            message("danger","La recherche ne peut pas s'effectuer sans but","#text_recherche")
-        }
-
         if ($limit = $limit.val()) {
             if (parseInt($limit) !== NaN) {
                 if ($limit != 0) {
@@ -216,12 +228,42 @@ window.addEventListener("load", () => {
             }
         }
 
+        // obligation de remplir l'input search pour effectuer une recherche
+        if (($recherche = $('#text_search').val()) !== "") {
+            $tableau["search"] = $recherche
+        } else {
+            message("danger","Une recherche ne peut pas s'effectuer sans savoir quoi chercher.","#text_recherche")
+        }
+
+
         // si aucun message d'erreur n'à été envoyé, on procède a la requête
         if (!$("div.alert")[0]) {
             
             $.post($('#recherche').attr("action"), $tableau,
                 function (data, textStatus, jqXHR) {
-                    $('#div_recherche').html(data)
+                    // rejout de la classe resultat au pop-up pour s'ajuster au format des fichiers renvoyés
+                    $('#div_recherche').addClass("resultat");
+                    // on retire le formulaire et on insert les données renvoyées par le serveur dans une div qui sera supprimée lors du retour
+                    $('#recherche').remove();
+                    $('#div_recherche').append("<div id='resultat_recherche' class='mt-3'></div>");
+                    $('#resultat_recherche').append(data);
+                    // ajout de l'evenement pour le retour en arrière sur le span bouton 1 (flèche)
+                    $(".span-bouton-1").click(() => {
+                        $("#resultat_recherche").remove();
+                        $('#div_recherche').append(retour);
+                        retour = "";
+                        // retire la classe resultat pour reprendre le format du formulaire
+                        $('#div_recherche').removeClass("resultat");
+
+                    })
+
+                    // remise de l'evenement fermeture sur la croix (obsolete avec le clone)
+                    // $(".span-bouton-2").click((e) => {
+                    //     if (!$('#div_recherche').hasClass('recherche')) {
+                    //         $('#div_recherche').addClass('recherche')
+                    //     }
+                    // })
+
                 }
             );
         }

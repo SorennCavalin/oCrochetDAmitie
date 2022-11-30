@@ -19,6 +19,46 @@
     </thead>
 
     <tbody>
+        <!-- vérification de $concours pour afficher correctement les résultats lors de la recherche qui renvoi un array d'array -->
+        <?php  if( is_array($concours[0])) : foreach($concours as $concoursArray): foreach($concoursArray as $concoursResultat) :  ?>
+            <tr>
+                <td>
+                    <?= $concoursResultat->getId() ?>
+                </td>
+                <td>
+                    <?= $concoursResultat->getNom() ?>
+                </td>
+                <td>
+                    <?= $concoursResultat->getDate_fin() ?>
+                </td>
+                <td>
+                    <?= $concoursResultat->getDate_debut() ?>
+                </td>
+                <td>
+                    
+                     <a class="text-decoration-none text-dark " href="<?= lien("projet","details",$concoursResultat->getProjet()->getId()) ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
+                        </svg>
+                        <?= $concoursResultat->getProjet()->getNom() ?>
+                    </a>
+                </td>
+                <td>
+                    <a href="<?= lien("concours","detail",$concoursResultat->getId())  ?>" class="btn btn-primary">
+                        details
+                    </a>
+                    <a href="<?=lien("concours","modifier",$concoursResultat->getId()) ?>" class="btn btn-secondary">
+                        modifier
+                    </a>
+                    <a href="<?= lien("concours","supprimer",$concoursResultat->getId()) ?>" class="btn btn-danger">
+                        supprimer
+                    </a>
+
+                    
+                </td>
+            </tr>
+        <?php endforeach; endforeach; else :?>
+
         <?php foreach($concours as $concours): ?>
             <tr>
                 <td>
@@ -56,8 +96,9 @@
                     
                 </td>
             </tr>
-        <?php endforeach; ?>
+        <?php endforeach; endif ?>
     </tbody>
+        
 </table>
 
 

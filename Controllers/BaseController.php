@@ -25,6 +25,13 @@ class BaseController {
         include "Templates/base_admin.html.php";
         include "Templates/vues/$fichier";
     }
+
+    public function affichageRecherche($fichier, array $parametres = []){
+        
+        extract($parametres);
+
+        include "Templates/vues/$fichier";
+    }
     
 
     public function traitementString($string){
@@ -40,5 +47,16 @@ class BaseController {
         header(lien("erreur","404"));
         exit;
     }
+    public function debug($var){
+        echo "<pre>";
+        var_dump($var);
+        echo "</pre>";
+    }
     
+    public function d_exit($var){
+        echo "<pre>";
+        var_dump($var);
+        echo "</pre>";
+        exit;
+    }
 }

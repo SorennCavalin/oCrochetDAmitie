@@ -32,11 +32,15 @@
 <div class="container">
 
 <?php 
-if($navbar){
     include "navbar_admin.html.php";
+    include "recherche.html.php";
+
+if (isset($resultat)) {
+    echo '<div class="alert alert-primary"> <?= $resultat ?> </div>';
 }
 
-include "recherche.html.php";
+
+
 
     if(Session::getItemSession("messages")):
         foreach (Session::getMessages() as $type => $messages) :
@@ -47,7 +51,11 @@ include "recherche.html.php";
             <?= $message ?>
     </div>
 
+
+
 <?php endforeach; endforeach; endif; ?>
+
+
 
 
 

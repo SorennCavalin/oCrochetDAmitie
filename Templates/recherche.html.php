@@ -1,5 +1,6 @@
-<div class="recherche" id="div_recherche">
-    <form id='recherche' action="<?= lien("accueil","recherche") ?>">
+<div class="recherche" id="div_recherche" >
+    <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1"></span><span class="span-bouton-2">x</span></div>
+    <form id='recherche' action="<?= lien("accueil","recherche") ?>" method="POST">
         <h4 class="text-center mb-4">Vous allez faire une recherche spécifique. <br> Nous avons quelques question à poser pour vous rendre le meilleur résultat</h4>
         <div class="form-group table">
             <label for="table">Quel type recherchez-vous ?</label>
@@ -49,6 +50,5 @@
         </div>
 
         <button type="submit" class="btn btn-primary">lancer la recherche</button>
-        <button id="close2" class="btn btn-danger"> fermer </button>
     </form>
 </div>

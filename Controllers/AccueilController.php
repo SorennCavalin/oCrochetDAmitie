@@ -51,28 +51,51 @@ class AccueilController extends BaseController {
 
             if($check["search"] === false || $check["table"] === false || $check["where"] === false){
                 Session::messages('danger', "Je ne peux pas recherche sans savoir quoi ni avec quoi");
-                return $this->affichageAdmin("resultat.html.php",[],false);
+                return $this->affichageRecherche("resultat.html.php",[
+                    "resultat" => "Recherche annulée"
+                ]);
             }
 
             if($where === "id" ){
-                $recherche = Bdd::selectionId(["table"=>$table], (int) $search);
-                return $this->affichageAdmin("$table/fiche.html.php",[
-                    "$table" => $recherche
-                ],false);
+                $recherche = Bdd::selectionId(["table"=>$table],$search);
+                return $this->affichageRecherche("$table/fiche.html.php",[
+                    "$table" => $recherche,
+                ]);
             }
 
             if ($where === "projet_id" ){
-                if (is_numeric($where)){
-                    $recherche = Bdd::selectionId(["table"=>$table], (int) $search);
+                if (is_numeric($search)){
+                    $recherche = Bdd::selectionId(["table"=>'projet'],$search);
+                    $concours = $recherche->getConcours();
+                    $plusieurs = count($concours) > 1;
+                    return $this->affichageRecherche("$table/".( $plusieurs ? "liste" : "fiche" ).".html.php",[
+                        "$table" =>  $plusieurs ? $concours : $concours[0]
+                    ]);
                 } else {
-                    $recherche = Bdd::selection(['table' => $table,"where" => "WHERE nom LIKE '%$search%'"]);
+                    $nom = $this->traitementString($search);
+                    $recherches = Bdd::selection(['table' => "projet","where" => "WHERE nom LIKE '%$nom%'"]);
+                    foreach($recherches as $recherche){
+                        foreach($recherche->getConcours() as $resultats){
+                            $resultat[] = $resultats;
+                        }
+                    }
+                    return $this->affichageRecherche("concours/liste.html.php",[
+                        "concours" => $resultat,
+                        "resultat" => "Un total de " . count($recherche) . " résultats trouvés" 
+                    ]);
                 }
-                return $this->affichageAdmin("$table/fiche.html.php",[
-                    "$table" => $recherche
+            }
+
+            if ($where === "nom" || $where === "prenom") {
+                $nom = ($table === "user") ? ucfirst(strtolower($this->traitementString($search))) : $this->traitementString($search);
+                $recherche = Bdd::selection(["table" => $table, "where" => "WHERE nom = $nom"]);
+                return $this->affichageRecherche("$table/liste.html.php",[
+                    "$table" => $recherche,
+                    "resultat" => (count($recherche) > 1) ? "Un total de " . count($recherche) . " résultats trouvés": "une seule correspondance trouvée" 
                 ],false);
             }
 
-            if ($where === "nom")
+
 
             // if (strpos($where,"date")){
             //     $where = date("Y-m-d",strtotime($where));
