@@ -26,35 +26,15 @@ class AccueilController extends BaseController {
 
             extract($_POST);
 
-            if(isset($table)){
-                $check["table"] = true;
-            } else {
-                $check["table"] = false;
-            }
-            if(isset($where)){
-                $check["where"] = true;
-            } else {
-                $check["where"] = false;
+
+            // 2ème vérifiaction des données (on sait jamais)
+           
+            if($search === false || $table === false || $where === false){
+                Session::messages('danger', "Je ne peux pas recherche sans savoir quoi chercher et comment");
+                return "Recherche annulée";
             }
 
-            if(isset($limit)){
-                $check["limit"] = true;
-            } else {
-                $check["limit"] = false;
-            }
 
-            if(isset($search)){
-                $check["search"] = true;
-            } else {
-                $check["search"] = false;
-            }
-
-            if($check["search"] === false || $check["table"] === false || $check["where"] === false){
-                Session::messages('danger', "Je ne peux pas recherche sans savoir quoi ni avec quoi");
-                return $this->affichageRecherche("resultat.html.php",[
-                    "resultat" => "Recherche annulée"
-                ]);
-            }
 
             if($where === "id" ){
                 $recherche = Bdd::selectionId(["table"=>$table],$search);
@@ -74,14 +54,16 @@ class AccueilController extends BaseController {
                 } else {
                     $nom = $this->traitementString($search);
                     $recherches = Bdd::selection(['table' => "projet","where" => "WHERE nom LIKE '%$nom%'"]);
+
                     foreach($recherches as $recherche){
                         foreach($recherche->getConcours() as $resultats){
                             $resultat[] = $resultats;
                         }
                     }
+                    
                     return $this->affichageRecherche("concours/liste.html.php",[
                         "concours" => $resultat,
-                        "resultat" => "Un total de " . count($recherche) . " résultats trouvés" 
+                        "resultat" => "Un total de " . count($resultat) . " résultats trouvés" 
                     ]);
                 }
             }
@@ -93,6 +75,25 @@ class AccueilController extends BaseController {
                     "$table" => $recherche,
                     "resultat" => (count($recherche) > 1) ? "Un total de " . count($recherche) . " résultats trouvés": "une seule correspondance trouvée" 
                 ],false);
+            }
+
+            if (strpos($where, "date")){
+                $dateRecherche = date("Y-m-d",strtotime($search));
+                $recherche_date_exacte = Bdd::selection(["table" => $table, "where" => "WHERE $where = $dateRecherche"]);
+                $recherche_date_anterieur = Bdd::selection(["table" => $table, "where" => "WHERE $where < $dateRecherche and $where > " . date("Y-m-d",strtotime("-3 months",$dateRecherche))]);
+                $recherche_date_superieur = Bdd::selection(["table" => $table, "where" => "WHERE $where > $dateRecherche and $where > " . date("Y-m-d",strtotime("+3 months",$dateRecherche))]);
+                
+
+                if($recherche_date_exacte){
+                    $this->affichageRecherche("$table/fiche.html.php", [
+                        "$table" => $recherche_date_exacte
+                    ]);
+                }
+
+                return $this->affichageRecherche("$table/liste.html.php",[
+
+                ]);
+                
             }
 
 

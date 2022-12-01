@@ -1,12 +1,7 @@
 .recherche{
-    display: none;
+    opacity: 0;
 }
 
-.resultat{
-    width: 100%;
-    overflow: auto;
-    height: 90vh;
-}
 
 #div_recherche{
     position: fixed;
@@ -23,6 +18,12 @@
     margin: 20px auto;
     box-shadow: 1px 1px 1px 100vw rgba(0,0,0,.1);
 }
+.resultat{
+    width: 100% !important;
+    overflow: auto;
+    height: 90vh;
+}
+
 .span-bouton-2{
     cursor: pointer;
     color: red;
