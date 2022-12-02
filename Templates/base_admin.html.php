@@ -32,7 +32,6 @@
 <div class="container">
 
 <?php 
- echo date('Y-m-d',strtotime("-3 months", strtotime("2022-12-01")));
     include "navbar_admin.html.php";
     // include "recherche.html.php";
 

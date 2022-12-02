@@ -31,6 +31,7 @@ class Bdd {
         if(isset($where)){
             $textRequete .= " $where";
         }
+        // echo $textRequete ; die;
 
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité
@@ -62,7 +63,7 @@ class Bdd {
             $select = "*";
         }
         
-        $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id" . (isset($limit) ? "LIMIT $limit" : ""));
+        $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id");
         
         if($requete) {
             //création du string nécessaire à la recupération des données sous forme d'entité

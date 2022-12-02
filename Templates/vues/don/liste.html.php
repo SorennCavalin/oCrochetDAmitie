@@ -3,6 +3,13 @@
     $prev = $page - 1;
     $next = $page + 1;
     // $next = $next <= $pageMax ? $next : $pageMax;
+    // création de la variable qte du don pour la lisibilité du html
+    $qte = 0;
+    foreach($dons as $don){
+        foreach($don->getDetails() as $detail){
+            $qte += $detail->getQte();
+        }
+    }
 ?>
 
 
@@ -12,6 +19,7 @@
             <th>ID</th>
             <th>type</th>
             <th>destinataire/organisme</th>
+            <th>taille</th>
             <th>date</th>
             <th>action</th>
         </tr>
@@ -28,6 +36,9 @@
                 </td>
                 <td>
                     <?= $don->getDonataire() ? "donataire : " . $don->getDonataire() : "organisme : " . $don->getOrganisme() ?>
+                </td>
+                <td>
+                    <?= $qte . " objet " ?>
                 </td>
                 <td>
                     <?= $don->getDate() ?>

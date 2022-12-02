@@ -22,12 +22,11 @@ window.addEventListener("load", () => {
                         <label for="selecteur">par quoi rechercher ?</label>
                         <select id="selecteur" class="form-control" name='selecteur'>
                             <option value="id">Identifiant</option>
-                            <option value="Nom">Nom</option>
-                            <option value="Email">Email</option>
-                            <option value="Role">Role</option>
-                            <option value="Telephone">Telephone</option>
-                            <option value="Adresse">Adresse</option>
-                            <option value="Prenom">Prenom</option>
+                            <option value="nom">Nom</option>
+                            <option value="email">Email</option>
+                            <option value="telephone">Telephone</option>
+                            <option value="adresse">Adresse</option>
+                            <option value="prenom">Prenom</option>
                             <option value="date_inscription">Date d'inscription</option>
                         </select>
                     </div>
@@ -42,9 +41,9 @@ window.addEventListener("load", () => {
                         <select id="classement" class="form-control" name="classement" disabled>
                             <option selected> Ne pas classer </option>
                             <option value="id">Identifiant</option>
-                            <option value="Nom">Nom</option>
-                            <option value="Role">Role</option>
-                            <option value="Prenom">Prenom</option>
+                            <option value="nom">Nom</option>
+                            <option value="role">Role</option>
+                            <option value="prenom">Prenom</option>
                             <option value="date_inscription">Date d'inscription</option>
                         </select>
                     </div>
@@ -58,7 +57,7 @@ window.addEventListener("load", () => {
                     <button type="submit" class="btn btn-primary">lancer la recherche</button>
                 </form>
             </div>`;
-        div_dates_dist = 
+        div_dates_pre = 
            `<div class="form-group precision">
                 <label for="precision">précision de la recherche</label>
                 <select id="precision" class="form-control" name='precision'>
@@ -69,16 +68,39 @@ window.addEventListener("load", () => {
             </div>`
         entities = {
             projet: 
-                ["id","Nom", "date_debut", "date_fin"],
+                ["id","nom", "date_debut", "date_fin"],
             user:
-                ["id","Nom","Prenom","Email","Telephone","Adresse","date_inscription"],
+                ["id","nom","prenom","email","telephone","adresse","date_inscription"],
             concours:
-                ["id","Nom", "date_fin", "date_debut", "projet_id"],
+                ["id","nom", "date_fin", "date_debut", "projet_id"],
             don:
-                ["id","Organisme", "Donataire", "Date", "Type", "Quantite"],
+                ["id","organisme", "donataire", "date", "type"],
             video:
-                ["id","Nom","Type"]
+                ["id","nom","type"]
         };
+
+        type = {
+            "don": 
+            `<div class="form-group type">
+                <label for="type">Quel type de don</label>
+                <select id="type" class="form-control" name='type'>
+                    <option value="envoi">envoi vers un organisme</option>
+                    <option value="reception">reception de don</option>
+                </select>
+            </div>`,
+            
+            "video": 
+            `<div class="form-group type">
+                <label for="type">Quel type de vidéo</label>
+                <select id="type" class="form-control" name='type'>
+                    <option value="facebook">Facebook</option>
+                    <option value="youtube">Youtube</option>
+                    <option value="tiktok">Tik tok</option>
+                    <option value="instagram">Instagram</option>
+                </select>
+            </div>`
+            
+        }
         
         getTable(val = null) {
             if (val) {
@@ -208,33 +230,54 @@ window.addEventListener("load", () => {
 
         selecteurChange() {
             this.getSelecteur().change(() => {
+                // transforme #search en type date
                 if (this.getSelecteur(true).includes("date")) {
                     this.getSearch().attr("type", "date") 
-                    this.getSearch().attr("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022") 
-                    
+                    this.getSearch().attr("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022")
+                    // active limite et classement qui peuvent etre utilisé avec date
                     this.getLimit().removeAttr("disabled")
                     this.getClassement().removeAttr("disabled")
-                    
+
+
+                    // transforme #search en type number
                 } else if (this.getSelecteur(true) === "id") {
                     this.getSearch().attr("type", "number") 
                     this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché") 
-        
+                     // desactive limite et classement inutiles à une recherche id
                     this.getLimit().attr("disabled", "true")
-                    this.getClassement().attr("disabled",'true')
+                    this.getClassement().attr("disabled", 'true')
+                    
+                    // remet #search en type text
                 } else {
                     this.getSearch().attr("type", "text") 
                     this.getSearch().removeAttr("placeholder")  
-                    
+                    // active limite et classement qui peuvent etre utilisé avec une recherche de texte
                     this.getLimit().removeAttr("disabled")
                     this.getClassement().removeAttr("disabled")
                 }
+
+                
                 // rajout d'une div avec une donnée supplémentaire qui permet de choisir la précision des dates
+                // négation a cause de ce que renvoie .search (-1 si pas trouvé 0 si oui)
                 if (!this.getSelecteur(true).search("date")) {
                     if (!$('.precision')[0]) {
-                        $(this.div_dates_dist).insertAfter('#text_recherche')
+                        $(this.div_dates_pre).insertAfter('#text_recherche')
                     }
                 } else {
                     $('.precision').remove()
+                }
+
+                if (this.getSelecteur(true) === "type") {
+
+                    $("#text_recherche").clone(true);
+                    $("#text_recherche").replaceWith()
+
+                    if (this.getTable(true) === "don") {
+                        this.getSearch()
+                    }
+                    if (this.getTable(true) === "video") {
+                        
+                    }
                 }
             })
         }
@@ -291,6 +334,7 @@ window.addEventListener("load", () => {
         message(type, message,cible) {
             $(cible).append(`<div class="alert alert-${type} mt-1">${message}</div>`)
         }
+        
         supprMessages() {
             $("div.alert").remove()
         }
@@ -308,7 +352,6 @@ window.addEventListener("load", () => {
                 let classement = this.getClassement(true);
                 let limit = this.getLimit(true);
                 let search = this.getSearch(true);
-        
                 let tableau = new Object;
         
                 // verification de table selecteur et classement pour empecher l'entrée de donnée non-prévues dans le système mais permet tout de meme de ne pas classer ou de ne pas mettre une limite à la recherche
@@ -364,6 +407,20 @@ window.addEventListener("load", () => {
                 } else {
                     this.message("danger","Une recherche ne peut pas s'effectuer sans savoir quoi chercher.","#text_recherche")
                 }
+                
+                // si l'input precision est présent, récupère les données de #precision et verifie que la valeur est bien égale à celles disponibles
+                if ($('#precision')) {
+                    console.log("ok")
+                    let precision = $('#precision').val()
+                    let choix = [0, 1, 3]
+
+                    // test avec includes (il faudra utiliser parseInt() pour tester des chiffre (je pense qu'il teste === et pas ==) )
+                    choix.forEach(v => {
+                        if (precision == v) {
+                            tableau["precision"] = precision
+                        }
+                    })
+                }
         
         
                 // si aucun message d'erreur n'à été envoyé, on procède a la requête
@@ -372,6 +429,8 @@ window.addEventListener("load", () => {
                     let obj = this
                     $.post(this.getForm().attr("action"), tableau,
                         function (data, textStatus, jqXHR) {
+                            console.log(tableau)
+                            console.log(data)
                             //ajout de la classe resultat pour s'ajuster au format des données reçues
                             obj.getDivRecherche().addClass("resultat");
                             // on retire le formulaire et on rentre les données renvoyées par le serveur dans une div qui sera supprimée lors du retour
