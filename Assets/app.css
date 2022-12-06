@@ -43,6 +43,8 @@ body
 
 /*                  media width 480px                   */
 
+/*          header               */
+
 header{
     display: flex;
     justify-content: space-between;
@@ -195,7 +197,7 @@ header{
 
 
 
-/* Barre de navigation */
+/*              Barre de navigation         */
 nav {
     display: flex;
     justify-content: space-between;
@@ -226,7 +228,7 @@ nav {
 /*              Fin navigation           */
 
 
-/* css pour les balises générales */
+/* css  général */
 
 .container{
     padding: 0px 10px;
@@ -264,7 +266,27 @@ p {
     border-radius: var(--radius-banieres);
 }
 
-/* fin css balises générales */
+.conteneur-alert{
+    position: absolute;
+    top: 70px;
+    
+}
+.alert{
+    width: 200px;
+    height: auto;
+
+} 
+.alert-secondary{
+
+}
+.alert-success{
+
+}
+.alert-danger{
+
+}
+
+/* fin css général */
 
 
 /*              Footer                   */

@@ -2,32 +2,21 @@ window.addEventListener("load", () => {
         
     class Recherche{
 
+
         div_resultat = "<div id='resultat_recherche' class='mt-3'></div>"
         div_recherche =
             `<div id="div_recherche" >
                 <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1 recherche"></span><span class="span-bouton-2">x</span></div>
-                <form id='recherche' action="http://localhost/oCrochetDAmitie/accueil/recherche" method="POST">
+                <form id='recherche' action="http://localhost/oCrochetDAmitie/ajax/recherche" method="POST">
                     <h4 class="text-center mb-4">Vous allez faire une recherche spécifique. <br> Nous avons quelques question à poser pour vous rendre le meilleur résultat</h4>
                     <div class="form-group table">
                         <label for="table">Quel type recherchez-vous ?</label>
                         <select id="table" class="form-control" name="table">
-                            <option value='user'>utilisateur</option>
-                            <option value="projet">projet</option>
-                            <option value="concours">concours</option>
-                            <option value="don">dons</option>
-                            <option value="video">videos</option>
                         </select>
                     </div>
                     <div class="form-group selecteur">
                         <label for="selecteur">par quoi rechercher ?</label>
                         <select id="selecteur" class="form-control" name='selecteur'>
-                            <option value="id">Identifiant</option>
-                            <option value="nom">Nom</option>
-                            <option value="email">Email</option>
-                            <option value="telephone">Telephone</option>
-                            <option value="adresse">Adresse</option>
-                            <option value="prenom">Prenom</option>
-                            <option value="date_inscription">Date d'inscription</option>
                         </select>
                     </div>
         
@@ -66,41 +55,33 @@ window.addEventListener("load", () => {
                     <option value="3">Environ 3 mois</option>
                 </select>
             </div>`
-        entities = {
-            projet: 
-                ["id","nom", "date_debut", "date_fin"],
-            user:
-                ["id","nom","prenom","email","telephone","adresse","date_inscription"],
-            concours:
-                ["id","nom", "date_fin", "date_debut", "projet_id"],
-            don:
-                ["id","organisme", "donataire", "date", "type"],
-            video:
-                ["id","nom","type"]
-        };
+
+        
 
         type = {
             "don": 
-            `<div class="form-group type">
-                <label for="type">Quel type de don</label>
-                <select id="type" class="form-control" name='type'>
-                    <option value="envoi">envoi vers un organisme</option>
-                    <option value="reception">reception de don</option>
-                </select>
-            </div>`,
+            `<label for="type">Quel type de don</label>
+            <select id="type" class="form-control" name='type'>
+                <option value="envoi">envoi vers un organisme</option>
+                <option value="reception">reception de don</option>
+            </select>`,
             
             "video": 
-            `<div class="form-group type">
-                <label for="type">Quel type de vidéo</label>
-                <select id="type" class="form-control" name='type'>
-                    <option value="facebook">Facebook</option>
-                    <option value="youtube">Youtube</option>
-                    <option value="tiktok">Tik tok</option>
-                    <option value="instagram">Instagram</option>
-                </select>
-            </div>`
-            
+            `<label for="type">Quel type de vidéo</label>
+            <select id="type" class="form-control" name='type'>
+                <option value="facebook">Facebook</option>
+                <option value="youtube">Youtube</option>
+                <option value="tiktok">Tik tok</option>
+                <option value="instagram">Instagram</option>
+            </select>`,
+
+            "base": 
+            `<label for="">Entrez votre recherche</label>
+            <input class='form-control' type="number" id='text_search' name='search'>`
+
         }
+
+        recupTableUrl = "http://localhost/oCrochetDAmitie/ajax/dynaForm"
         
         getTable(val = null) {
             if (val) {
@@ -137,14 +118,6 @@ window.addEventListener("load", () => {
             return $("#classement");
         }
 
-
-        getClassement(val = null) {
-            if (val) {
-                return $("#classement").val();
-            }
-            return $("#classement");
-        }
-
         getSearch(val = null) {
             if (val) {
                 return $("#text_search").val();
@@ -169,6 +142,46 @@ window.addEventListener("load", () => {
             return $('#recherche');
         }
 
+        recupEntites() {
+            let obj = this;
+            $.ajax({
+                type: "POST",
+                url: obj.recupTableUrl,
+                success: (data) => {
+                    // rentre les données recupérées dans entities
+                    obj.entities = data;
+                    // place tout les noms de tables dans le select table
+                    obj.entities.tables.forEach(el => {
+                        obj.getTable().append(`<option value='${el}'>${el !== "user" ? el : "Utilisateur"}</option>`)
+                    })
+                    // Place tout les noms de colonnes dans le select selecteur et s'adapte en fonction du premier nom de table (celui qui s'affichera en premier dans #table (si don est en premier il y aura les valeurs de obj.entities['colonnes']['don']))
+                    obj.entities.colonnes[Object.keys(obj.entities['colonnes'])[0]].forEach(el => {
+                        if (el === "date_debut") {
+                            var lecteur = "Date de début";
+                        }
+                        if (el === "date_fin") {
+                            var lecteur = "Date de fin";
+                        }
+                        if (el === "date_inscription") {
+                            var lecteur = "Date d'inscription";
+                        }
+                        if (el === "id") {
+                            var lecteur = "Identifiant";
+                        }
+                        if (el === "projet_id") {
+                            var lecteur = "Projet en lien";
+                        }
+                        this.getSelecteur().append(
+                            `<option value="${el}">${lecteur ? lecteur : el}</option>`
+                        );
+                        this.getClassement().append(`<option value="${el}">${lecteur ? lecteur : el}</option>`)
+                    })
+                    
+                },
+                dataType: "json"
+            }  )
+        }
+
         toggleDivRecherche(etat) {
             if (etat) {
                 $('.container').append(this.div_recherche);
@@ -185,9 +198,9 @@ window.addEventListener("load", () => {
                 this.getClassement().children().remove()
                 this.getClassement().append(`<option> Ne pas classer</option>`)
                 this.getSelecteur().children().remove()
-                Object.keys(this.entities).forEach(element => {
+                Object.keys(this.entities["colonnes"]).forEach(element => {
                     if (this.getTable(true) === element) {
-                        this.entities[element].forEach((element, index) => {
+                        this.entities["colonnes"][element].forEach((element, index) => {
                             // ajustement de certaines données affichées à l'utilisateur pour améliorer la compréhension
                             if (element === "date_debut") {
                                 var lecteur = "Date de début";
@@ -230,6 +243,26 @@ window.addEventListener("load", () => {
 
         selecteurChange() {
             this.getSelecteur().change(() => {
+                // changer ou remet en premier l'input/select search 
+                if (this.getSelecteur(true) === "type") {
+                    let textRecherche = $("#text_recherche").children().remove();
+                    console.log('ok')
+                    
+
+                    if (this.getTable(true) === "don") {
+                        console.log('ok')
+                        textRecherche.append(this.type.don)
+                    } else if (this.getTable(true) === "video") {
+                        console.log('ok')
+                        textRecherche.append(this.type.don)
+                    }
+                } else {
+                    if (!this.getSearch) {
+                        console.log('ok')
+                        textRecherche.children().remove();
+                        textRecherche.append(this.type.base);
+                    }
+                }
                 // transforme #search en type date
                 if (this.getSelecteur(true).includes("date")) {
                     this.getSearch().attr("type", "date") 
@@ -267,18 +300,6 @@ window.addEventListener("load", () => {
                     $('.precision').remove()
                 }
 
-                if (this.getSelecteur(true) === "type") {
-
-                    $("#text_recherche").clone(true);
-                    $("#text_recherche").replaceWith()
-
-                    if (this.getTable(true) === "don") {
-                        this.getSearch()
-                    }
-                    if (this.getTable(true) === "video") {
-                        
-                    }
-                }
             })
         }
 
@@ -295,7 +316,7 @@ window.addEventListener("load", () => {
         }
 
         ouvreRecherche(e) {
-            // ajout de l'évènement click au bouton de la nav et affichage du pop up de recherche suivi d'une requete ajax pour l'affichage du résultat de la recherche;
+            // lancé dans le init pour ouvrir la div recherche et empecher le bouton de submit dans le vide
                 e.preventDefault();
                 this.toggleDivRecherche(true)
         }
@@ -358,7 +379,7 @@ window.addEventListener("load", () => {
 
                 // vérification de l'existantce de la table choisie
                 if (table) {
-                    if (Object.keys(this.entities).includes(table)) {
+                    if (Object.keys(this.entities["colonnes"]).includes(table)) {
                         tableau["table"] = table;
                     } else {
                         this.message("danger","Aucun enregistrement de ce type n'existe",".table")
@@ -371,7 +392,7 @@ window.addEventListener("load", () => {
         
                 if ((selecteur)) {
                     if (typeof selecteur === "string") {
-                        if(this.entities[table].includes(selecteur)) {
+                        if(this.entities["colonnes"][table].includes(selecteur)) {
                             tableau["where"] = selecteur;
                         } else {
                             this.message("danger","le selecteur choisi n'est pas reconnu",".selecteur")
@@ -384,7 +405,7 @@ window.addEventListener("load", () => {
                 // Vérification du type de données rentrée dans classement et de l'existance de la colonne qui servira a classer (si besoin de classer)
                 
                 if ((classement)) {
-                    if(this.entities[table].includes(classement) || classement === "Ne pas classer") {
+                    if(this.entities['colonnes'][table].includes(classement) || classement === "Ne pas classer") {
                         tableau["order"] = classement;
                     } else {
                         this.message("danger","le classement choisi n'est pas reconnu",".classement")
@@ -452,10 +473,13 @@ window.addEventListener("load", () => {
         init(e, retour = true) {
             // lancement de toute les fonctions nécessaire au fonctionnement de la recherche
 
+            
             // pose de la div de recherche (prevent default integré)
             if (retour) {
                 this.ouvreRecherche(e);
             }
+            // recupération des tables et colonnes de la bdd et rempli le tableau entite avec (lancement en premier pour pouvoir utiliser les entite dans toutes le fonctions qui suivent, mais après la pose du form pour remplir table et selecteur)
+            this.recupEntites();
             // fermeture de la div si clique en dehors
             // this.antiClick();
             // affichage de la valeur de limit
@@ -470,6 +494,7 @@ window.addEventListener("load", () => {
             this.onSubmit()
             // rajout du placeholder de search pour ne pas empecher l'overwrite (jsp pourquoi ça marche pas)
             this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché")
+
         }
     }
 

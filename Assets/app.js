@@ -8,9 +8,6 @@ function mobilecheck() {
       );
 };
 
-function getUrl(parametre) {
-    return "http://127.0.0.1/oCrochetDAmitie/" + parametre
-}
 
 
 window.addEventListener('load', ()=> {
@@ -36,7 +33,7 @@ window.addEventListener('load', ()=> {
     })
 
 
-    // deplacement du network , ajout de classes , et reinitialisation de toutes les modif depuis la taille de l'ecran
+    // deplacement du network , ajout de classes , et réinitialisation de toutes les modif en fonction la taille de l'ecran
 
     if (document.documentElement.clientWidth < 900){
 
@@ -89,7 +86,10 @@ window.addEventListener('load', ()=> {
         $('body').css("min-height",$(window).height()+"px")
     })
 
-    $('body').css("padding-bottom",$('footer').outerHeight()+ "px")
+    $('body').css("padding-bottom", $('footer').outerHeight() + "px")
+    
+
+    
 })
 
 

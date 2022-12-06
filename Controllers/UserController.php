@@ -246,6 +246,10 @@ class UserController extends BaseController{
     
 
     public function connexion(){
+        if(Session::isConnected()){
+            Session::messages("secondary",'Vous êtes déja connecté');
+            $this->redirection(lien("user","profil"));
+        }
 
         if (!empty($_POST)){
             extract($_POST);

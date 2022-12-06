@@ -26,6 +26,7 @@ class Bdd {
         if(!isset($select)){
             $select = "*";
         }
+        
 
         $textRequete = "SELECT $select FROM $table ";
         if(isset($where)){

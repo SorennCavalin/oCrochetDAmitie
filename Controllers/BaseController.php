@@ -26,7 +26,7 @@ class BaseController {
         include "Templates/vues/$fichier";
     }
 
-    public function affichageRecherche($fichier, array $parametres = []){
+    public function affichageAjax($fichier, array $parametres = []){
         
         extract($parametres);
 
