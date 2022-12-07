@@ -14,26 +14,69 @@ class Bdd {
 
 
     /**
+     * attention a bien mettre les guillement simple sur les chaine de caractères ￣へ￣
      * Evoyer un array avec les cléfs suivantes :
-     * "select" => colonne de la bdd ex: id | si tout select laisser vide,
-     * "table" => nom de l'entité desirée ex: user,
-     * (optionnel)"where" => toute la condition ex: WHERE id = 2.
+     * @param"select" => colonne de la bdd ex: id | si tout select laisser vide,
+     * @param"table" => nom de l'entité desirée ex: user,
+     * @param(optionnel/obligatoire avec where/like)"compare" => colonne de comparaison pour where ("prenom")
+     * @param(optionnel)"where" => symbole et valeur (" = 'Jean-Paul'") (WHERE prenom (compare) = 'Jean-Paul' (where))
+     * @param(optionnel|incompatible avec where)"like" => possibilité de where avec like ("'%Jean%'")(WHERE prenom(compare) LIKE '%Jean%'(like))
+     * @param(optionnel)"limit" => quantitée de résultat voulu (10) possibilité de mettre offset (10,2)
+     * @param(optionnel)"order" => range les resultats reçus et limite les doublons si il y a ('prenom DESC(optionnel)')(ORDER BY prenom DESC)
+     * @param(optionnel)"and" => rajouter une autre condition a la recherche. Rajouter and devant le paramettre pour en faire un paramettre and ("andCompare" => "nom")
+     * pas de parametres supplémentaires. Faites des requêtes et recevez vos resultats comme un chef o(〃＾▽＾〃)o
+     * @return array|bool
      */
     static function selection(array $para){
 
         extract($para);
 
+        // pose les valeurs de toutes les variables rentrées et en met par default pour les autres
         if(!isset($select)){
             $select = "*";
         }
-        
-
-        $textRequete = "SELECT $select FROM $table ";
-        if(isset($where)){
-            $textRequete .= " $where";
+        // where et like ne sont pas compatible donc si les 2 sont rentrés la fonction s'arrête avant une erreur
+        if (isset($like) && isset($where)){
+            return false;
         }
-        // echo $textRequete ; die;
+        if(isset($where) && isset($compare)){
+            $where = "WHERE $compare $where";
+        }
+        // isset where avant like pour ne pas double le where a cause du nom de la variable
+        if (isset($like) && isset($compare)){
+            $where = "WHERE $compare LIKE $like";
+        } else {
+            $where = "";
+        }
+        if(isset($limit) && $limit){
+            $limit = "LIMIT $limit";
+        } else {
+            $limit = "";
+        }
 
+        if(isset($order) && $order){
+            $order = "ORDER BY $order";
+        } else {
+            $order = "";
+        }
+
+        if(isset($and)&&isset($andCompare)){
+            if(isset($andWhere)){
+                $and = "AND $andCompare $andWhere";
+            } 
+            if(isset($andLike)){
+                $and = "AND $andCompare $andLike";
+            } else {
+                $and = "";
+            }
+        } else {
+            $and = "";
+        }
+        
+        // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
+
+        $textRequete = "SELECT $select FROM $table $where $and $order $limit";
+        // echo $textRequete;die;
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
@@ -41,8 +84,9 @@ class Bdd {
 
             return $requete->fetchAll(PDO::FETCH_CLASS, $classFetch);
         }
+        // si la requete n'a pas fonctionner retourne false
 
-        return null;
+        return false;
         
     }
     
@@ -250,7 +294,7 @@ class Bdd {
     }
 
 
-    public function recherche(array $array){
+    static public function recherche(array $array){
         extract($array);
         if (isset($table) && isset($where)){
             
@@ -265,5 +309,9 @@ class Bdd {
                 return $requete->fetchAll(PDO::FETCH_ASSOC);
             }
         }
+    }
+
+    static public function getTablesNames($table){
+        return self::connexion()->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$table'")->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -61,14 +61,14 @@ window.addEventListener("load", () => {
         type = {
             "don": 
             `<label for="type">Quel type de don</label>
-            <select id="type" class="form-control" name='type'>
+            <select id="text_search" class="form-control" name='search'>
                 <option value="envoi">envoi vers un organisme</option>
                 <option value="reception">reception de don</option>
             </select>`,
             
             "video": 
             `<label for="type">Quel type de vidéo</label>
-            <select id="type" class="form-control" name='type'>
+            <select id="text_search" class="form-control" name='search'>
                 <option value="facebook">Facebook</option>
                 <option value="youtube">Youtube</option>
                 <option value="tiktok">Tik tok</option>
@@ -125,6 +125,13 @@ window.addEventListener("load", () => {
             return $("#text_search");
         }
 
+        getDivSearch(val = null) {
+            if (val) {
+                return $("#text_recherche").val();
+            }
+            return $("#text_recherche");
+        }
+
         getDivRecherche() {
             return $('#div_recherche');
         }
@@ -152,10 +159,10 @@ window.addEventListener("load", () => {
                     obj.entities = data;
                     // place tout les noms de tables dans le select table
                     obj.entities.tables.forEach(el => {
-                        obj.getTable().append(`<option value='${el}'>${el !== "user" ? el : "Utilisateur"}</option>`)
+                        obj.getTable().append(`<option value='${el !== 'user' ? el + "'" : el + "' selected"}>${el !== "user" ? el : "Utilisateur"}</option>`)
                     })
                     // Place tout les noms de colonnes dans le select selecteur et s'adapte en fonction du premier nom de table (celui qui s'affichera en premier dans #table (si don est en premier il y aura les valeurs de obj.entities['colonnes']['don']))
-                    obj.entities.colonnes[Object.keys(obj.entities['colonnes'])[0]].forEach(el => {
+                    obj.entities.colonnes["user"].forEach(el => {
                         if (el === "date_debut") {
                             var lecteur = "Date de début";
                         }
@@ -172,10 +179,11 @@ window.addEventListener("load", () => {
                             var lecteur = "Projet en lien";
                         }
                         this.getSelecteur().append(
-                            `<option value="${el}">${lecteur ? lecteur : el}</option>`
+                            `<option ${el === "user" ? "selected" : ""} value="${el}">${lecteur ? lecteur : el}</option>`
                         );
-                        this.getClassement().append(`<option value="${el}">${lecteur ? lecteur : el}</option>`)
                     })
+
+                    // obj.getSelecteur().children("option[value='user']").attr("selected","true")
                     
                 },
                 dataType: "json"
@@ -234,6 +242,13 @@ window.addEventListener("load", () => {
                     $('.precision').remove()
                 }
 
+                // remet l'input au changement de table 
+                if (Object.keys(this.getSearch()).length === 0) {
+                    console.log(this.getDivSearch())
+                    this.getDivSearch().children().remove();
+                    this.getDivSearch().append(this.type.base);
+                }
+
                 // remet search au type number au changement
                 this.getSearch().attr("type", "number")
                 this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché")
@@ -243,24 +258,24 @@ window.addEventListener("load", () => {
 
         selecteurChange() {
             this.getSelecteur().change(() => {
-                // changer ou remet en premier l'input/select search 
+                // change ou remet en premier l'input/select search pour que les changement du type de input se fasse bien par la suite
                 if (this.getSelecteur(true) === "type") {
-                    let textRecherche = $("#text_recherche").children().remove();
-                    console.log('ok')
+                    this.getDivSearch().children().remove();
+                    console.log(this.getDivSearch())
                     
 
                     if (this.getTable(true) === "don") {
+                        this.getDivSearch().append(this.type.don)
                         console.log('ok')
-                        textRecherche.append(this.type.don)
                     } else if (this.getTable(true) === "video") {
                         console.log('ok')
-                        textRecherche.append(this.type.don)
+                        this.getDivSearch().append(this.type.video)
                     }
                 } else {
-                    if (!this.getSearch) {
-                        console.log('ok')
-                        textRecherche.children().remove();
-                        textRecherche.append(this.type.base);
+                    if (Object.keys(this.getSearch()).length === 0) {
+                        console.log(this.getDivSearch())
+                        this.getDivSearch().children().remove();
+                        this.getDivSearch().append(this.type.base);
                     }
                 }
                 // transforme #search en type date
@@ -373,6 +388,8 @@ window.addEventListener("load", () => {
                 let classement = this.getClassement(true);
                 let limit = this.getLimit(true);
                 let search = this.getSearch(true);
+                console.log(search)
+                console.log(this.getSearch(true))
                 let tableau = new Object;
         
                 // verification de table selecteur et classement pour empecher l'entrée de donnée non-prévues dans le système mais permet tout de meme de ne pas classer ou de ne pas mettre une limite à la recherche
