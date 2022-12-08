@@ -35,19 +35,21 @@ class Bdd {
         if(!isset($select)){
             $select = "*";
         }
-        // where et like ne sont pas compatible donc si les 2 sont rentrés la fonction s'arrête avant une erreur
-        if (isset($like) && isset($where)){
-            return false;
-        }
+        // verifie si where a été rentré avec compare si oui, prépare le morceau de la requete avec where 
         if(isset($where) && isset($compare)){
             $where = "WHERE $compare $where";
-        }
-        // isset where avant like pour ne pas double le where a cause du nom de la variable
-        if (isset($like) && isset($compare)){
-            $where = "WHERE $compare LIKE $like";
         } else {
             $where = "";
         }
+        // vérifie si like a été rentré en premier avant de verifier compare et mettre where à "" pour ne pas effacer where plus haut si il n'est pas entré en parametre 
+        if (isset($like) ){
+            if (isset($compare)){
+                    $where = "WHERE $compare LIKE $like";
+            } else {
+                $where = "";
+            }
+        }
+            
         if(isset($limit) && $limit){
             $limit = "LIMIT $limit";
         } else {
@@ -76,7 +78,6 @@ class Bdd {
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
         $textRequete = "SELECT $select FROM $table $where $and $order $limit";
-        // echo $textRequete;die;
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";

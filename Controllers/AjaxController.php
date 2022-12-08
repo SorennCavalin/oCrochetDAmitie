@@ -24,7 +24,7 @@ class AjaxController extends BaseController {
                 return "Recherche annulée";
             }
 
-            // donne une valeur vide a limit au cas ou l'utilisateur n'en a pas choisi
+            // donne une valeur vide a limit et order au cas ou l'utilisateur n'en a pas choisi
             if (!isset($limit)){
                 $limit = "";
             }
@@ -174,7 +174,6 @@ class AjaxController extends BaseController {
                         "$table" . "s" => ($plusieurs ? $dates : $dates[0])
                     ]);
                 }
-
                     if($table === "user"){
                         $date = "date d'inscription";
                     }
@@ -188,14 +187,13 @@ class AjaxController extends BaseController {
                         }
                     }
 
-
                     $rattrapage["dateAvant"] = Bdd::selection(["table" => $table,"compare" => $where, "where" => "< $dateRecherche", "limit" => 1]);
                     $rattrapage["dateApres"] = Bdd::selection(["table" => $table,"compare" => $where, "where" => "> $dateRecherche", "limit" => 1]);
 
 
-
+                    // $this->d_exit($rattrapage);
                     ($table === "user" ? $table = "utilisateur" : "");
-                    // return $this->aucuneReponse($table,"un $table avec une $date". (($precision) ? " d'environ $precision mois autour du $dateRecherche" : "le $dateRecherche"),"date",($rattrapage ?? false));
+                    return $this->aucuneReponse($table,"un $table avec une $date". (($precision) ? " d'environ $precision mois autour du $dateRecherche" : "le $dateRecherche"),"date",($rattrapage ?? false));
             }
 
             if ($where === "type"){
