@@ -140,8 +140,8 @@ class User  {
     }
 
 
-    public function getConcours(){
-        return Bdd::getEntitesRelies(["select" => "c.*","table" => "concours c , user u, participant p", "where" => "p.(SELECT p.concours_id FROM participants p, user u WHERE u.id = p.user_id) = c.id "]);
+    public function getParticipants(){
+        return Bdd::getEntitesRelies(["table" => "user participant", "id" => $this->getId()]);
     }
 
     /**

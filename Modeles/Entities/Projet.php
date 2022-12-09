@@ -134,7 +134,7 @@ class Projet{
     }
 
     public function getConcours(){
-        if ($concours = Bdd::getEntitesRelies(["select" => "c.*" , "table" => "concours c , projet p", "where" => "c.projet_id = " . $this->id . " GROUP BY id"])) {
+        if ($concours = Bdd::getEntitesRelies(["table" => "concours projet", "id" => $this->getId()])) {
             return $concours;
         } 
         return false ;

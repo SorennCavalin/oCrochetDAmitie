@@ -129,6 +129,14 @@ class Don  {
         return false;
     }
 
+    public function getTaille(){
+        $qte = 0;
+        foreach($this->getDetails() as $detail){
+            $qte += $detail->getQte();
+        }
+        return $qte;
+    }
+
     /**
      * Get the value of concours_id
      */ 

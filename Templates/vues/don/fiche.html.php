@@ -34,12 +34,11 @@
                     <th ><?= $details->getNom()?></th>
                     <td><?= $details->getQte() ?></td>
                     </tr>
-                    <?php $compte +=  $details->getQte()?>
             <?php endforeach ?>
 
             <tr class="thead-dark">
                 <th >Total</th>
-                <td> <?= count($don->getDetails()) . " objets différents, $compte dons en tout" ?></td>
+                <td> <?= count($don->getDetails()) . " objets différents, ".$don->getTaille()." dons en tout" ?></td>
             </tr>
 
         </tbody>

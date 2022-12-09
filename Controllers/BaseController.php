@@ -52,6 +52,7 @@ class BaseController {
                 if ($rattrap){
                     // rattrapage étant un array d'array mais $rattrap, ne contenant qu'un seul objet a chaque fois, ne requiert pas de foreach. je met donc l'objet de $rattrap dans une variable
                     $objet = $rattrap[0];
+                    echo $objet->getParticipants();die;
                     $class = explode("\\",get_class($rattrap[0]))[2];
                     if ($class === "User"){
                         $class = "Utilisateur";
@@ -62,7 +63,12 @@ class BaseController {
                             <h5 class='card-title'>". $class . " n°" . $objet->getId() ."</h5>";
 
                     if ($class === "Don"){
-                        $aucuneReponse .= "<p class='card-text'>Ce don à été ". ($objet->getType() === "envoi" ? "envoyé à " . $objet->getOrganisme() : "reçu de la part de " . $objet->getDonataire()) . " le " . $objet->getDate() ." </p>";
+                        $aucuneReponse .= "<p class='card-text'>Ce don de ". $objet->getTaille() ." objets à été ". ($objet->getType() === "envoi" ? "envoyé à " . $objet->getOrganisme() : "reçu de la part de " . $objet->getDonataire()) . " le " . $objet->getDate() ." </p>";
+                    }
+
+                    if ($class === "Utilisateur"){
+                        $aucuneReponse .= "<p class='card-text'>". $objet->getNom() . " " . $objet->getPrenom() ." s'est inscrit le ". $objet->getDate_inscription(). " : " . $objet->getParticipants();
+                        
                     }
                             
                             

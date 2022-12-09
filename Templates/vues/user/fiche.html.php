@@ -1,3 +1,9 @@
+<?php 
+
+// echo $user->getParticipants();
+
+?>
+
 <ul class="list-group mb-3">
     <li class="list-group-item">
         <div class="d-flex">

@@ -16,11 +16,11 @@ class Bdd {
     /**
      * attention a bien mettre les guillement simple sur les chaine de caractères ￣へ￣
      * Evoyer un array avec les cléfs suivantes :
-     * @param"select" => colonne de la bdd ex: id | si tout select laisser vide,
+     * @param(optionnel)"select" => colonne de la bdd ex: id | si tout select laisser vide,
      * @param"table" => nom de l'entité desirée ex: user,
      * @param(optionnel/obligatoire avec where/like)"compare" => colonne de comparaison pour where ("prenom")
      * @param(optionnel)"where" => symbole et valeur (" = 'Jean-Paul'") (WHERE prenom (compare) = 'Jean-Paul' (where))
-     * @param(optionnel|incompatible avec where)"like" => possibilité de where avec like ("'%Jean%'")(WHERE prenom(compare) LIKE '%Jean%'(like))
+     * @param(optionnel|incompatible avec where)"like" => possibilité de where avec like ("'%Jean%'")(WHERE prenom(compare) LIKE '%Jean%'(like)(like prendre priorité sur where))
      * @param(optionnel)"limit" => quantitée de résultat voulu (10) possibilité de mettre offset (10,2)
      * @param(optionnel)"order" => range les resultats reçus et limite les doublons si il y a ('prenom DESC(optionnel)')(ORDER BY prenom DESC)
      * @param(optionnel)"and" => rajouter une autre condition a la recherche. Rajouter and devant le paramettre pour en faire un paramettre and ("andCompare" => "nom")
@@ -41,7 +41,7 @@ class Bdd {
         } else {
             $where = "";
         }
-        // vérifie si like a été rentré en premier avant de verifier compare et mettre where à "" pour ne pas effacer where plus haut si il n'est pas entré en parametre 
+        // vérifie si like a été rentré en premier avant de verifier compare et mettre where à "" pour ne pas effacer where plus haut si il n'est pas entré en parametre (si where a été entré en paramettre like prendra le dessus)
         if (isset($like) ){
             if (isset($compare)){
                     $where = "WHERE $compare LIKE $like";
@@ -129,21 +129,55 @@ class Bdd {
 
      /**
      * Evoyer un array avec les cléfs suivantes :
-     * "select" => colonne de la bdd avec alias ex: c.id,
-     * "table" => au moins 2 tables de la bdd avec alias,
-     * "where" => $this->id = alias2.this_is
+     * @param(optionnel)"select" => choisi tout par default mais l'utilisateur peut choisir 
+     * @param"table" => les 2 tables necessaires a la recherche. Les tables doivent être misent dans cet ordre : "(entité actuelle) (entité reliée)"
+     * @param"id" => l'id de l'entité actuelle qui possede une colonne dans l'entité reliée (participant a une colonne user_id donc id de user sera rentré)
      */
     static function getEntitesRelies(array $para){
         extract($para);
         
-        $textRequete = "SELECT $select FROM $table WHERE $where";
+        
+          // pose les valeurs de toutes les variables rentrées et en met par default pour les autres
+        if(!isset($id) || !isset($table)){
+            return false;
+        }
+
+        // recupère les premières lettres des tables pour en faire des alias
+
+        $tables = explode(" ",$table);
+        if ( strpos($tables[0],"_")){
+            $aliasEntiteRelie = substr($tables[0],0,1) . substr($tables[0],strpos($tables[0],"_") + 1,1);
+        } else {
+            $aliasEntiteActuelle = substr($tables[0],0,1);
+        }
+        if( strpos($tables[1],"_") || substr($tables[1],0,1) === $aliasEntiteActuelle){
+            $aliasEntiteRelie = substr($tables[1],0,1) . substr($tables[1],strpos($tables[1],"_") + 1,1);
+        } else {
+            $aliasEntiteRelie = substr($tables[1],0,1);
+        }
+
+
+        // met par default la valeur (alias).* a select
+        if(!isset($select)){
+            $select = "$aliasEntiteRelie.*";
+        }
+        // prépare le morceau de la requete avec where 
+        $where = "WHERE $aliasEntiteRelie.".$tables[0]."_id = $id";
+
+        // prépare la variable $table avec 
+        $table = $tables[0] . " $aliasEntiteActuelle, ". $tables[1] . " $aliasEntiteRelie" ;
+
+
+        // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
+
+        $textRequete = "SELECT $select FROM $table $where";
+        return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
         if($requete){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
             $classFetch = "Modeles\Entities\\" . ucFirst(explode(" ",$table)[0]);
-
             return $requete->fetchAll(PDO::FETCH_CLASS, $classFetch);
         }
 
