@@ -1,9 +1,10 @@
 window.addEventListener("load", () => {
-        
+
+
     class Recherche{
 
 
-        div_resultat = "<div id='resultat_recherche' class='mt-3'></div>"
+        div_resultat = "<div id='resultat_recherche' class='mt-3'></div>";
         div_recherche =
             `<div id="div_recherche" >
                 <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1 recherche"></span><span class="span-bouton-2">x</span></div>
@@ -46,42 +47,18 @@ window.addEventListener("load", () => {
                     <button type="submit" class="btn btn-primary">lancer la recherche</button>
                 </form>
             </div>`;
-        div_dates_pre = 
-           `<div class="form-group precision">
+        div_dates_pre =
+            `<div class="form-group precision">
                 <label for="precision">précision de la recherche</label>
                 <select id="precision" class="form-control" name='precision'>
                     <option value="0">Date exacte</option>
                     <option value="1">Environ 1 mois</option>
                     <option value="3">Environ 3 mois</option>
                 </select>
-            </div>`
+            </div>`;
 
-        
-
-        type = {
-            "don": 
-            `<label for="type">Quel type de don</label>
-            <select id="text_search" class="form-control" name='search'>
-                <option value="envoi">envoi vers un organisme</option>
-                <option value="reception">reception de don</option>
-            </select>`,
-            
-            "video": 
-            `<label for="type">Quel type de vidéo</label>
-            <select id="text_search" class="form-control" name='search'>
-                <option value="facebook">Facebook</option>
-                <option value="youtube">Youtube</option>
-                <option value="tiktok">Tik tok</option>
-                <option value="instagram">Instagram</option>
-            </select>`,
-
-            "base": 
-            `<label for="">Entrez votre recherche</label>
-            <input class='form-control' type="number" id='text_search' name='search'>`
-
-        }
-
-        recupTableUrl = "http://localhost/oCrochetDAmitie/ajax/dynaForm"
+        recupTableUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormTables";
+        recupColonnesUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormColonnes";
         
         getTable(val = null) {
             if (val) {
@@ -149,20 +126,87 @@ window.addEventListener("load", () => {
             return $('#recherche');
         }
 
-        recupEntites() {
+        setSelect(array = false) {
+            let cible = this.getDivSearch()
+            if (!array) {
+                cible.children().remove()
+                cible.append(
+                    `<label for="">Entrez votre recherche</label>
+                    <input class='form-control' type="number" id='text_search' name='search'>`
+                )
+               
+            } else {
+                cible.children().remove();
+                cible.append(
+                    `<label for="">Sélectionnez le type recherché</label>
+                        <select name='search' id='text_search' class='form-control'></select>`
+                )
+                array.forEach((val) => {
+                    $('#text_search').append(
+                        `<option value="${val}">${val}</option>`
+                    )
+                })
+            }
+        }
+
+        toggleDivRecherche(etat) {
+            if (etat) {
+                $('.container').append(this.div_recherche);
+            } else {
+                this.getDivRecherche().remove();
+            }
+
+        }
+
+        toggleCLassementLimit(actif) {
+            if (actif) {
+                this.getLimit().removeAttr("disabled")
+                this.getClassement().removeAttr("disabled")
+            } else {
+                this.getLimit().attr("disabled", "true")
+                this.getClassement().attr("disabled", 'true')
+            }
+        }
+
+        toggleAttrSearch(attr, val, remove = false) {
+            !remove ? this.getSearch().attr(attr, val) : this.getSearch().removeAttr(attr);
+        }
+
+        recupTables() {
             let obj = this;
             $.ajax({
                 type: "POST",
                 url: obj.recupTableUrl,
                 success: (data) => {
-                    // rentre les données recupérées dans entities
-                    obj.entities = data;
+                    // rajoute une propriété a mon objet pour la validation des données au submit
+                    obj.tables = data
                     // place tout les noms de tables dans le select table
-                    obj.entities.tables.forEach(el => {
-                        obj.getTable().append(`<option value='${el !== 'user' ? el + "'" : el + "' selected"}>${el !== "user" ? el : "Utilisateur"}</option>`)
+                    data.forEach(el => {
+                        let elMaj = el.charAt(0).toUpperCase() + el.substr(1);
+                        obj.getTable().append(`<option value='${el !== 'user' ? el + "'" : el + "' selected"}>${el !== "user" ? elMaj : "Utilisateur"}</option>`);
                     })
-                    // Place tout les noms de colonnes dans le select selecteur et s'adapte en fonction du premier nom de table (celui qui s'affichera en premier dans #table (si don est en premier il y aura les valeurs de obj.entities['colonnes']['don']))
-                    obj.entities.colonnes["user"].forEach(el => {
+                },
+                dataType: "json"
+            }).done(
+                // user étant selectionné par default, le mettre en brut ici ne dérange pas
+                obj.recupColonnes("user")
+            )
+        }
+
+        recupColonnes(table) {
+            let obj = this;
+            $.ajax({
+                type: "POST",
+                data: {"table" : table},
+                url: obj.recupColonnesUrl,
+                success: (data) => {
+                   
+                    // Place tout les noms de colonnes dans selecteur et classement
+                    let colonnes = data.colonnes;
+                    let types = data.type ?? false;
+                    obj.getSelecteur().children().remove()
+                    obj.getClassement().children().remove()
+                    colonnes.forEach(el => {
                         if (el === "date_debut") {
                             var lecteur = "Date de début";
                         }
@@ -178,80 +222,40 @@ window.addEventListener("load", () => {
                         if (el === "projet_id") {
                             var lecteur = "Projet en lien";
                         }
-                        this.getSelecteur().append(
-                            `<option ${el === "user" ? "selected" : ""} value="${el}">${lecteur ? lecteur : el}</option>`
+                        let elMaj = el.charAt(0).toUpperCase() + el.substr(1);
+                        obj.getSelecteur().append(
+                            `<option value="${el}">${lecteur ? lecteur : elMaj}</option>`
+                        );
+                        obj.getClassement().append(
+                            `<option value="${el}">${lecteur ? lecteur : elMaj}</option>`
                         );
                     })
-
-                    // obj.getSelecteur().children("option[value='user']").attr("selected","true")
-                    
+                    // rajoute 2 propriétés a mon objet pour la validation des données au submit
+                    obj.types = types
+                    obj.colonnes = colonnes
                 },
                 dataType: "json"
-            }  )
+            })
         }
 
-        toggleDivRecherche(etat) {
-            if (etat) {
-                $('.container').append(this.div_recherche);
-            } else {
-                this.getDivRecherche().remove();
-            }
-
-        }
 
         tableChange() {
             // ajout de l'evenement change a mon input table pour que tout les autres input contiennent les propriétés de la table selectionnée
             // suppression des option des select pour les remplacer par les nouvelles et condition avec le classement pour le laisser optionnel
-            this.getTable().change(() => {
-                this.getClassement().children().remove()
-                this.getClassement().append(`<option> Ne pas classer</option>`)
-                this.getSelecteur().children().remove()
-                Object.keys(this.entities["colonnes"]).forEach(element => {
-                    if (this.getTable(true) === element) {
-                        this.entities["colonnes"][element].forEach((element, index) => {
-                            // ajustement de certaines données affichées à l'utilisateur pour améliorer la compréhension
-                            if (element === "date_debut") {
-                                var lecteur = "Date de début";
-                            }
-                            if (element === "date_fin") {
-                                var lecteur = "Date de fin";
-                            }
-                            if (element === "date_inscription") {
-                                var lecteur = "Date d'inscription";
-                            }
-                            if (element === "id") {
-                                var lecteur = "Identifiant";
-                            }
-                            if (element === "projet_id") {
-                                var lecteur = "Projet en lien";
-                            }
-                            this.getSelecteur().append(
-                                `<option value="${element}">${lecteur ? lecteur : element}</option>`
-                            );
-                            this.getClassement().append(`<option value="${element}">${lecteur ? lecteur : element}</option>`)
-                        })
-                    }
-                });
+            this.getTable().change((e) => {
+                // recupère les colonnes et modifie classement/text_search/selecteur
+                this.recupColonnes($(e.target).val())
         
                 // désactivation de classement et limit lors du changement de selecteur du fait que id est automatiquement choisi au changement
-                this.getLimit().attr("disabled", "true")
-                this.getClassement().attr("disabled", 'true')
+                this.toggleCLassementLimit(false)
                     
                 // retire la div de precision au changement de table
                 if ($('.precision')[0]) {
                     $('.precision').remove()
                 }
 
-                // remet l'input au changement de table 
-                if (Object.keys(this.getSearch()).length === 0) {
-                    console.log(this.getDivSearch())
-                    this.getDivSearch().children().remove();
-                    this.getDivSearch().append(this.type.base);
-                }
-
-                // remet search au type number au changement
-                this.getSearch().attr("type", "number")
-                this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché")
+                // reset/remet l'input au changement de table 
+                this.setSelect()
             })
                 
         }
@@ -260,49 +264,38 @@ window.addEventListener("load", () => {
             this.getSelecteur().change(() => {
                 // change ou remet en premier l'input/select search pour que les changement du type de input se fasse bien par la suite
                 if (this.getSelecteur(true) === "type") {
-                    this.getDivSearch().children().remove();
-                    console.log(this.getDivSearch())
-                    
-
-                    if (this.getTable(true) === "don") {
-                        this.getDivSearch().append(this.type.don)
-                        console.log('ok')
-                    } else if (this.getTable(true) === "video") {
-                        console.log('ok')
-                        this.getDivSearch().append(this.type.video)
-                    }
+                    this.setSelect(this.type);
                 } else {
-                    if (Object.keys(this.getSearch()).length === 0) {
-                        console.log(this.getDivSearch())
-                        this.getDivSearch().children().remove();
-                        this.getDivSearch().append(this.type.base);
+                    this.setSelect();
+                }
+
+                // vérifie que le search soit bien un input et pas un select
+                if (this.getSearch().get(0).tagName.toLowerCase() === "input") {
+
+                    // transforme #search en type date
+                    if (this.getSelecteur(true).includes("date")) {
+
+                        this.toggleAttrSearch("type", "date");
+                        this.toggleAttrSearch("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022");
+                        // active limite et classement qui peuvent etre utilisé avec date
+                        this.toggleCLassementLimit(true);
+
+                        // transforme #search en type number
+                    } else if (this.getSelecteur(true) === "id") {
+                        this.toggleAttrSearch("type", "number") 
+                        this.toggleAttrSearch("placeholder", "veuillez rentrer l'identifiant numérique recherché") 
+                        // desactive limite et classement inutiles à une recherche id
+                        this.toggleCLassementLimit(false);
+                        
+                        // remet #search en type text
+                    } else {
+                        this.toggleAttrSearch("type", "text") 
+                        this.toggleAttrSearch("placeholder")  
+                        // active limite et classement qui peuvent etre utilisé avec une recherche de texte
+                        this.toggleCLassementLimit(true);
                     }
                 }
-                // transforme #search en type date
-                if (this.getSelecteur(true).includes("date")) {
-                    this.getSearch().attr("type", "date") 
-                    this.getSearch().attr("placeholder", "Veuillez rentrer une date valide ex: 31/12/2022")
-                    // active limite et classement qui peuvent etre utilisé avec date
-                    this.getLimit().removeAttr("disabled")
-                    this.getClassement().removeAttr("disabled")
-
-
-                    // transforme #search en type number
-                } else if (this.getSelecteur(true) === "id") {
-                    this.getSearch().attr("type", "number") 
-                    this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché") 
-                     // desactive limite et classement inutiles à une recherche id
-                    this.getLimit().attr("disabled", "true")
-                    this.getClassement().attr("disabled", 'true')
-                    
-                    // remet #search en type text
-                } else {
-                    this.getSearch().attr("type", "text") 
-                    this.getSearch().removeAttr("placeholder")  
-                    // active limite et classement qui peuvent etre utilisé avec une recherche de texte
-                    this.getLimit().removeAttr("disabled")
-                    this.getClassement().removeAttr("disabled")
-                }
+                
 
                 
                 // rajout d'une div avec une donnée supplémentaire qui permet de choisir la précision des dates
@@ -340,6 +333,7 @@ window.addEventListener("load", () => {
          // ajout du bouton de fermeture (span)
             this.getBoutons(2).click((e) => {
                 this.toggleDivRecherche(false);
+                this.toggleAntiClick(false);
             })  
         }
         
@@ -354,30 +348,25 @@ window.addEventListener("load", () => {
             })
         }
 
-        antiClick() {
+        toggleAntiClick(actif = true) {
             // empeche les clic externes au pop up de recherche
-            $(document).click((e) => {
-                if ($('#div_recherche')) {
-                    // je n'ai pas réussi a le faire fonctionner dans l'autre sens alors bon...
-                    if (!($('#div_recherche').is(e.target) || !$('#div_recherche').has(e.target).length)) {
-                    } else {
-                        this.toggleDivRecherche(false)
-                    }
-                }
-            })
+            if (actif) {
+                $('body').append(`<div id='div_blocage'></div>`);
+            } else {
+                $('#div_blocage').remove();
+            }
         }
 
         message(type, message,cible) {
             $(cible).append(`<div class="alert alert-${type} mt-1">${message}</div>`)
         }
-        
+
         supprMessages() {
             $("div.alert").remove()
         }
 
         onSubmit() {
             this.getForm().submit((e) => {
-        
                 // annulation de l'envoi du formulaire et retire les messages d'erreur lors d'un nouveau submit pour permettre l'envoi si plus d'erreur
                 e.preventDefault();
                 this.supprMessages();
@@ -388,15 +377,11 @@ window.addEventListener("load", () => {
                 let classement = this.getClassement(true);
                 let limit = this.getLimit(true);
                 let search = this.getSearch(true);
-                console.log(search)
-                console.log(this.getSearch(true))
                 let tableau = new Object;
-        
-                // verification de table selecteur et classement pour empecher l'entrée de donnée non-prévues dans le système mais permet tout de meme de ne pas classer ou de ne pas mettre une limite à la recherche
 
                 // vérification de l'existantce de la table choisie
                 if (table) {
-                    if (Object.keys(this.entities["colonnes"]).includes(table)) {
+                    if (this.tables.includes(table)) {
                         tableau["table"] = table;
                     } else {
                         this.message("danger","Aucun enregistrement de ce type n'existe",".table")
@@ -409,7 +394,7 @@ window.addEventListener("load", () => {
         
                 if ((selecteur)) {
                     if (typeof selecteur === "string") {
-                        if(this.entities["colonnes"][table].includes(selecteur)) {
+                        if(this.colonnes.includes(selecteur)) {
                             tableau["where"] = selecteur;
                         } else {
                             this.message("danger","le selecteur choisi n'est pas reconnu",".selecteur")
@@ -422,7 +407,7 @@ window.addEventListener("load", () => {
                 // Vérification du type de données rentrée dans classement et de l'existance de la colonne qui servira a classer (si besoin de classer)
                 
                 if ((classement)) {
-                    if(this.entities['colonnes'][table].includes(classement) || classement === "Ne pas classer") {
+                    if(this.colonnes.includes(classement) || classement !== "id") {
                         tableau["order"] = classement;
                     } else {
                         this.message("danger","le classement choisi n'est pas reconnu",".classement")
@@ -448,13 +433,11 @@ window.addEventListener("load", () => {
                 
                 // si l'input precision est présent, récupère les données de #precision et verifie que la valeur est bien égale à celles disponibles
                 if ($('#precision')) {
-                    console.log("ok")
                     let precision = $('#precision').val()
                     let choix = [0, 1, 3]
 
-                    // test avec includes (il faudra utiliser parseInt() pour tester des chiffre (je pense qu'il teste === et pas ==) )
-                    choix.forEach(v => {
-                        if (precision == v) {
+                    choix.forEach(val => {
+                        if (precision == val) {
                             tableau["precision"] = precision
                         }
                     })
@@ -486,29 +469,36 @@ window.addEventListener("load", () => {
         
         }
 
-
         init(e, retour = true) {
             // lancement de toute les fonctions nécessaire au fonctionnement de la recherche
 
-            
             // pose de la div de recherche (prevent default integré)
             if (retour) {
                 this.ouvreRecherche(e);
             }
+
             // recupération des tables et colonnes de la bdd et rempli le tableau entite avec (lancement en premier pour pouvoir utiliser les entite dans toutes le fonctions qui suivent, mais après la pose du form pour remplir table et selecteur)
-            this.recupEntites();
+            // les colonnes sont récupérées à la suite de la fonction recupTable
+            this.recupTables();
+
             // fermeture de la div si clique en dehors
-            // this.antiClick();
-            // affichage de la valeur de limit
+            this.toggleAntiClick();
+
+            // affiche la valeur de limit au changement de celle-ci
             this.afficherLimitVal()
+
             // modifications lors du changement de la valeur de select (voir dans la classe pour plus d'infos)
             this.tableChange()
+
             // modifications de search pour s'accorder avec le type de données selectionnées
             this.selecteurChange()
+
             // fermeture de la div si clique sur la croix
             this.fermetureRecherche()
+
             // activation de la vérification des données et lancement de la requête ajax au submit
             this.onSubmit()
+
             // rajout du placeholder de search pour ne pas empecher l'overwrite (jsp pourquoi ça marche pas)
             this.getSearch().attr("placeholder", "veuillez rentrer l'identifiant numérique recherché")
 

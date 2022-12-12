@@ -214,41 +214,50 @@ class AjaxController extends BaseController {
         }
     }
 
-    public function dynaForm(){
+    public function dynaFormTables(){
         header('Access-Control-Allow-Origin: *');
 
-        // recuperation des nom des tables et des colonnes de la base de donnée
-
-        $toutesColonnes = Bdd::getTablesNames('ocrochet');
-        // je choisi ici les tables et colonnes que je ne veut pas afficher dans ma recherche
-        $champsIndesirables = ["roles",'lien','page','mdp',"telephone"];
-        $colonnesIndesirables = ["participant", "don_details"];
-        $entites = [];
-        // si la requete a bien fonctionner le tableau ne devrait pas rendre false
-        if($toutesColonnes){
-            // pour chaque ligne renvoyée par la bdd on verifie que le nom de la table ne fais pas partie de ceux qui sont dans le tableau indésirable, idem pour les colonnes
-                foreach($toutesColonnes as $colonne){
-                    if (!in_array($colonne["TABLE_NAME"],$colonnesIndesirables)){
-                        // création de ['table'] pour pouvoir afficher les noms des tables du côté js
-                        // pour le premier tour on pose directement le nom de la table dans le tableau mais a partir du 2ème on vérifie que le nom n'est pas déjà dedans (pour eviter les doublons qui casseront le code) (il y a autant de nom de table que de colonnes donc filtrer est nécessaire)
-                        if(isset($entites["tables"])){
-                            if(!in_array($colonne["TABLE_NAME"],$entites["tables"])){
-                                $entites["tables"][] = $colonne["TABLE_NAME"];
-                            }
-                        } else {
-                            $entites["tables"][] = $colonne["TABLE_NAME"];
-                        }
-                        // créations d'arrays qui auront comme noms les noms des tables avec dedans les noms de chaques colonnes
-                        if(!in_array($colonne["COLUMN_NAME"],$champsIndesirables)){
-                            $entites['colonnes'][$colonne["TABLE_NAME"]][] = $colonne["COLUMN_NAME"];
-                            
-                        }
-                    }
-            }
-            echo json_encode($entites);
-        } else {
-            echo "Aucune colonne trouvée";
-        }
+       
         
+        // je choisi ici les tables que je ne veut pas afficher dans ma recherche
+        $tablesIndesirables = ["participant", "don_details"];
+        $tables = [];
+        // si la requete a bien fonctionner le tableau ne devrait pas rendre false
+        // recuperation des nom des tables et des colonnes de la base de donnée
+        if($toutesTables = Bdd::getTablesNames('ocrochet')){
+            // pour chaque ligne renvoyée par la bdd on verifie que le nom de la table ne fais pas partie de ceux qui sont dans le tableau indésirable
+                foreach($toutesTables as $table){
+                    if (!in_array($table["TABLE_NAME"],$tablesIndesirables)){
+                        // création de ['table'] pour pouvoir afficher les noms des tables du côté js
+                                $tables[] = $table["TABLE_NAME"];
+                        }
+                }
+        }
+        echo json_encode($tables);
     }
+    public function dynaFormColonnes(){
+        header('Access-Control-Allow-Origin: *');
+
+        // recuperation, depuis la base de donnée, des nom des colonnes de la table choisie par l'utilisateur
+        $table = $_POST["table"];
+        $toutesTables = Bdd::getColumnsNames('ocrochet',$table);
+        // je choisi ici les colonnes que je ne veut pas afficher dans ma recherche
+        $champsIndesirables = ["roles",'lien','page','mdp',"telephone"];
+        $colonnes = [];
+        // si la requete a bien fonctionner le tableau ne devrait pas rendre false
+        if($toutesTables){
+            // pour chaque ligne renvoyée par la bdd on verifie que le nom de la colonne ne fais pas partie de ceux qui sont dans le tableau indésirable
+                foreach($toutesTables as $colonne){
+                    if (!in_array($colonne["COLUMN_NAME"],$champsIndesirables)){
+                        // création de ['colonne'] pour pouvoir afficher les noms des colonnes du côté js et de type pour les colonnes qui ne peuvent avoir que des valeurs prédéfinies
+                            $colonnes["colonnes"][] = $colonne["COLUMN_NAME"];
+                            if ($colonne["COLUMN_COMMENT"] !== ""){
+                                $colonnes["type"] = explode("/",$colonne["COLUMN_COMMENT"]);
+                            }
+                        }
+                }
+        }
+        echo json_encode($colonnes);
+    }
+        
 }

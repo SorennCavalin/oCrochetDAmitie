@@ -320,6 +320,7 @@ class Bdd {
             }
         }
         $textRequete .= "WHERE id = $id";
+        return $textRequete;
         if (self::connexion()->query($textRequete)){
             return true ;
         } else {
@@ -346,7 +347,22 @@ class Bdd {
         }
     }
 
-    static public function getTablesNames($table){
-        return self::connexion()->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$table'")->fetchAll(PDO::FETCH_ASSOC);
+    /**
+     * @param string table 
+     * le nom de la base de donnée dont on veut les informations
+     */
+    static public function getTablesNames(string $bdd){
+        return self::connexion()->query("SELECT DISTINCT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$bdd'")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param string bdd 
+     * le nom de la base de donnée dont on veut les informations
+     * 
+     * @param string table 
+     * Le nom de la table qui a été sélectionnée dans le formulaire
+     */
+    static public function getColumnsNames(string $bdd,string $table){
+        return self::connexion()->query("SELECT DISTINCT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '$bdd' AND TABLE_NAME = '$table'")->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -225,7 +225,6 @@ class UserController extends BaseController{
                         Session::messages("danger","L'inscription a échouer");
                     }
                 } else {
-                    var_dump($mdp);
                     return $this->affichageAdmin("user/form.html.php",[
                         "email" => $email ?? null, 
                         "nom" => $nom ?? null, 
@@ -417,7 +416,7 @@ class UserController extends BaseController{
                 }
             }
 
-            if(isset($telephone)&& $telephone !== $user->getTelephone()){
+            if(isset($telephone)&& $telephone !== $user->getTelephone() && $telephone !== ''){
                 // verification du string telephone si >= a 10 (numero classique) ou <= a 13 (avec +33 ou plus selon le pays)
                 if(preg_match("^[+]?[0-9]{9,12}^", $telephone)){
                     $tableau["telephone"] = $this->traitementString($telephone);
@@ -448,9 +447,9 @@ class UserController extends BaseController{
             if($toutBon){
                 if(Bdd::update("user",$tableau,$id)){
                     Session::messages("success", "La modifcation est un success");
-                    $this->redirection(lien("user"));
+                    // $this->redirection(lien("user"));
                 } else {
-                    Session::messages("danger","L'inscription a échouer");
+                    Session::messages("danger","La modification a échouer");
                     $this->redirection(lien("user"));
                 }
             } else {
