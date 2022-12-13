@@ -78,3 +78,8 @@
     position: absolute;
     z-index: 10;
 }
+
+#adresse_trouve{
+    width: 100%;
+    background-color: #fff;
+}

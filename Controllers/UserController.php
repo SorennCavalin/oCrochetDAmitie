@@ -6,6 +6,7 @@ use Controllers\BaseController;
 use Modeles\Bdd;
 use Modeles\Entities\User;
 use Modeles\Session;
+use Services\Verificateur;
 
 class UserController extends BaseController{
 
@@ -368,32 +369,25 @@ class UserController extends BaseController{
             $toutBon = true;
             $tableau = [];
 
-            if(isset($nom) && $nom !== $user->getNom()){
-                if (strlen($nom) >= 3 && strlen($nom) <= 20){
-                    if(!ctype_digit($nom)){
-                        $tableau["nom"] = ucfirst(strtolower($this->traitementString($nom)));
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger', "le nom ne peut contenir que des chiffres");
-                    }
-                } else {
-                    $toutBon = false;
-                    Session::messages('danger', "la taille du nom doit faire entre 3 et 20 lettres");
+            if (isset($email)){
+                $emailVerifie = Verificateur::verifyEmail($email,$user->getEmail());
+                if($emailVerifie && $emailVerifie !== 1){
+                    $tableau["email"] = $emailVerifie;
                 }
             }
 
-            if(isset($prenom) && $prenom !== $user->getPrenom()){
-                if (strlen($prenom) >= 3 && strlen($prenom) <= 20){
-                    if(!ctype_digit($prenom)){
-                        $tableau["prenom"] = ucfirst(strtolower($this->traitementString($prenom)));
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger', "le prenom ne peut contenir que des chiffres");
-                    }
-                } else {
-                    $toutBon = false;
-                    Session::messages('danger', "la taille du prenom doit faire entre 3 et 20 lettres");
+            if(isset($nom)){
+                $nomVerifie = Verificateur::verifyString($nom,$user->getNom());
+                if($nomVerifie && $nomVerifie !== 1){
+                    $tableau["nom"] = $nomVerifie;
                 }
+            }
+
+            if(isset($prenom)){
+               $prenomVerifier = Verificateur::verifyString($prenom,$user->getPrenom());
+               if($nomVerifie && $nomVerifie !== 1){
+                   $tableau["prenom"] = $prenomVerifier;
+               }
             }
             
 

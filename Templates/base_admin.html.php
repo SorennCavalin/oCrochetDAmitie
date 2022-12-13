@@ -24,7 +24,7 @@
         <script src="/oCrochetDAmitie/Assets/js/<?=$js?>.js"></script>
     <?php endif ?>
 
-    <script src="/oCrochetDAmitie/Assets/js/recherche.js"></script>
+    <script type='module' src="/oCrochetDAmitie/Assets/js/recherche.js"></script>
 
 
 </head>
@@ -55,6 +55,19 @@ if (isset($resultat)) {
 
 <?php endforeach; endforeach; endif; ?>
 
+
+<!-- <script>
+    $.ajax(
+        {
+            type : "GET",
+            url:"https://geo.api.gouv.fr/communes",
+            data : {"codePostal" : "44200","fields" : "nom", "format" : "json"},
+            success : (data) => {
+                console.log(data)
+            }
+        }
+    )
+</script> -->
 
 
 

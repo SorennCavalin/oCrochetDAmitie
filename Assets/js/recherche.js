@@ -1,5 +1,8 @@
+import { urls } from "./var.js";
+
 window.addEventListener("load", () => {
 
+    
 
     class Recherche{
 
@@ -21,7 +24,7 @@ window.addEventListener("load", () => {
                         </select>
                     </div>
         
-                    <div class='form-group' id='text_recherche'>
+                    <div class='form-group ' id='text_recherche'>
                         <label for="">Entrez votre recherche</label>
                         <input class='form-control' type="number" id='text_search' name='search'>
                     </div>
@@ -59,6 +62,7 @@ window.addEventListener("load", () => {
 
         recupTableUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormTables";
         recupColonnesUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormColonnes";
+
         
         getTable(val = null) {
             if (val) {
@@ -126,20 +130,25 @@ window.addEventListener("load", () => {
             return $('#recherche');
         }
 
-        setSelect(array = false) {
+        setSelect(array = false , api = false) {
             let cible = this.getDivSearch()
             if (!array) {
                 cible.children().remove()
                 cible.append(
                     `<label for="">Entrez votre recherche</label>
-                    <input class='form-control' type="number" id='text_search' name='search'>`
+                    <input class='form-control' type="number" id='text_search' name='search' autocomplete='off'>
+                    <div  class='position-relative' id='geolocal'>
+                        <ul class="list-group position-absolute" id='adresse_trouve'></ul>
+                    </div>
+                    `
                 )
                
             } else {
                 cible.children().remove();
                 cible.append(
                     `<label for="">Sélectionnez le type recherché</label>
-                        <select name='search' id='text_search' class='form-control'></select>`
+                    <select name='search' id='text_search' class='form-control'></select>
+                   `
                 )
                 array.forEach((val) => {
                     $('#text_search').append(
@@ -238,6 +247,121 @@ window.addEventListener("load", () => {
             })
         }
 
+        recupAdresseAPI (recherche) {
+            let reponse = "";
+            let docEvent = false;
+            let objet = this;
+            if (recherche.length > 3) {
+                $.ajax({
+                    type: "GET",
+                    url : urls.urlAPIAdresse,
+                    data: {
+                        q: recherche.toString(),
+                        limit: 3,
+                        autocomplete : 1
+                    },
+                    success: (data) => {
+                        $(data.features).each((i,obj) => {
+                            console.log(obj.properties);
+                            let prop = obj.properties
+                            reponse += `<li class="list-group-item reponse_adresse" val='${prop.name}'>${prop.label}</li>`
+                        })
+                        $('#adresse_trouve').html(reponse);
+                        $('.reponse_adresse').each((i, li) => {
+                            $(li).click(() => {
+                                objet.getSearch().val($(li).attr("val"));
+                                $('#adresse_trouve').empty();
+                            })
+                        })
+                    },
+                    dataType : "json"
+                }).done(() => {
+                    if (!docEvent) {
+                        docEvent = true;
+                        $(document).one("click",(e) => {
+                            if ($(e.target) !== objet.getSearch()) {
+                                $('#adresse_trouve').empty();
+                            }
+                            docEvent = false;
+                        })
+                    }
+                })
+            }
+            
+        }
+
+        recupRegionAPI (recherche) {
+            let reponse = "";
+            let docEvent = false;
+            let objet = this;
+            if (recherche.length > 3) {
+                $.ajax({
+                    type: "GET",
+                    url : urls.UrlAPIRegion(recherche),
+                    data: {
+                        fields : "nom",
+                    },
+                    success: (data) => {
+                        console.log(data)
+                    },
+                    dataType : "json"
+                }).done(() => {
+                    if (!docEvent) {
+                        docEvent = true;
+                        $(document).one("click",(e) => {
+                            if ($(e.target) !== objet.getSearch()) {
+                                $('#adresse_trouve').empty();
+                            }
+                            docEvent = false;
+                        })
+                    }
+                })
+            }
+            
+        }
+
+        recupDepartementAPI (recherche) {
+            let reponse = "";
+            let docEvent = false;
+            let objet = this;
+            if (recherche.length > 3) {
+                $.ajax({
+                    type: "GET",
+                    url : urls.UrlAPIDepartement,
+                    data: {
+                        q: recherche.toString(),
+                        limit: 3,
+                        autocomplete : 1
+                    },
+                    success: (data) => {
+                        $(data.features).each((i,obj) => {
+                            console.log(obj.properties);
+                            let prop = obj.properties
+                            reponse += `<li class="list-group-item reponse_adresse" val='${prop.name}'>${prop.label}</li>`
+                        })
+                        $('#adresse_trouve').html(reponse);
+                        $('.reponse_adresse').each((i, li) => {
+                            $(li).click(() => {
+                                objet.getSearch().val($(li).attr("val"));
+                                $('#adresse_trouve').empty();
+                            })
+                        })
+                    },
+                    dataType : "json"
+                }).done(() => {
+                    if (!docEvent) {
+                        docEvent = true;
+                        $(document).one("click",(e) => {
+                            if ($(e.target) !== objet.getSearch()) {
+                                $('#adresse_trouve').empty();
+                            }
+                            docEvent = false;
+                        })
+                    }
+                })
+            }
+            
+        }
 
         tableChange() {
             // ajout de l'evenement change a mon input table pour que tout les autres input contiennent les propriétés de la table selectionnée
@@ -262,11 +386,16 @@ window.addEventListener("load", () => {
 
         selecteurChange() {
             this.getSelecteur().change(() => {
+                let useAPI = ["adresse", "region", "departement"]
                 // change ou remet en premier l'input/select search pour que les changement du type de input se fasse bien par la suite
                 if (this.getSelecteur(true) === "type") {
                     this.setSelect(this.type);
+                } else if (useAPI.includes(this.getSelecteur(true))) {
+                    this.setSelect(false, true);
+                    this.searchChange(this.getSelecteur(true));
                 } else {
                     this.setSelect();
+                    this.searchChange("",false);
                 }
 
                 // vérifie que le search soit bien un input et pas un select
@@ -309,6 +438,31 @@ window.addEventListener("load", () => {
                 }
 
             })
+        }
+
+        searchChange(recup,actif = true) {
+            let obj = this;
+            if (actif) {
+                if (recup = "adresse") {
+                    this.getSearch().on("keyup", () => {
+                        obj.recupAdresseAPI(obj.getSearch(true))
+                    });
+                }
+                if (recup = "region") {
+                    this.getSearch().on("keyup", () => {
+                        obj.recupRegionAPI(obj.getSearch(true))
+                    });
+                }
+                if (recup = "departerment") {
+                    this.getSearch().on("keyup", () => {
+                        obj.recupDepartementAPI(obj.getSearch(true))
+                    });
+                }
+                    
+            } else {
+                this.getSearch().off("keyup");
+                $(document).off("keyup");
+            }
         }
 
         afficherLimitVal() {

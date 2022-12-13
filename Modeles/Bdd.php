@@ -320,7 +320,6 @@ class Bdd {
             }
         }
         $textRequete .= "WHERE id = $id";
-        return $textRequete;
         if (self::connexion()->query($textRequete)){
             return true ;
         } else {
