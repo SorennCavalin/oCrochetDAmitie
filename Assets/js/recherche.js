@@ -1,4 +1,4 @@
-import { urls } from "./var.js";
+import { urls } from "./urls.js";
 
 window.addEventListener("load", () => {
 
@@ -185,7 +185,7 @@ window.addEventListener("load", () => {
             let obj = this;
             $.ajax({
                 type: "POST",
-                url: obj.recupTableUrl,
+                url: urls.recupTableUrl,
                 success: (data) => {
                     // rajoute une propriété a mon objet pour la validation des données au submit
                     obj.tables = data
@@ -207,7 +207,7 @@ window.addEventListener("load", () => {
             $.ajax({
                 type: "POST",
                 data: {"table" : table},
-                url: obj.recupColonnesUrl,
+                url: urls.recupColonnesUrl,
                 success: (data) => {
                    
                     // Place tout les noms de colonnes dans selecteur et classement
@@ -294,72 +294,73 @@ window.addEventListener("load", () => {
             let reponse = "";
             let docEvent = false;
             let objet = this;
-            if (recherche.length > 3) {
-                $.ajax({
-                    type: "GET",
-                    url : urls.UrlAPIRegion(recherche),
-                    data: {
-                        fields : "nom",
-                    },
-                    success: (data) => {
-                        console.log(data)
-                    },
-                    dataType : "json"
-                }).done(() => {
-                    if (!docEvent) {
-                        docEvent = true;
-                        $(document).one("click",(e) => {
-                            if ($(e.target) !== objet.getSearch()) {
-                                $('#adresse_trouve').empty();
-                            }
-                            docEvent = false;
+            console.log(urls.UrlAPIRegion(recherche));
+            $.ajax({
+                type: "GET",
+                url : urls.UrlAPIRegion(recherche),
+                data: {
+                    fields : "nom",
+                },
+                success: (data) => {
+                    $(data).each((i, region) => {
+                        reponse += `<li class="list-group-item reponse_adresse" val='${region.nom}'>${region.nom}</li>`
+                    })
+                    $('#adresse_trouve').html(reponse);
+                    $('.reponse_adresse').each((i, li) => {
+                        $(li).click(() => {
+                            objet.getSearch().val($(li).attr("val"));
+                            $('#adresse_trouve').empty();
                         })
-                    }
-                })
-            }
-            
+                    })
+                },
+                dataType : "json"
+            }).done(() => {
+                if (!docEvent) {
+                    docEvent = true;
+                    $(document).one("click",(e) => {
+                        if ($(e.target) !== objet.getSearch()) {
+                            $('#adresse_trouve').empty();
+                        }
+                        docEvent = false;
+                    })
+                }
+            })
         }
 
         recupDepartementAPI (recherche) {
             let reponse = "";
             let docEvent = false;
             let objet = this;
-            if (recherche.length > 3) {
-                $.ajax({
-                    type: "GET",
-                    url : urls.UrlAPIDepartement,
-                    data: {
-                        q: recherche.toString(),
-                        limit: 3,
-                        autocomplete : 1
-                    },
-                    success: (data) => {
-                        $(data.features).each((i,obj) => {
-                            console.log(obj.properties);
-                            let prop = obj.properties
-                            reponse += `<li class="list-group-item reponse_adresse" val='${prop.name}'>${prop.label}</li>`
+            $.ajax({
+                type: "GET",
+                url : urls.UrlAPIDepartement(recherche),
+                data: {
+                    fields : "nom",
+                },
+                success: (data) => {
+                    $(data).each((i, departement) => {
+                        reponse += `<li class="list-group-item reponse_adresse" val='${departement.nom}'>${departement.nom}</li>`
+                    })
+                    $('#adresse_trouve').html(reponse);
+                    $('.reponse_adresse').each((i, li) => {
+                        $(li).click(() => {
+                            objet.getSearch().val($(li).attr("val"));
+                            $('#adresse_trouve').empty();
                         })
-                        $('#adresse_trouve').html(reponse);
-                        $('.reponse_adresse').each((i, li) => {
-                            $(li).click(() => {
-                                objet.getSearch().val($(li).attr("val"));
-                                $('#adresse_trouve').empty();
-                            })
-                        })
-                    },
-                    dataType : "json"
-                }).done(() => {
-                    if (!docEvent) {
-                        docEvent = true;
-                        $(document).one("click",(e) => {
-                            if ($(e.target) !== objet.getSearch()) {
-                                $('#adresse_trouve').empty();
-                            }
-                            docEvent = false;
-                        })
-                    }
-                })
-            }
+                    })
+                },
+                dataType : "json"
+            }).done(() => {
+                if (!docEvent) {
+                    docEvent = true;
+                    $(document).one("click",(e) => {
+                        if ($(e.target) !== objet.getSearch()) {
+                            $('#adresse_trouve').empty();
+                        }
+                        docEvent = false;
+                    })
+                }
+            })
             
         }
 
@@ -377,16 +378,15 @@ window.addEventListener("load", () => {
                 if ($('.precision')[0]) {
                     $('.precision').remove()
                 }
-
                 // reset/remet l'input au changement de table 
                 this.setSelect()
             })
-                
         }
 
         selecteurChange() {
             this.getSelecteur().change(() => {
-                let useAPI = ["adresse", "region", "departement"]
+                let useAPI = ["adresse", "region", "departement"];
+                console.log(this.selecteurChange(true));
                 // change ou remet en premier l'input/select search pour que les changement du type de input se fasse bien par la suite
                 if (this.getSelecteur(true) === "type") {
                     this.setSelect(this.type);
@@ -443,25 +443,31 @@ window.addEventListener("load", () => {
         searchChange(recup,actif = true) {
             let obj = this;
             if (actif) {
-                if (recup = "adresse") {
-                    this.getSearch().on("keyup", () => {
-                        obj.recupAdresseAPI(obj.getSearch(true))
-                    });
+                switch (recup) {
+                    case "adresse":
+                        this.getSearch().off("keyup");
+                        console.log("adresse activer")
+                        this.getSearch().on("keyup", () => {
+                            obj.recupAdresseAPI(obj.getSearch(true))
+                        });
+                        break;
+                    case "region":
+                        this.getSearch().off("keyup");
+                        console.log("region activer")
+                        this.getSearch().on("keyup", () => {
+                            obj.recupRegionAPI(obj.getSearch(true))
+                        });
+                        break;
+                    case "departement":
+                        this.getSearch().off("keyup");
+                        console.log("departement activer")
+                        this.getSearch().on("keyup", () => {
+                            obj.recupDepartementAPI(obj.getSearch(true))
+                        });
+                        break;
                 }
-                if (recup = "region") {
-                    this.getSearch().on("keyup", () => {
-                        obj.recupRegionAPI(obj.getSearch(true))
-                    });
-                }
-                if (recup = "departerment") {
-                    this.getSearch().on("keyup", () => {
-                        obj.recupDepartementAPI(obj.getSearch(true))
-                    });
-                }
-                    
             } else {
                 this.getSearch().off("keyup");
-                $(document).off("keyup");
             }
         }
 
@@ -646,6 +652,8 @@ window.addEventListener("load", () => {
 
             // modifications de search pour s'accorder avec le type de données selectionnées
             this.selecteurChange()
+
+            this.recupRegionAPI("94")
 
             // fermeture de la div si clique sur la croix
             this.fermetureRecherche()

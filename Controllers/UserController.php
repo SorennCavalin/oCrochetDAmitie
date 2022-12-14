@@ -50,60 +50,26 @@ class UserController extends BaseController{
                 $user = [];
 
                 // verification des variable nom et prenom
-                
+                // pour les détails des verifs veuillez vous référer a Services/Verificateur
+                if (isset($email)){
+                    $emailVerifie = Verificateur::verifyEmail($email);
+                    if($emailVerifie){
+                        $tableau["email"] = $emailVerifie;
+                    }
+                }
+    
                 if(isset($nom)){
-                    if (strlen($nom) >= 3 && strlen($nom) <= 20){
-                        if(!ctype_digit($nom)){
-                            $user["nom"] = ucfirst(strtolower($this->traitementString($nom)));
-                        } else {
-                            $toutBon = false;
-                            Session::messages('danger', "le nom ne peut contenir que des chiffres");
-                        }
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger', "la taille du nom doit faire entre 3 et 20 lettres");
+                    $nomVerifie = Verificateur::verifyString($nom);
+                    if($nomVerifie){
+                        $tableau["nom"] = $nomVerifie;
                     }
-                } else {
-                    $toutBon = false;
-                    Session::messages('danger', "Veuillez rentrer un nom");
                 }
-                
-
+    
                 if(isset($prenom)){
-                    if (strlen($prenom) >= 3 && strlen($prenom) <= 20){
-                        if(!ctype_digit($prenom)){
-                            $user["prenom"] = ucfirst(strtolower($this->traitementString($prenom)));
-                        } else {
-                            $toutBon = false;
-                            Session::messages('danger', "le prenom ne peut contenir que des chiffres");
-                        }
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger', "la taille du prenom doit faire entre 3 et 20 lettres");
-                    }
-                } else {
-                    $toutBon = false;
-                    Session::messages('danger', "Veuillez rentrer un prenom");
-                }
-                
-
-
-                // verification de l'email
-                if(isset($email)){
-                    $email = $this->traitementString($email);
-                    if(preg_match("^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}^",$email)){
-                        if(filter_var($email,FILTER_VALIDATE_EMAIL)){
-                            $user["email"] = $email;
-                        } else{
-                            $toutBon = false;
-                            Session::messages("danger","l'adresse email n'est pas valide");
-                        }
-                    } else{
-                        
-                    }
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger","Veuillez rentrer une adresse email");
+                   $prenomVerifier = Verificateur::verifyString($prenom);
+                   if($prenomVerifier){
+                       $tableau["prenom"] = $prenomVerifier;
+                   }
                 }
 
                 if(isset($mdp)){
@@ -385,7 +351,7 @@ class UserController extends BaseController{
 
             if(isset($prenom)){
                $prenomVerifier = Verificateur::verifyString($prenom,$user->getPrenom());
-               if($nomVerifie && $nomVerifie !== 1){
+               if($prenomVerifier && $prenomVerifier !== 1){
                    $tableau["prenom"] = $prenomVerifier;
                }
             }
@@ -440,8 +406,8 @@ class UserController extends BaseController{
 
             if($toutBon){
                 if(Bdd::update("user",$tableau,$id)){
-                    Session::messages("success", "La modifcation est un success");
-                    // $this->redirection(lien("user"));
+                    Session::messages("success", "La modifcation est un succes");
+                    $this->redirection(lien("user"));
                 } else {
                     Session::messages("danger","La modification a échouer");
                     $this->redirection(lien("user"));

@@ -46,6 +46,7 @@
     width: 22px;
     height: 22px
 }
+
 .span-bouton-1::after,
 .span-bouton-1::before {
     content: "";
@@ -77,9 +78,14 @@
     left: 0;
     position: absolute;
     z-index: 10;
-}
+};
 
 #adresse_trouve{
     width: 100%;
     background-color: #fff;
+};
+
+.form-control:focus {
+    border-color: #6265e4 !important;
+    box-shadow: 0 0 5px rgba(98, 101, 228, 1) !important;
 }

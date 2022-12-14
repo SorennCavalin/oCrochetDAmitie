@@ -30,8 +30,8 @@
     </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="region">Région</label>
-      <input type="text" class="form-control" name="region" id="region" required value='<?= $region ?? ''?>'>
+      <label for="adresse">Adresse</label>
+      <input type="text" class="form-control" name="adresse" id="adresse" value='<?= $adresse ?? ''?>'>
     </div>
     <div class="form-group col-md-2">
       <label for="departement">code_postal</label>
@@ -39,8 +39,8 @@
       </select>
     </div>
     <div class="form-group col-md-4">
-      <label for="adresse">Adresse</label>
-      <input type="text" class="form-control" name="adresse" id="adresse" value='<?= $adresse ?? ''?>'>
+      <label for="region">Région</label>
+      <input type="text" class="form-control" name="region" id="region" required value='<?= $region ?? ''?>'>
     </div>
   </div>
   <div class="form-row">

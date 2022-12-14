@@ -3,8 +3,6 @@
 
 namespace Controllers;
 
-use Modeles\Bdd;
-
 class BaseController {
 
     public function affichage($fichier, array $parametres = [])
@@ -84,13 +82,10 @@ class BaseController {
 
         echo $aucuneReponse;
     }
-    
-    
 
     public function traitementString($string){
         return addslashes(trim($string));
     }
-
 
     public function redirection($url){
         header("Location: $url");

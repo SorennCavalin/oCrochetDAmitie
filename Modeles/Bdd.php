@@ -319,7 +319,7 @@ class Bdd {
                 $compte = 0;
             }
         }
-        $textRequete .= "WHERE id = $id";
+        $textRequete .= " WHERE id = $id";
         if (self::connexion()->query($textRequete)){
             return true ;
         } else {
