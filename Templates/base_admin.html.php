@@ -33,7 +33,6 @@
 
 <?php 
     include "navbar_admin.html.php";
-    // include "recherche.html.php";
 
 if (isset($resultat)) {
     echo '<div class="alert alert-primary"> <?= $resultat ?> </div>';

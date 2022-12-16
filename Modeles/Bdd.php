@@ -101,7 +101,7 @@ class Bdd {
      * "limit" => nombre de resultat max voulu
      */
 
-    static function selectionId(array $para, int $id){
+    static function selectionId(array $para, int $id): object|bool{
 
         extract($para);
         

@@ -47,82 +47,30 @@ class UserController extends BaseController{
                 // toutBon servira a la fin de toute les verifications
                 $toutBon = true;
 
-                $user = [];
+                $tableau = [];
 
                 // verification des variable nom et prenom
                 // pour les détails des verifs veuillez vous référer a Services/Verificateur
                 if (isset($email)){
-                    $emailVerifie = Verificateur::verifyEmail($email);
-                    if($emailVerifie){
+                    if($emailVerifie = Verificateur::verifyEmail($email)){
                         $tableau["email"] = $emailVerifie;
                     }
                 }
     
                 if(isset($nom)){
-                    $nomVerifie = Verificateur::verifyString($nom);
-                    if($nomVerifie){
+                    if($nomVerifie = Verificateur::verifyString($nom)){
                         $tableau["nom"] = $nomVerifie;
-                    }
+                    };
                 }
     
                 if(isset($prenom)){
-                   $prenomVerifier = Verificateur::verifyString($prenom);
-                   if($prenomVerifier){
+                   if($prenomVerifier = Verificateur::verifyString($prenom)){
                        $tableau["prenom"] = $prenomVerifier;
                    }
                 }
 
                 if(isset($mdp)){
-                    if (!strpos(" " , $mdp)){
-                        if( strlen($mdp) >= 5 || strlen($mdp) <= 16 ){
-                            $caracteres = str_split($mdp, 1);
-                            $minusucle = false;
-                            $majuscule = false;
-                            $chiffre = false;
-                            $special = false;
-                            foreach($caracteres as $car){
-                                if( $car >= 'a' && $car <= 'z' ){
-                                    $minusucle = true;
-                                }
-                    
-                                if( $car >= 'A' && $car <= 'Z' ){
-                                    $majuscule = true;
-                                }
-                    
-                                if( $car >= '0' && $car <= '9' ){
-                                    $chiffre = true;
-                                }
-                                if( in_array($car, ['$', '*', '_', '-','!','?','.',',' ]) ){
-                                    $special = true;
-                                }
-                            }
-                            if( $minusucle && $majuscule && $chiffre && $special ){
-                                 // optimisation du parametre cost de password hasher
-                                $timeTarget = 0.05; // 50 millisecondes
-    
-                                $cost = 8;
-                                 do {
-                                    $cost++;
-                                    $start = microtime(true);
-                                    password_hash("test", PASSWORD_BCRYPT, ["cost" => $cost]);
-                                    $end = microtime(true);
-                                } while (($end - $start) < $timeTarget);
-    
-                                // traitement et mise en varaible de mdp avant de le hasher pour pouvoir connecter l'utilisateur a la reussite de l'inscription 
-                                $mdp = $this->traitementString($mdp);
-                                $user["mdp"] = password_hash($mdp, PASSWORD_BCRYPT, ["cost" => $cost]);
-                            } else {
-                                $toutBon = false;
-                                Session::messages('danger',"Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre, 1 caractère spécial parmi ($ * ? , . ! - _ )") ;
-                            }
-                        } else {
-                            $toutBon = false;
-                            Session::messages('danger',"Le mot de passe doit faire au minimum 5 caractères et au maximum 16.") ;
-                        }
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger',"Le mot de passe ne doit pas comporter d'espace") ;
-                    }
+                    $tableau["mdp"] = Verificateur::verifyPassword($mdp);
                     
                 } else {
                         

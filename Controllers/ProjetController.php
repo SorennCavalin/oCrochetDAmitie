@@ -72,7 +72,7 @@ class ProjetController extends BaseController{
                     Session::messages("danger","Un affichage pour le projet est nécéssaire");
                }
 
-               if(Bdd::selection([ "table" => "projet" , "where" => "WHERE nom = '$nom'"])){
+               if(Bdd::selection([ "table" => "projet" , "compare" => "nom" , "where" => "= '$nom'"])){
                     Session::messages("danger", "Un projet avec le nom '$nom' existe déjà.");
                }
                if(!Session::getItemSession("messages")) //S'il n'y a pas d'erreur, on upload
