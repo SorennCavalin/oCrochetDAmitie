@@ -176,12 +176,11 @@ class Verificateur {
      * @param string mauvaiseTaille 
      * message d'erreur si le string ne fait pas entre tailleMini et tailleMax
      */
-    static function verifyPassword(string $mdp, int $userId = 0, array $paraSupp = []): bool|int|string {
+    static function verifyPassword(string $mdp, string $modifier = "", array $paraSupp = []): bool|int|string {
 
         // recupère l'utilisateur avec l'id et compare les 2 mots de passe en premier pour ne pas avoir a faire des opérations inutiles en cas d'egalité
-        if($userId){
-            $user = Bdd::selectionId(["table" => "user"], $userId);
-            if (password_verify($mdp,$user->getId())){
+        if($modifier){
+            if (password_verify($mdp,$modifier)){
                 return 1;
             }
         }
@@ -221,6 +220,135 @@ class Verificateur {
             return false;
         }
         
+    }
+
+    static function verifyNumber(int $number, int $modifier = 0, array $paraSupp = []){
+
+        if ($modifier){
+            if ($number === $modifier){
+                return 1;
+            }
+        }
+
+        if ($paraSupp){
+            extract($paraSupp);
+        }
+
+        $tailleMax = $tailleMax ?? 10 ; 
+        $tailleMini = $tailleMini ?? 1 ; 
+        $tailleErrone = $tailleErrone ?? "La taille du nombre n'est pas conforme et doit être entre $tailleMini et $tailleMax";
+        $isString = $isString ?? "Le nombre entré n'est pas un vrai nombre";
+
+
+        if (ctype_digit($number)){
+            if ($number >= $tailleMini && $number <= $tailleMax){
+                return $number;
+            } else {
+                Session::messages("danger", $tailleErrone);
+            }
+        } else {
+            Session::messages("danger", $isString);
+        }
+            
+    }
+
+    /**
+     * function verifyPhone sert à verifier que les numéros de téléphones soient bien conformes
+     * 
+     * @param string $string
+     * Le numéro de téléphone que vous souhaitez verifier et traiter
+     * 
+     * @param string $modifier
+     * [optionnel]
+     * Le numéro de téléphone dont vous souhaitez verifier l'égalité avec $telephone
+     */
+    static function verifyPhone(string $telephone,string $modifier = "", string $telephoneInvalide = ""): bool|int|string {
+        
+        // verification de modifier en premier pour ne pas avoir a faire des opérations inutiles en cas d'egalité
+        if ($modifier && $modifier === $telephone){
+            return 1;
+        }
+
+        $telephoneInvalide = $telephoneInvalide ?? "Le numéro de téléphone entré ,'est pas conforme";
+
+        if(isset($telephone)){
+            // verification du string telephone si >= a 10 (numero classique) ou <= a 13 (avec +33 en france)
+            if(preg_match("^[+]?[0-9]{9,12}^", $telephone)){
+                return $telephone;
+            } else {
+                Session::messages("danger", $telephoneInvalide);
+            }
+        }
+
+    }
+
+
+    static function verifyUser($form,$modif = false,$userExistant = 0){
+        extract($form);
+
+        // toutBon servira a la fin de toute les verifications
+        $toutBon = true;
+
+        $tableau = [];
+
+        // verification des variable nom et prenom
+        
+        if(isset($email) && !empty($email)){
+            if ($modif){
+                $user = Bdd::selectionId(["table" => "user"],$userExistant);
+            }
+            if($emailVerifie = Verificateur::verifyEmail($email, ($user ? $user->getEmail() : ""))){
+                $tableau["email"] = $emailVerifie;
+            }
+        } else {
+            Session::messages("danger", "Veuillez rentrer un email");
+        }
+        if(isset($nom) && !empty($nom)){
+
+            if($nomVerifie = Verificateur::verifyString($nom, ($user ? $user->getNom() : ""))){
+                $tableau["nom"] = $nomVerifie;
+            };
+        } else {
+            Session::messages("danger", "Veuillez rentrer votre nom");
+        }
+
+        if(isset($prenom) && !empty($prenom)){
+
+           if($prenomVerifie = Verificateur::verifyString($prenom, ($user ? $user->getPrenom() : ""),["stringVerifier" => "prenom"])){
+               $tableau["prenom"] = $prenomVerifie;
+           }
+        } else {
+            Session::messages("danger", "Veuillez rentrer votre prenom");
+        }
+
+        if (isset($mdp) && !empty($mdp)){
+            if ($mdpVerifie = self::verifyPassword($mdp, ($user ? $user->getMdp() : ""))){
+                $tableau["mdp"] = $mdpVerifie;
+            }
+        } else {
+            Session::messages("danger", "Veuillez rentrer un mot de passe");
+        }
+
+        if (isset($region) && !empty($region)){
+            if ($regionVerifie = self::verifyString($prenom, ($user ? $user->getRegion() : ""),["stringVerifier" => "région"])){
+                $tableau["region"] = $regionVerifie;
+            }
+        } else {
+            Session::messages("danger","Veuillez choisir votre région");
+        }
+
+        if (isset($departement) && !empty($departement)){
+            if ($departementVerifie = self::verifyString($prenom, ($user ? $user->getDepartement() : ""),["stringVerifier" => "département"])){
+                $tableau["departement"] = $departementVerifie;
+            }
+        } else {
+            Session::messages("danger","Veuillez rentrer le code postal de votre département");
+        }
+
+        
+
+
+
     }
 
 }

@@ -43,77 +43,9 @@ class UserController extends BaseController{
         }
 
             if (!empty($_POST)){
-                extract($_POST);
-                // toutBon servira a la fin de toute les verifications
-                $toutBon = true;
-
-                $tableau = [];
-
-                // verification des variable nom et prenom
                 // pour les détails des verifs veuillez vous référer a Services/Verificateur
-                if (isset($email)){
-                    if($emailVerifie = Verificateur::verifyEmail($email)){
-                        $tableau["email"] = $emailVerifie;
-                    }
-                }
-    
-                if(isset($nom)){
-                    if($nomVerifie = Verificateur::verifyString($nom)){
-                        $tableau["nom"] = $nomVerifie;
-                    };
-                }
-    
-                if(isset($prenom)){
-                   if($prenomVerifier = Verificateur::verifyString($prenom)){
-                       $tableau["prenom"] = $prenomVerifier;
-                   }
-                }
-
-                if(isset($mdp)){
-                    $tableau["mdp"] = Verificateur::verifyPassword($mdp);
-                    
-                } else {
-                        
-                    $toutBon = false;
-                    Session::messages("danger","Veuillez rentrer un mot de passe");
-                }
-
                 
-                if (isset($region)){
-                    if (!ctype_digit($region)){
-                        $user["region"] = $this->traitementString($region);
-                    } else {
-                        $toutBon = false;
-                        Session::messages("danger","Une région ne peut pas comporter de chiffres");
-                    }
-                    
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger","Veuillez rentrer un région");
-                }
-
-                if (isset($departement)){
-                    if(strlen($departement) < 8){
-                        $user["departement"] = $departement;
-                    } else {
-                        $toutBon = false;
-                        Session::messages("danger", "Le departement n'est pas valable");
-                    }
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger","Veuillez rentrer un département");
-                }
                 
-                if(isset($telephone)){
-                    // verification du string telephone si >= a 10 (numero classique) ou <= a 13 (avec +33 ou plus selon le pays)
-                    if(preg_match("^[+]?[0-9]{9,12}^", $telephone)){
-                        $user["telephone"] = $this->traitementString($telephone);
-                    } else {
-                        $toutBon = false;
-                        Session::messages("danger", "Le numéro de téléphone n'est pas valide");
-                    }
-                }
-
                 if (isset($adresse)){
                     $user["adresse"] = $this->traitementString($adresse);
                 }
