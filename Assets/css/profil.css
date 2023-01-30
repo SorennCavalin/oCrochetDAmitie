@@ -11,28 +11,35 @@
 .profil h2 {
     text-align: center;
     margin-bottom: 10px;
-    border-bottom: 1px solid #000;
 }
-.ligne {
+.infos {
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
+    justify-content:left;
+    flex-direction: row;
+    /* text-align: center; */
+
 }
+
+.demi {
+    width: 50%;
+}
+.droite {
+    text-align: right;
+}
+
 .li_label {
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 5px;
 }
-.adresse_label{
+/* .adresse_label{
     margin-top: 10px;
-}
+} */
 .adresse{
-    text-align: center;
+    text-align: right;
     padding-bottom: 10px;
-    border-bottom: 1px solid #000;
+    margin: 10px 0 0 0;
 }
-ul{
-    border-bottom: 1px solid #000;
+.profil ul{
     padding-bottom: 10px;
 }
 .modif {
@@ -41,13 +48,17 @@ ul{
     right: 0;
     padding: 5px;
 }
-svg {
+.profil svg {
     width: 20px;
-    aspect-ratio: 1/1;
 }
 .liens{
     display: flex;
     justify-content: center;
+    margin-top: auto;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .button{
     margin-top: 10px;
@@ -56,6 +67,12 @@ svg {
     padding: 5px 10px;
     border: .5px solid white;
     border-radius: 15px;
+}
+.projets, .projets p {
+    text-align: center;
+}
+.projets a {
+    padding-left: 10px;
 }
 
 

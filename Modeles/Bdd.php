@@ -129,87 +129,115 @@ class Bdd {
 
      /**
      * Evoyer un array avec les cléfs suivantes :
-     * @param(optionnel)"select" => choisi tout par default mais l'utilisateur peut choisir 
-     * @param"table" => les 2 tables necessaires a la recherche. Les tables doivent être misent dans cet ordre : "(entité actuelle) (entité reliée)"
-     * @param"id" => l'id de l'entité actuelle qui possede une colonne dans l'entité reliée (participant a une colonne user_id donc id de user sera rentré)
+     * @param string $table
+     * L'entitée qui appelle la base de donnée
+     * @param string $tableRelie
+     * La table ou l'on recherche les liens avec l'entitée
+     * @param int $id 
+     * L'id de l'entité actuelle qui possede une colonne dans l'entité reliée (participant a une colonne user_id donc id de user sera rentré)
+     * 
+     * @return array
      */
-    static function getEntitesRelies(array $para){
-        extract($para);
-        
-        
-          // pose les valeurs de toutes les variables rentrées et en met par default pour les autres
-        if(!isset($id) || !isset($table)){
-            return false;
-        }
+    static function getEntitesRelies( string $table, string $tableRelie, int $id){
+
+        $table = addslashes(trim($table));
+        $tableRelie = addslashes(trim($tableRelie));
 
         // recupère les premières lettres des tables pour en faire des alias
 
-        $tables = explode(" ",$table);
-        if ( strpos($tables[0],"_")){
-            $aliasEntiteRelie = substr($tables[0],0,1) . substr($tables[0],strpos($tables[0],"_") + 1,1);
+        if (strpos($table,"_")){
+            $aliasEntiteActuelle = substr($table,0,1) . substr($table,strpos($table,"_") + 1,1);
         } else {
-            $aliasEntiteActuelle = substr($tables[0],0,1);
+            $aliasEntiteActuelle = substr($table,0,1);
+
         }
-        if( strpos($tables[1],"_") || substr($tables[1],0,1) === $aliasEntiteActuelle){
-            $aliasEntiteRelie = substr($tables[1],0,1) . substr($tables[1],strpos($tables[1],"_") + 1,1);
+        if (strpos($tableRelie,"_")){
+            $aliasEntiteRelie = substr($tableRelie,0,1) . substr($tableRelie,strpos($tableRelie,"_") + 1,1);
         } else {
-            $aliasEntiteRelie = substr($tables[1],0,1);
+            $aliasEntiteRelie = substr($tableRelie,0,1);
         }
 
+        $select = "$aliasEntiteRelie.*";
 
-        // met par default la valeur (alias).* a select
-        if(!isset($select)){
-            $select = "$aliasEntiteRelie.*";
-        }
-        // prépare le morceau de la requete avec where 
-        $where = "WHERE $aliasEntiteRelie.".$tables[0]."_id = $id";
+        // prépare le morceau de la requete avec where
+        $where = "WHERE $aliasEntiteRelie.".$table."_id = $id";
 
         // prépare la variable $table avec 
-        $table = $tables[0] . " $aliasEntiteActuelle, ". $tables[1] . " $aliasEntiteRelie" ;
+        $table = $table . " $aliasEntiteActuelle, ". $tableRelie . " $aliasEntiteRelie" ;
 
 
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
         $textRequete = "SELECT $select FROM $table $where";
-        return $textRequete;
+        // return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
         if($requete){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
-            $classFetch = "Modeles\Entities\\" . ucFirst(explode(" ",$table)[0]);
+            $classFetch = "Modeles\Entities\\" . ucFirst($tableRelie);
             return $requete->fetchAll(PDO::FETCH_CLASS, $classFetch);
         }
 
-        return null;
+        return [];
         
     }
 
-    /**
-     * Evoyer un array avec les cléfs suivantes :
-     * "select" => colonne de la bdd avec alias ex: c.id,
-     * "table" => au moins 2 tables de la bdd avec alias,
-     * "where" => alias de select.id = $this->table_id
+     /**
+     * Récupère l'entitée qui possède l'entitée qui appelle
+     * 
+     * @param string $table
+     * L'entitée qui appelle la base de donnée
+     * @param string $tableRelie
+     * La table ou l'on recherche les liens avec l'entitée
+     * @param int $id 
+     * La valeur de la colonne tableRelie_id de la table qui appelle (don_details a une colonne don_id donc don_id de don_details sera rentré pour appeler don)
+     * 
+     * @return array
      */
-    static function getEntiteRelie(array $para){
-        extract($para);
-        
-        $textRequete = "SELECT $select FROM $table WHERE $where";
+    static function getEntiteRelie($table, $tableRelie, $id){
+        $table = addslashes(trim($table));
+        $tableRelie = addslashes(trim($tableRelie));
 
+        // recupère les premières lettres des tables pour en faire des alias
+
+        if (strpos($table,"_")){
+            $aliasEntiteActuelle = substr($table,0,1) . substr($table,strpos($table,"_") + 1,1);
+        } else {
+            $aliasEntiteActuelle = substr($table,0,1);
+
+        }
+        if (strpos($tableRelie,"_")){
+            $aliasEntiteRelie = substr($tableRelie,0,1) . substr($tableRelie,strpos($tableRelie,"_") + 1,1);
+        } else {
+            $aliasEntiteRelie = substr($tableRelie,0,1);
+        }
+
+        $select = "$aliasEntiteRelie.*";
+
+        // prépare le morceau de la requete avec where
+        $where = "WHERE $aliasEntiteRelie.id = $id";
+
+        // prépare la variable $table avec 
+        $table = $table . " $aliasEntiteActuelle, ". $tableRelie . " $aliasEntiteRelie" ;
+
+
+        // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
+
+        $textRequete = "SELECT $select FROM $table $where";
+        // return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
         if($requete){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
-            $classFetch = "Modeles\Entities\\" . ucFirst(explode(" ",$table)[0]);
-
+            $classFetch = "Modeles\Entities\\" . ucFirst($tableRelie);
             $requete->setFetchMode(PDO::FETCH_CLASS, $classFetch);
-
             return $requete->fetch();
         }
 
-        return null;
-        
+        return [];
+
     }
     /**
      * dans le tableau des valeurs doit ressembler a ça :

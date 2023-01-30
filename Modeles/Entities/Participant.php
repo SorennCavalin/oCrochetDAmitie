@@ -6,15 +6,16 @@ namespace Modeles\Entities;
 use Modeles\Bdd;
 
 class Participant{
+    
     private int $id;
-    private $user_id;
-    private $concours_id;
-
+    private int $user_id;
+    private int $concours_id;
+    
     public function getConcours(){
-        return Bdd::getEntiteRelie(["select" => "c.*","table" => "concours c , participant p", "where" => "c.id = ". $this->concours_id]);
+        return Bdd::getEntiteRelie("participant","concours",$this->concours_id);
     }
     public function getUser() {
-        return Bdd::getEntiteRelie(["select" => "u.*","table" => "user u , participant p", "where" => "u.id = " . $this->user_id]);
+        return Bdd::getEntiteRelie("participant","user",$this->user_id);
     }
 
 

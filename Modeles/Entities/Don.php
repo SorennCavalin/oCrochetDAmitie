@@ -123,7 +123,7 @@ class Don  {
     }
 
     public function getDetails(){
-        if($dons = Bdd::getEntitesRelies(["select" => "dd.*", "table" => "don_details dd , don d", "where" => "dd.don_id = " . $this->id . " GROUP BY id ORDER BY qte "])){
+        if($dons = Bdd::getEntitesRelies("don","don_details",$this->id)){
             return $dons;
         }
         return false;

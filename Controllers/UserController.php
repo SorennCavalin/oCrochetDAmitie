@@ -347,5 +347,16 @@ class UserController extends BaseController{
             "css" => "profil"
         ]);
     }
+
+    public function edit(){
+        if(!Session::isConnected()){
+            $this->redirection(lien("user","connexion"));
+        }
+
+        $user = Session::getUser();
+        $this->affichage("user/nouvel_utilisateur.html.php", [
+            "user" => $user,
+        ]);
+    }
 }
 

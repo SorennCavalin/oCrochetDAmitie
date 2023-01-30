@@ -39,7 +39,14 @@ window.addEventListener("load",() => {
     $plus.click((e) => {
         donNb++;
         e.preventDefault();
-        $('.form-group').last().before(`<label for="nom" id="label_detail${donNb}">don n°${donNb}</label><div class='form-row mb-2' id="detail${donNb}"><div class="col">  <input name="don_nom" class="form-control noms" type="text" id='nom_don${donNb}' placeholder="nom de l'objet"> </div> <div class="col" > <input name="don${donNb}_qte" class="form-control qtes" type="text" id='qte_don${donNb}' placeholder='quantité'></div></div>`);
+        $('.form-group').last().before(`
+        <label for="nom" id="label_detail${donNb}">don n°${donNb}</label>
+        <div class='form-row mb-2' id="detail${donNb}"><div class="col">  
+            <input name="details[${donNb}][nom]" class="form-control noms" type="text" id='nom_don${donNb}' placeholder="nom de l'objet"> 
+        </div> 
+        <div class="col" >
+            <input name="details[${donNb}][qte]" class="form-control qtes" type="text" id='qte_don${donNb}' placeholder='quantité'>
+        </div>`);
     }) 
 
     // verification des valeurs et envoi d'un ou plusieurs messages si erreur 

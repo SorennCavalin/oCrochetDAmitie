@@ -38,7 +38,7 @@
 
             <tr class="thead-dark">
                 <th >Total</th>
-                <td> <?= count($don->getDetails()) . " objets différents, ".$don->getTaille()." dons en tout" ?></td>
+                <td> <?= count($don->getDetails()) . " objets différents, ".$don->getTaille()." objets en tout" ?></td>
             </tr>
 
         </tbody>

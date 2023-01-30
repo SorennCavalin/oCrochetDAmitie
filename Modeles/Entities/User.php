@@ -4,6 +4,7 @@
 namespace Modeles\Entities;
 
 use Modeles\Bdd;
+use Modeles\Session;
 
 class User  {
     private $id;
@@ -17,6 +18,12 @@ class User  {
     private string|null $adresse;
     private string $date_inscription;
     private string $roles;
+
+
+
+    public function getParticipations(){
+        return Bdd::getEntitesRelies("user","participant",$this->id);
+    }
 
 
     /**
@@ -139,11 +146,6 @@ class User  {
         return $this;
     }
 
-
-    public function getParticipants(){
-        return Bdd::getEntitesRelies(["table" => "user participant", "id" => $this->getId()]);
-    }
-
     /**
      * Get the value of email
      */ 
@@ -246,7 +248,7 @@ class User  {
 
     public function getAll($all = null){
         $prop = array("nom" => $this->nom,"prenom" => $this->prenom, "email" => $this->email,"adresse" => $this->adresse ?? null,"telephone" => $this->telephone ?? null,"mdp" => $this->mdp ?? null,"region" => $this->region,"departement" => $this->departement,"roles" => $this->roles);
-        if(!$all === null){
+        if($all){
             $prop[] =["id" =>  $this->id];
             $prop[] =["date_inscription" =>  $this->date_inscription];
         }
