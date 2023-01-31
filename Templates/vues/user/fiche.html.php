@@ -43,9 +43,9 @@
     </li>
     <li class="list-group-item">
         <div class="d-flex">
-            <div class="col-4"><strong>Roles</strong></div>
+            <div class="col-4"><strong>role</strong></div>
             <div class="col-6">
-                <?php if(in_array("ROLE_ADMIN",$user->getRoles())) : ?>
+                <?php if($user->getRole() === "ROLE_ADMIN") : ?>
                     <?= "Administrateur" ?>
                 <?php else : ?>
                     <?= "Bénévole" ?>

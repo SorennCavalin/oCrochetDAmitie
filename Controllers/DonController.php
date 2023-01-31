@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Modeles\Bdd;
 use Modeles\Session;
+use Services\Verificateur;
 
 class DonController extends BaseController{
     public function afficher(){
@@ -38,96 +39,65 @@ class DonController extends BaseController{
         if (!Session::isAdmin()){
             $this->redirectionError();
         }
+            if ($_POST){
+                if (($form = Verificateur::verifyNewDon($_POST)) === true){
+                    $this->redirection(lien("don"));
+                } else {
+                    $this->affichageAdmin("don/form.html.php",$form);
+                }
+
+            }
+
+
         return $this->affichageAdmin("don/form.html.php",[
-                    "js" => "ajouter_don"
-                ]);
+            "js" => "ajouter_don"
+        ]);
     }
     
         
 
     
-    public function ajouterDetails(){
-        header('Access-Control-Allow-Origin: *');
-        $tableau = [];
-        extract($_POST);
+    // public function ajouterDetails(){
+        // header('Access-Control-Allow-Origin: *');
+        
 
-        ($type) ? (($type === "reception" || $type === "envoi") ? $tableau["type"] = $this->traitementString($type) : Session::messages("danger","Le type n'est pas conforme")) : Session::messages("danger","Un type est obligatoire répertorier pour le don");
 
-        if (($date)){
-            if (isValid($date)){
-                $tableau["date"] = $this->traitementString($date);
-            } else {
-                Session::messages("danger","La date n'est pas valable");
-            }
-        } else {
-            Session::messages("danger","Une date est nécessaire pour répertorier le don");
-        }
 
-        if(($donataire)){
-            if (isset($organisme)){
-                if (strlen($donataire) >= 3 && strlen($donataire) <= 40){
-                    $tableau["donataire"] = $this->traitementString($donataire);  
-                } else {
-                    Session::messages('danger', "le nom du donataire doit faire entre 3 et 40 lettres");
-                }
-            } else {
-                Session::messages("danger", "un don ne peut pas etre à la fois reçu et envoyé");
-            }
-        }
+       
+        // if(!Session::getItemSession("messages")){
+        //     $detail = [];
+        //     $detail["don_id"] = $id[0]->getId();
+        //     $boucle = 1;
+        //     if(isset($details)){
+        //         foreach($details as $d){
+        //             if(isset($d["nom"])){
+        //                 $detail["nom"] = ucfirst($this->traitementString($d["nom"]));
+        //             } else {
+        //                 Session::messages('danger', "Veuillez rentrer un nom pour le détail n°$boucle");
+        //             }
 
-        if(($organisme)){
-            if (isset($donataire)){
-                if (strlen($organisme) >= 3 && strlen($organisme) <= 50){
-                    $tableau["organisme"] = $this->traitementString($organisme);  
-                } else {
-                    Session::messages('danger', "le nom de l'organisme doit faire entre 3 et 50 lettres");
-                }
-            } else {
-                Session::messages("danger", "un don ne peut pas etre à la fois reçu et envoyé");
-            }
-        }
-        if(!Session::getItemSession("messages")){
-            if(!Bdd::insertBdd("don",$tableau)){
-                Session::messages("danger", "Erreur lors de l'enregistrement");
-            } else {
-                $id = Bdd::selection(["table" => "don", "select" => "id", "where" => "ORDER BY id DESC LIMIT 1"]);
-            }
-        }
-
-        if(!Session::getItemSession("messages")){
-            $detail = [];
-            $detail["don_id"] = $id[0]->getId();
-            $boucle = 1;
-            if(isset($details)){
-                foreach($details as $d){
-                    if(isset($d["nom"])){
-                        $detail["nom"] = ucfirst($this->traitementString($d["nom"]));
-                    } else {
-                        Session::messages('danger', "Veuillez rentrer un nom pour le détail n°$boucle");
-                    }
-
-                    if(isset($d["qte"])){
-                        if(ctype_digit($d["qte"])){
-                            $detail["qte"] = $d["qte"];
-                        } else {
-                            Session::messages("danger","La quantité du don n°$boucle n'est pas un nombre");
-                        }
-                    } else {
-                        Session::messages('danger', "La quantité n'a pas été spécifiée au don n°$boucle");
-                    } 
+        //             if(isset($d["qte"])){
+        //                 if(ctype_digit($d["qte"])){
+        //                     $detail["qte"] = $d["qte"];
+        //                 } else {
+        //                     Session::messages("danger","La quantité du don n°$boucle n'est pas un nombre");
+        //                 }
+        //             } else {
+        //                 Session::messages('danger', "La quantité n'a pas été spécifiée au don n°$boucle");
+        //             } 
                     
                     
-                    if(!Session::getItemSession("messages")){
-                        if(!Bdd::insertBdd("don_details",$detail)){
-                            Session::messages("danger", "Erreur lors de l'enregistrement du détail n°$boucle (". $detail["nom"] . " " . $detail["qte"] . ")");
-                        }
-                    }
-                    $boucle++;
-                }
-                Session::messages("success", "Le don ansi que les détails ont bien été enregistrés");
-            }
-        } 
-    }
+        //             if(!Session::getItemSession("messages")){
+        //                 if(!Bdd::insertBdd("don_details",$detail)){
+        //                     Session::messages("danger", "Erreur lors de l'enregistrement du détail n°$boucle (". $detail["nom"] . " " . $detail["qte"] . ")");
+        //                 }
+        //             }
+        //             $boucle++;
+        //         }
+        //         Session::messages("success", "Le don ansi que les détails ont bien été enregistrés");
+        //     }
+        // } 
+    // }
         
             
 

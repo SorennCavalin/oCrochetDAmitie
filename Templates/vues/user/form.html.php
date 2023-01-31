@@ -45,10 +45,10 @@
   </div>
   <div class="form-row">
   <div class="form-group col-md-4">
-    <label for="roles"></label>
-    <select name="roles" class="form-control" id='roles'>
-      <option <?= ( isset($roles) && !in_array("ROLE_ADMIN",$roles) ? "selected" : "") ?> value="ROLE_BENEVOLE">Role bénévole </option>
-      <option <?= (  isset($roles) && in_array("ROLE_ADMIN",$roles) ? "selected" : "") ?> value="ROLE_BENEVOLE,ROLE_ADMIN">Role admin </option>
+    <label for="role"></label>
+    <select name="role" class="form-control" id='role'>
+      <option <?= ( isset($role) && $role !== "ROLE_ADMIN" ? "selected" : "") ?> value="ROLE_BENEVOLE">Role bénévole </option>
+      <option <?= (  isset($role) && $role === "ROLE_ADMIN" ? "selected" : "") ?> value="ROLE_ADMIN">Role admin </option>
     </select>
   </div>  
  </div> 

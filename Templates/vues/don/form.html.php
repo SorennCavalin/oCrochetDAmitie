@@ -1,6 +1,6 @@
 
 
-<form id="test"method="POST" enctype="multipart/form-data" action="<?= lien("don","ajouterDetails") ?>">
+<form id="test"method="POST" enctype="multipart/form-data" action="<?= lien("don","ajouter") ?>">
   <div class="form-group">
 
   <label for="type">Type de don</label>

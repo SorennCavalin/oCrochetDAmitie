@@ -242,7 +242,7 @@ class AjaxController extends BaseController {
         $table = $_POST["table"];
         $toutesTables = Bdd::getColumnsNames('ocrochet',$table);
         // je choisi ici les colonnes que je ne veut pas afficher dans ma recherche
-        $champsIndesirables = ["roles",'lien','page','mdp',"telephone"];
+        $champsIndesirables = ["role",'lien','page','mdp',"telephone"];
         $colonnes = [];
         // si la requete a bien fonctionner le tableau ne devrait pas rendre false
         if($toutesTables){

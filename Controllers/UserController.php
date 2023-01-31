@@ -12,6 +12,7 @@ class UserController extends BaseController{
 
     public function afficher(){
         if (!Session::isAdmin()){
+            
             $this->redirectionError();
 
         }
@@ -43,49 +44,16 @@ class UserController extends BaseController{
         }
 
             if (!empty($_POST)){
-                // pour les détails des verifs veuillez vous référer a Services/Verificateur
-                
-                
-                if (isset($adresse)){
-                    $user["adresse"] = $this->traitementString($adresse);
-                }
-                
-                
 
-                // verif roles
-                if($roles === "ROLE_BENEVOLE,ROLE_ADMIN"){
-                    $user["roles"] = serialize(explode(",",$roles));
-                }
-                elseif ($roles === "ROLE_BENEVOLE" ){
-                    $user["roles"] = serialize(array($roles));
-                } 
-                else{
-                    $toutBon = false;
-                    Session::messages("danger" , "Les roles que vous avez entrés ne sont pas conformes");
-                }
+                // pour les détails des verifs veuillez vous référer a Services/Verificateur->verifyNewUser()
 
-                if($toutBon){
-                    if(Bdd::insertBdd("user",$user)){
-                        Session::messages("success", "L'inscription est un success");
-                        $this->redirection(lien("user"));
-                    } else {
-                        Session::messages("danger","L'inscription a échouer");
-                    }
+                if(($form = Verificateur::verifyNewUser($_POST)) === true){
+                    $this->redirection(lien("user"));
                 } else {
-                    return $this->affichageAdmin("user/form.html.php",[
-                        "email" => $email ?? null, 
-                        "nom" => $nom ?? null, 
-                        "prenom" => $prenom ?? null, "telephone" => $telephone ?? null, "region" => $region ?? null,"departement" => $departement ?? null, "adresse" => $adresse ?? null,
-                        "roles" => array(explode(",",$roles)) ?? null,
-                    ]);
+                    return $this->affichageAdmin("user/form.html.php",$form);
                 }
-                
-              
-            
-
-            } else{
+            } else {
             return $this->affichageAdmin("user/form.html.php");
-           
         } 
     }
 
@@ -209,109 +177,26 @@ class UserController extends BaseController{
         }
 
         $user = Bdd::selectionId(["table" => "user"],$id);
-
         if (!empty($_POST)){
-            extract($_POST);
-            $toutBon = true;
-            $tableau = [];
 
-            if (isset($email)){
-                $emailVerifie = Verificateur::verifyEmail($email,$user->getEmail());
-                if($emailVerifie && $emailVerifie !== 1){
-                    $tableau["email"] = $emailVerifie;
-                }
-            }
-
-            if(isset($nom)){
-                $nomVerifie = Verificateur::verifyString($nom,$user->getNom());
-                if($nomVerifie && $nomVerifie !== 1){
-                    $tableau["nom"] = $nomVerifie;
-                }
-            }
-
-            if(isset($prenom)){
-               $prenomVerifier = Verificateur::verifyString($prenom,$user->getPrenom());
-               if($prenomVerifier && $prenomVerifier !== 1){
-                   $tableau["prenom"] = $prenomVerifier;
-               }
-            }
             
-
-            if (isset($region) && $region !== $user->getRegion()){
-                if (!ctype_digit($region)){
-                    $tableau["region"] = $this->traitementString($region);
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger","Une région ne peut pas comporter de chiffres");
-                }
-                
-            }
-            
-            if (isset($departement) && $departement !== $user->getDepartement()){
-                if(strlen($departement) < 8){
-                    $tableau["departement"] = $departement;
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger", "Le departement n'est pas valable");
-                }
-            }
-
-            if(isset($telephone)&& $telephone !== $user->getTelephone() && $telephone !== ''){
-                // verification du string telephone si >= a 10 (numero classique) ou <= a 13 (avec +33 ou plus selon le pays)
-                if(preg_match("^[+]?[0-9]{9,12}^", $telephone)){
-                    $tableau["telephone"] = $this->traitementString($telephone);
-                } else {
-                    $toutBon = false;
-                    Session::messages("danger", "Le numéro de téléphone n'est pas valide");
-                }
-            }
-            
-            if (isset($adresse) && $adresse !== $user->getAdresse()){
-                $user["adresse"] = $this->traitementString($adresse);
-            }
-            
-            $roles = explode(",",$roles);
-            if ($roles !== $user->getRoles()){
-                if($roles === ["ROLE_ABONNE","ROLE_ADMIN"]){
-                $user["roles"] = serialize($roles);
-                }
-                elseif ($roles === ["ROLE_ABONNE"]){
-                    $user["roles"] = serialize($roles);
-                } 
-                else{
-                    $toutBon = false;
-                    Session::messages("danger" , "Les roles que vous avez entrés ne sont pas conformes");
-                }
-            }
-
-            if($toutBon){
-                if(Bdd::update("user",$tableau,$id)){
-                    Session::messages("success", "La modifcation est un succes");
-                    $this->redirection(lien("user"));
-                } else {
-                    Session::messages("danger","La modification a échouer");
-                    $this->redirection(lien("user"));
-                }
+            if($tableau = Verificateur::verifyModifUser($_POST,$user)){
+                $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[
-                    "email" => $tableau["email"] ?? null, 
-                    "nom" => $tableau["nom"] ?? null, 
-                    "prenom" => $tableau["prenom"] ?? null, 
-                    "telephone" => $tableau["telephone"] ?? null, 
-                    "region" => $tableau["region"] ?? null,
-                    "departement" => $tableau["departement"] ?? null, 
-                    "adresse" => $tableau["adresse"] ?? null,
-                    "roles" => $tableau["roles"] ?? null,
+                    "email" => $tableau["email"] ?? $user->getemail(), 
+                    "nom" => $tableau["nom"] ?? $user->getNom(), 
+                    "prenom" => $tableau["prenom"] ?? $user->getprenom(), 
+                    "telephone" => $tableau["telephone"] ?? $user->gettelephone(), 
+                    "region" => $tableau["region"] ?? $user->getregion(),
+                    "departement" => $tableau["departement"] ?? $user->getdepartement(), 
+                    "adresse" => $tableau["adresse"] ?? $user->getadresse(),
+                    "role" => $tableau["role"] ?? $user->getRole(),
                 ]);
             }
-            
-            
-            
         }
 
-       
-
-        $this->affichageAdmin("user/form.html.php",[
+        return $this->affichageAdmin("user/form.html.php",[
             "nom" => $user->getNom(),
             "prenom" => $user->getprenom(),
             "telephone" => $user->gettelephone() ?? "",
@@ -319,7 +204,7 @@ class UserController extends BaseController{
             "region" => $user->getregion(),
             "departement" => $user->getdepartement(),
             "email" => $user->getemail(),
-            "roles" => $user->getroles(),
+            "role" => $user->getRole(),
             "mode" => "modify"
         ]);
     }

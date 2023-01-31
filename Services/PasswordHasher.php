@@ -8,7 +8,7 @@ class PasswordHasher {
         // optimisation du parametre cost de password hasher
         $timeTarget = 0.05; // 50 millisecondes
 
-        $cost = 1;
+        $cost = 8;
         do {
             $cost++;
             $start = microtime(true);

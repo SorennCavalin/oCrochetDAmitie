@@ -4,6 +4,7 @@ namespace Controllers;
 
 use Modeles\Bdd;
 use Modeles\Session;
+use Services\Verificateur;
 
 class VideoController extends BaseController{
     public function afficher(){
@@ -21,7 +22,7 @@ class VideoController extends BaseController{
       
 
        
-        $videos = Bdd::selection(["table" => "video", "where" => "LIMIT " . ($page == 1 ? "" : "$offset," ) . " $nbParPage"]);
+        $videos = Bdd::selection(["table" => "video", "where" => "LIMIT " . ($page == 1 ? "" : "$offset," ) . " $nbParPage" , "order" => "id DESC"]);
 
         $pageMax =  count($videos) !== 10 ?  true : false;  //ceil($nbLignes / $nbParPage);
         
@@ -41,34 +42,13 @@ class VideoController extends BaseController{
         }
 
         if (!empty($_POST)){
-            extract($_POST);
-
-            isset($nom) ? ((strlen($nom) <= 40 && strlen($nom) >= 3) ? $tableau["nom"] = $this->traitementString($nom) : Session::messages("danger","Le nom doit faire entre 3 et 40 caractères ")) : Session::messages("danger","Un nom est obligatoire pour la vidéo");
-
-            if (isset($lien)){
-                if ($test = @get_headers($lien) ?? null || $test[0] == "HTTP/1.1 404 Not Found"){
-                    $tableau["lien"] = $this->traitementString($lien);
-                
-                    $tableau["type"] = explode(".",$lien)[1];
-                } else {
-                    Session::messages("danger","Le lien n'est pas valable");
-                }
+            if(($form = Verificateur::verifyNewVideo($_POST)) === true){
+                $this->redirection(lien("video"));
             } else {
-                Session::messages("danger","Un lien est nécessaire à la vidéo");
-            }
-
-            if(!Session::getItemSession("messages")){
-                if(Bdd::insertBdd("video",$tableau)){
-                    Session::messages("success", "La vidéo a été enregistrée avec succes");
-                    $this->redirection(lien("video"));
-                } else {
-                    Session::messages("danger", "Erreur lors de l'enregistrement");
-                }
-            } else {
+                extract($form);
                 return $this->affichageAdmin("video/form.html.php",[
                     "nom" => $nom ?? null,
                     "lien" => $lien ?? null,
-                    "type" => $type ?? null,
                 ]);
             }
         }
@@ -87,47 +67,24 @@ class VideoController extends BaseController{
         $video = Bdd::selectionId(["table" => "video"],$id);
 
         if (!empty($_POST)){
-            $tableau = [];
-
-            extract($_POST);
-
-            isset($nom) && $nom !== $video->getNom() ? ((strlen($nom) <= 40 && strlen($nom) >= 3) ? $tableau["nom"] = $this->traitementString($nom) : Session::messages("danger","Le nom doit faire entre 3 et 40 caractères ")) : "" ;
-
-
-            if (isset($lien) && $lien !== $video->getlien() ){
-                if ($test = @get_headers($lien) ?? null || $test[0] == "HTTP/1.1 404 Not Found"){
-                    $tableau["lien"] = $this->traitementString($lien);
-                    $tableau["type"] = explode(".",$lien)[1];
-                } else {
-                    Session::messages("danger","Le lien n'est pas valable");
-                }
-            }
-
-
-            if (!$tableau) {
-                Session::messages("danger", "Au moins une chose doit changer pour modifier la vidéo");
-            }
-            
-            if(!Session::getItemSession("messages")){
-                if(Bdd::insertBdd("video",$tableau)){
-                    Session::messages("success", "La vidéo a été enregistrée avec succes");
-                    $this->redirection(lien("video"));
-                } else {
-                    Session::messages("danger", "Erreur lors de l'enregistrement");
-                }
+            if(($form = Verificateur::verifyModifVideo($_POST,$video)) === true){
+                $this->redirection(lien("video"));
             } else {
+                extract($form);
                 return $this->affichageAdmin("video/form.html.php",[
-                    "nom" => $nom ? $nom : $video->getNom(),
-                    "lien" => $lien ? $lien : $video->getlien(),
-                    "type" => $type ? $type : $video->gettype(),
+                    "nom" => $nom ?? null,
+                    "lien" => $lien ?? null,
                 ]);
             }
+             
         }
-         return $this->affichageAdmin("video/form.html.php" , [
-                "nom" => $video->getNom(),
-                "lien" => $video->getlien(),
-                "type" => $video->gettype(),
-            ]);
+
+
+        return $this->affichageAdmin("video/form.html.php" , [
+            "nom" => $video->getNom(),
+            "lien" => $video->getlien(),
+            "type" => $video->gettype(),
+        ]);
     }
 
 

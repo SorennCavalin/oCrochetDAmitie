@@ -50,7 +50,7 @@
                 </td>
                 <td>
                     
-                    <?php if (in_array("ROLE_ADMIN",$user->getRoles())) : ?>
+                    <?php if ($user->getRole() === "ROLE_ADMIN") : ?>
                         Admin 
                     <?php else :?>
                         Bénévole
@@ -87,7 +87,7 @@
 
 
 <div class="popup closed" id="popup">
-    <p>Vous êtes sur le point de supprimer le projet : <span id='cible'></span> </p>
+    <p>Vous êtes sur le point de supprimer l'utilisateur : '<span id='cible'></span>' </p>
     <p>En etes vous sur ?</p>
     <div class="df">
         <div class="btn btn-primary" id="close">non</div>

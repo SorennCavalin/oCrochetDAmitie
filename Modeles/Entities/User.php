@@ -16,7 +16,7 @@ class User  {
     private int $departement;
     private string|null $adresse;
     private string $date_inscription;
-    private string $roles;
+    private string $role;
 
 
     /**
@@ -122,9 +122,9 @@ class User  {
     /**
      * Get the value of role
      */ 
-    public function getRoles()
+    public function getRole()
     {   
-        return unserialize($this->roles);
+        return $this->role;
     }
 
     /**
@@ -132,9 +132,9 @@ class User  {
      *
      * @return  self
      */ 
-    public function setRoles($roles)
+    public function setRole($role)
     {
-        $this->roles = serialize($roles);
+        $this->role = $role;
 
         return $this;
     }
@@ -245,7 +245,7 @@ class User  {
     }
 
     public function getAll($all = null){
-        $prop = array("nom" => $this->nom,"prenom" => $this->prenom, "email" => $this->email,"adresse" => $this->adresse ?? null,"telephone" => $this->telephone ?? null,"mdp" => $this->mdp ?? null,"region" => $this->region,"departement" => $this->departement,"roles" => $this->roles);
+        $prop = array("nom" => $this->nom,"prenom" => $this->prenom, "email" => $this->email,"adresse" => $this->adresse ?? null,"telephone" => $this->telephone ?? null,"mdp" => $this->mdp ?? null,"region" => $this->region,"departement" => $this->departement,"role" => $this->role);
         if(!$all === null){
             $prop[] =["id" =>  $this->id];
             $prop[] =["date_inscription" =>  $this->date_inscription];

@@ -138,14 +138,14 @@ CREATE TABLE `user` (
   `departement` int(5) NOT NULL,
   `adresse` varchar(100) DEFAULT NULL,
   `date_inscription` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `roles` varchar(100) NOT NULL
+  `role` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id`, `prenom`, `nom`, `email`, `mdp`, `telephone`, `region`, `departement`, `adresse`, `date_inscription`, `roles`) VALUES
+INSERT INTO `user` (`id`, `prenom`, `nom`, `email`, `mdp`, `telephone`, `region`, `departement`, `adresse`, `date_inscription`, `role`) VALUES
 (11, 'Sorenn', 'Cavalin', 'sosolekilr@gmail.com', '$2y$10$lYpd810lgdwy4JCvTUBJAuaHqZRItJelF1E2xtB63mNHJPZJv0Prq', NULL, 'Ile de France', 94200, '8 Avenue Spinoza', '2022-10-27 08:09:15', 'a:2:{i:0;s:13:\"ROLE_BENEVOLE\";i:1;s:10:\"ROLE_ADMIN\";}');
 
 -- --------------------------------------------------------

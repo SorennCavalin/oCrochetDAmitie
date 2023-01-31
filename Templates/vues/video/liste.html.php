@@ -59,7 +59,7 @@
 </div>
 
 <div class="popup closed" id="popup">
-    <p>Vous êtes sur le point de supprimer le projet : <span id='cible'></span> </p>
+    <p>Vous êtes sur le point de supprimer le projet : '<span id='cible'></span>'</p>
     <p>En etes vous sur ?</p>
     <div class="df">
         <div class="btn btn-primary" id="close">non</div>

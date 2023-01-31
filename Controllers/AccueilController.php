@@ -17,8 +17,14 @@ class AccueilController extends BaseController {
     }
     public function afficherAdmin()
     {
+
+        if (!empty($_POST)){
+            var_dump($_POST); exit;
+        }
         
         $this->affichageAdmin("stats.html.php");
+
+
     }
 
 }

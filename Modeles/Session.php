@@ -53,7 +53,7 @@ class Session {
 
     static function isAdmin() {
         if(self::getUser()){
-            if(isset(self::getUser()->getRoles()[1])){
+            if(self::getUser()->getRole() === "ROLE_ADMIN"){
                 return true;
             }
         }

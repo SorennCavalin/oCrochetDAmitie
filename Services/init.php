@@ -30,3 +30,16 @@ function isValid($date, $format = 'Y-m-d'){
 function imgLink($nom){
     return "/oCrochetDAmitie/Assets/img/" . $nom;
 }
+
+function debug($var){
+    echo "<pre>";
+    var_dump($var);
+    echo "</pre>";
+}
+
+function d_exit($var){
+    echo "<pre>";
+    var_dump($var);
+    echo "</pre>";
+    exit;
+}

@@ -18,7 +18,7 @@
   
   <div class="form-group">
     <label for="page">Page html du projet</label>
-    <textarea name="page" class="form-control" rows="10" placeholder="//code du projet"></textarea>
+    <textarea name="page" class="form-control" rows="10" placeholder="//code pour l'affichage projet"><?= $page ?? "" ?></textarea>
   </div>
 
 
