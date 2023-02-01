@@ -11,10 +11,10 @@ class Participant{
     private $concours_id;
 
     public function getConcours(){
-        return Bdd::getEntiteRelie(["select" => "c.*","table" => "concours c , participant p", "where" => "c.id = ". $this->concours_id]);
+        return Bdd::getEntiteRelie("participant","concours",$this->concours_id);
     }
     public function getUser() {
-        return Bdd::getEntiteRelie(["select" => "u.*","table" => "user u , participant p", "where" => "u.id = " . $this->user_id]);
+        return Bdd::getEntiteRelie("participant","user",$this->user_id);
     }
 
 

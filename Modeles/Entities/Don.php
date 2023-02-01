@@ -7,11 +7,11 @@ use Modeles\Bdd;
 
 class Don  {
     private int $id;
-    private $type;
-    private $organisme ;
-    private $donataire ;
-    private $date ;
-    private $concours_id;
+    private string $type;
+    private string $organisme ;
+    private string|int $donataire ;
+    private string $date ;
+    private int $concours_id;
 
     /**
      * Get the value of type
@@ -113,20 +113,19 @@ class Don  {
         return $this;
     }
 
-    public function getConcours(){
-        if ($concours = Bdd::getEntiteRelie(["select" => "c.*" , "table" => "concours c , don d", "where" => "c.projet_id = " . $this->id ])) {
-            return $concours;
-        } 
-        return false ;
-
-        
-    }
+    // public function getConcours(){
+    //     return Bdd::getEntiteRelie("don","concours",$this->id);
+    // }
 
     public function getDetails(){
-        if($dons = Bdd::getEntitesRelies(["select" => "dd.*", "table" => "don_details dd , don d", "where" => "dd.don_id = " . $this->id . " GROUP BY id ORDER BY qte "])){
-            return $dons;
+        return Bdd::getEntitesRelies("don","don_details",$this->id);
+    }
+
+    public function getUser(){
+        if (is_int($donataire)){
+            return Bdd::getEntiteRelie("don","user",$this->donataire);
         }
-        return false;
+        return [];
     }
 
     public function getTaille(){

@@ -1,4 +1,4 @@
-.profil{
+/* .profil{
     position: relative;
     width: 40%;
     aspect-ratio: 1/.5;
@@ -70,4 +70,92 @@ svg {
         width: 90%;
         padding: 10px;
     }
+} */
+
+
+ .profil{
+    position: relative;
+    width: 40%;
+    aspect-ratio: 1/.5;
+    border: .5px solid gray;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);
+    border-radius: 20px 0 0 0;
 }
+.profil h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.infos {
+    display: flex;
+    justify-content:left;
+    flex-direction: row;
+
+}
+
+.demi {
+    width: 50%;
+}
+.droite {
+    text-align: right;
+}
+
+.li_label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.adresse{
+    text-align: right;
+    padding-bottom: 10px;
+    margin: 10px 0 0 0;
+}
+.profil ul{
+    padding-bottom: 10px;
+}
+.modif {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+}
+.profil svg {
+    width: 20px;
+}
+.liens{
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.button{
+    margin-top: 10px;
+    background-color: rgba(52, 73, 94, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border: .5px solid white;
+    border-radius: 15px;
+}
+.projets, .projets p {
+    text-align: center;
+}
+.projets a {
+    padding-left: 10px;
+}
+
+
+@media screen and (max-width:1000px) {
+    .profil{
+        width: 60%;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .profil{
+        width: 90%;
+        padding: 10px;
+    }
+} 

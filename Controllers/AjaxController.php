@@ -17,14 +17,18 @@ class AjaxController extends BaseController {
             // $this->d_exit($_POST);
 
 
+            
             // vérification rapide des données minimum requises (on sait jamais)
+            if (!$search){
+                $search = "*";
+            }
            
-            if($search === false || $table === false || $where === false){
+            if($table === false || $where === false){
                 Session::messages('danger', "Je ne peux pas recherche sans savoir quoi chercher et comment");
                 return "Recherche annulée";
             }
 
-            // donne une valeur vide a limit et order au cas ou l'utilisateur n'en a pas choisi
+            // donne une valeur vide a limit et order si l'utilisateur n'en a pas choisi
             if (!isset($limit)){
                 $limit = "";
             }
@@ -191,7 +195,7 @@ class AjaxController extends BaseController {
                     $rattrapage["dateApres"] = Bdd::selection(["table" => $table,"compare" => $where, "where" => "> $dateRecherche", "limit" => 1]);
 
 
-                    // $this->d_exit($rattrapage);
+                    
                     ($table === "user" ? $table = "utilisateur" : "");
                     return $this->aucuneReponse($table,"un $table avec une $date". (($precision) ? " d'environ $precision mois autour du $dateRecherche" : "le $dateRecherche"),"date",($rattrapage ?? false));
             }
@@ -261,3 +265,21 @@ class AjaxController extends BaseController {
     }
         
 }
+
+
+
+/**
+ * paternes 
+ *  
+ * $plusieurs = count($concours) > 1;
+ *   return $this->affichageAjax("$table/".( $plusieurs ? "liste" : "fiche" ).".html.php",[
+ *       "$table" =>  $plusieurs ? $concours : $concours[0]
+ *   ]);
+ * 
+ * permet de rendre une liste ou une fiche selon le nombre de résultats retournés 
+ * le parametre rendu dans affichage permet de rendre le tableau possèdant plusieur entitée ou un seule selon le nombre de retour de la base de donnée 
+ * 
+ * 
+ */ 
+
+

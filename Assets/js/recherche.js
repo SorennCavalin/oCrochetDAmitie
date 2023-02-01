@@ -5,9 +5,13 @@ window.addEventListener("load", () => {
     
 
     class Recherche{
-
-
+        /**
+         * La div dans laquelle le résultat de la recherche apparaîtra
+         */
         div_resultat = "<div id='resultat_recherche' class='mt-3'></div>";
+        /**
+         * l'entièretée du pop up de recherche
+         */
         div_recherche =
             `<div id="div_recherche" >
                 <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1 recherche"></span><span class="span-bouton-2">x</span></div>
@@ -50,6 +54,9 @@ window.addEventListener("load", () => {
                     <button type="submit" class="btn btn-primary">lancer la recherche</button>
                 </form>
             </div>`;
+        /**
+         * la div pour la précision de la recherche pour les dates
+         */
         div_dates_pre =
             `<div class="form-group precision">
                 <label for="precision">précision de la recherche</label>
@@ -60,10 +67,21 @@ window.addEventListener("load", () => {
                 </select>
             </div>`;
 
+        /**
+         * les url pour la récupération des noms des tables/colonnes
+         */ 
         recupTableUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormTables";
         recupColonnesUrl = "http://localhost/oCrochetDAmitie/ajax/dynaFormColonnes";
 
-        
+        /**
+         * contient les choix possibles pour certaines recherches
+         */
+        types = [];
+
+         /**
+         * recupère l'input table (1er) par défaut / la valeur si (true)
+         * 
+         */ 
         getTable(val = null) {
             if (val) {
                 return $("#table").val();
@@ -71,6 +89,10 @@ window.addEventListener("load", () => {
             return $("#table");
         }
 
+        /**
+         * recupère l'input sélecteur (2eme) par défaut / la valeur si (true)
+         * 
+         */ 
         getSelecteur(val = null) {
             if (val) {
                 return $("#selecteur").val();
@@ -78,13 +100,10 @@ window.addEventListener("load", () => {
             return $("#selecteur");
         }
 
-        getTable(val = null) {
-            if (val) {
-                return $("#table").val();
-            }
-            return $("#table");
-        }
-
+         /**
+         * recupère l'input limit (dernier/la barre) par défaut / la valeur si (true)
+         * 
+         */ 
         getLimit(val = null) {
             if (val) {
                 return $("#limit").val();
@@ -92,6 +111,10 @@ window.addEventListener("load", () => {
             return $("#limit");
         }
 
+         /**
+         * recupère l'input classement (4eme) par défaut / la valeur si (true)
+         * 
+         */ 
         getClassement(val = null) {
             if (val) {
                 return $("#classement").val();
@@ -99,6 +122,10 @@ window.addEventListener("load", () => {
             return $("#classement");
         }
 
+         /**
+         * recupère l'input search (3eme/champs a remplir) par défaut / la valeur si (true)
+         * 
+         */ 
         getSearch(val = null) {
             if (val) {
                 return $("#text_search").val();
@@ -106,17 +133,24 @@ window.addEventListener("load", () => {
             return $("#text_search");
         }
 
-        getDivSearch(val = null) {
-            if (val) {
-                return $("#text_recherche").val();
-            }
+         /**
+         * recupère la div contenant l'input search permettant des modification de l'input search comme le remplacer par un select
+         */ 
+        getDivSearch() {
             return $("#text_recherche");
         }
 
+         /**
+         * recupère toute la div de recherche (le pop up entier)
+         * 
+         */ 
         getDivRecherche() {
             return $('#div_recherche');
         }
 
+        /*
+        *  recupère le bouton fermer (taper 2) ou le bouton retour (taper 1)
+        */
         getBoutons(num) {
             if (num === 1) {
                 return $(".span-bouton-1");
@@ -126,6 +160,10 @@ window.addEventListener("load", () => {
             }
         }
 
+         /**
+         * recupère le formulaire pour recupérer les données ou l'url/supprimer le formulaire
+         * 
+         */ 
         getForm() {
             return $('#recherche');
         }
@@ -183,10 +221,12 @@ window.addEventListener("load", () => {
 
         recupTables() {
             let obj = this;
+            // console.log(urls.TablesUrl)
             $.ajax({
                 type: "POST",
-                url: urls.recupTableUrl,
+                url: urls.TablesUrl,
                 success: (data) => {
+                    
                     // rajoute une propriété a mon objet pour la validation des données au submit
                     obj.tables = data
                     // place tout les noms de tables dans le select table
@@ -207,12 +247,16 @@ window.addEventListener("load", () => {
             $.ajax({
                 type: "POST",
                 data: {"table" : table},
-                url: urls.recupColonnesUrl,
+                url: urls.ColonnesUrl,
                 success: (data) => {
-                   
                     // Place tout les noms de colonnes dans selecteur et classement
                     let colonnes = data.colonnes;
+                    // si un choix (uniquement pour type de don en l'occurence) entre des valeurs prédéfinies est obligatoire, un array supplémentaire est reçu par le serveur contenant les choix dispo
+                    // les choix sont stockés dans la propriété types de l'objet
                     let types = data.type ?? false;
+                    if (types) {
+                        obj.types = types;
+                    }
                     obj.getSelecteur().children().remove()
                     obj.getClassement().children().remove()
                     colonnes.forEach(el => {
@@ -385,12 +429,14 @@ window.addEventListener("load", () => {
 
         selecteurChange() {
             this.getSelecteur().change(() => {
+                // un tableau pour choisir les valeurs de selecteur qui utilisent l'api pour les adresses/departements
                 let useAPI = ["adresse", "region", "departement"];
                 console.log(this.selecteurChange(true));
                 // change ou remet en premier l'input/select search pour que les changement du type de input se fasse bien par la suite
                 if (this.getSelecteur(true) === "type") {
                     this.setSelect(this.type);
                 } else if (useAPI.includes(this.getSelecteur(true))) {
+                    // si la valeur de select est dans le tableau useAPI alors la fonction qui appelle les api est appelée a chaque entrée dans l'input search
                     this.setSelect(false, true);
                     this.searchChange(this.getSelecteur(true));
                 } else {
@@ -425,6 +471,7 @@ window.addEventListener("load", () => {
                     }
                 }
                 
+
 
                 
                 // rajout d'une div avec une donnée supplémentaire qui permet de choisir la précision des dates
@@ -586,9 +633,14 @@ window.addEventListener("load", () => {
         
                 // obligation de remplir l'input search pour effectuer une recherche
                 if (search  !== "") {
-                    tableau["search"] = search
+                    tableau["search"] = search;
                 } else {
-                    this.message("danger","Une recherche ne peut pas s'effectuer sans savoir quoi chercher.","#text_recherche")
+                    if (selecteur === "id") {
+                        this.message("danger", "Une recherche ne peut pas s'effectuer sans savoir quoi chercher.", "#text_recherche");
+                    } else {
+                        tableau["search"] = null;
+                    }
+                    
                 }
                 
                 // si l'input precision est présent, récupère les données de #precision et verifie que la valeur est bien égale à celles disponibles

@@ -140,8 +140,12 @@ class User  {
     }
 
 
-    public function getParticipants(){
-        return Bdd::getEntitesRelies(["table" => "user participant", "id" => $this->getId()]);
+    public function getParticipations(){
+        return Bdd::getEntitesRelies("user","participant",$this->id);
+    }
+
+    public function getDons(){
+        return Bdd::getEntitesRelies("user","don",$this->id,"donataire");
     }
 
     /**

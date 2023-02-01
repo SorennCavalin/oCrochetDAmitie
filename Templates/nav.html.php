@@ -18,7 +18,7 @@
             <li><a href="<?= lien("accueil") ?>">Accueil</a></li>
             <li><a href="<?= lien("projet","accueil") ?>">Projets</a></li>
             <li><a href="<?= lien("video","accueil") ?>">Vidéos</a></li>
-            <li><a href="">Dons</a></li>
+            <li><a href="<?= lien("don","accueil") ?>">Dons</a></li>
             <li><a href="">Partenaires</a></li>
             <li><a href="">Adhésions</a></li>
             <li><a href="<?= Session::isConnected() ? lien("user", "profil") : lien("user","connexion") ?>"><?= Session::isConnected() ? "Profil" : "Connexion" ?></a></li>

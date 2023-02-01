@@ -216,7 +216,7 @@ class Verificateur {
                     ){
                     return PasswordHasher::hashPassword($mdp);
                 } else {
-                    Session::messages('danger',"lol") ;
+                    Session::messages('danger',$mauvaisCaracteres) ;
                     return false;
                 }
             } else {
@@ -338,7 +338,7 @@ class Verificateur {
 
         // region avec verifyString
         if (isset($region) && !empty($region)){
-            if ($regionVerifie = self::verifyString($prenom,"",["stringVerifie" => "région","verifierTaille" => false])){
+            if ($regionVerifie = self::verifyString($region,"",["stringVerifie" => "région","verifierTaille" => false])){
                 $tableau["region"] = $regionVerifie;
             }
         } else {
@@ -385,14 +385,14 @@ class Verificateur {
             if(Bdd::insertBdd("user",$tableau)){
                 Session::messages("success", "L'inscription est un success");
                 return true;
-            } else {
+            }
+        } else {
                 Session::messages("danger","L'inscription a échouer");
                 return $form;
             }
-        }
     }
 
-    //  la suite des verification n'aura pas ou peu de commentaire doncc si quelque chose est étrange se referer a newuser ou aller lire directement les fonction verify
+
 
     /**
      * Verify modif user permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'un compte utilisateur
@@ -416,9 +416,9 @@ class Verificateur {
                 if ( $emailVerifie !== 1){
                     $tableau["email"] = $emailVerifie;
                 }
-               
             }
-        } 
+        }
+
         if(isset($nom) && !empty($nom)){
 
             if($nomVerifie = self::verifyString($nom,$user->getNom(),["maj" => true]) ){
@@ -650,7 +650,7 @@ class Verificateur {
 
     }
 
-
+    //  la suite des verification n'aura pas ou peu de commentaire donc si quelque chose est étrange se referer a newUser/modifyUser ou aller lire directement les fonction verify
     static function verifyNewVideo(array $form){
 
         extract($form);

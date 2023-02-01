@@ -167,20 +167,19 @@ class UserController extends BaseController{
         $this->affichageAdmin("user/fiche.html.php",[
              "user" => $user
         ]);
-   }
+    }
 
  
     public function modifier($id) {
         if (!Session::isAdmin()){
             $this->redirectionError();
-
         }
 
         $user = Bdd::selectionId(["table" => "user"],$id);
         if (!empty($_POST)){
 
             
-            if($tableau = Verificateur::verifyModifUser($_POST,$user)){
+            if($tableau = Verificateur::verifyModifUser($_POST,$user) === true){
                 $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[
@@ -227,8 +226,19 @@ class UserController extends BaseController{
         }
 
         $user = Session::getUser();
+
+        // afin d'alleger la partie php du coté affichage et les requetes sur la bdd quelques valeurs sont créees ici et transmises dans affichage()
+        $userDons = $user->getDons();
+        $totalDons = 0;
+        foreach($userDons as $don){
+            $totalDons.= $don->getTaille();
+        }
+
         $this->affichage("user/profil.html.php", [
             "user" => $user,
+            "userParticipations" => $user->getParticipations(),
+            "userDons" => $userDons,
+            "totalDons" => $totalDons,
             "css" => "profil"
         ]);
     }
