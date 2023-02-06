@@ -7,10 +7,14 @@ window.addEventListener("load",() => {
     $('.loupe').click(() => {
         let mdp = $('#mdp');
         if (mdp.attr("type") == "text") {
-            mdp.attr("type","password")
+            mdp.attr("type", "password");
         } else {
-            mdp.attr("type","text")
+            mdp.attr("type", "text");
         }
     })
     
+    $("#inscription").click((e) => {
+        e.preventDefault();
+        window.location = $("#inscription").attr("url");
+    })
 })

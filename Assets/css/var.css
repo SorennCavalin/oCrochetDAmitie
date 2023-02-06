@@ -10,6 +10,8 @@
     /* font header et footer */
     --font-family-nav: ormont ;
     --font-family-adresse: pt ;
+    /* couleur de fond du site */
+    --site_bgc : rgb(237, 237, 237);
     /*              variables du header                  */
     
     /* couleurs du header */

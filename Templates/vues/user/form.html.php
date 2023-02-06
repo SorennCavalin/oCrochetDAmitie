@@ -6,13 +6,11 @@
       <label for="email">Email</label>
       <input type="email" name="email" class="form-control" id="email" placeholder="email@email.com" required value='<?= $email ?? ''?>'>
     </div>
-    <?php if($_GET['methode'] === "ajouter") : ?>
-      <div class="form-group col">
-        <label for="mdp">Mot de passe</label>
-        <input type="password" name="mdp" class="form-control" id="mdp" placeholder="mot de passe" required >
-        <div class="tool-tip top slideIn">Pas d'espace, un parmi ($*_-!?.,), Une majuscule, 5 à 16 caractères</div>
-      </div>
-    <?php endif ?>
+    <div class="form-group col">
+      <label for="mdp">Mot de passe</label>
+      <input type="password" name="mdp" class="form-control" id="mdp" placeholder="mot de passe" required >
+      <div class="tool-tip top slideIn">Pas d'espace, un parmi ($*_-!?.,), Une majuscule, 5 à 16 caractères</div>
+    </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">

@@ -31,13 +31,11 @@
                     <h4>
                         Participations au concours
                     </h4>
-                        <?php foreach ($userParticipations as $participations) : ?>
-                        <p>
-                            <?= "Vous avez participer à " . count($userParticipations) . " concours" ?>
-                            <br>
-                            <a href="<?=  lien("user","mesConcours") ?>">voir mes participations</a> 
-                        </p>
-                    <?php endforeach; ?>
+                    <p>
+                        <?= "Vous avez participer à " . count($userParticipations) . " concours" ?>
+                        <br>
+                        <a href="<?=  lien("user","mesConcours") ?>">voir mes participations</a> 
+                    </p>
                 </div>
             <?php  endif; ?>
             <!-- si l'utilisateur a déjà envoyé un don la section suivante lui dit combien de dons et combien d'objets en tout ont été envoyés ansi qu'un message de remerciment -->

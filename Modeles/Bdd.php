@@ -15,6 +15,7 @@ class Bdd {
 
     /**
      * attention a bien mettre les guillement simple sur les chaine de caractères ￣へ￣
+     * 
      * Evoyer un array avec les cléfs suivantes :
      * @param(optionnel)"select" => colonne de la bdd ex: id | si tout select laisser vide,
      * @param"table" => nom de l'entité desirée ex: user,
@@ -77,6 +78,7 @@ class Bdd {
         
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
+        // echo "SELECT $select FROM $table $where $and $order $limit";
         $textRequete = "SELECT $select FROM $table $where $and $order $limit";
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité

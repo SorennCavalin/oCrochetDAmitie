@@ -77,19 +77,6 @@ window.addEventListener('load', ()=> {
             $('nav').children().first().after($('.nav-ul .network'));
         };
     })
-
-    // redimension du body et ajustement du mb pour placer le footer en bas  
-
-    $('body').css("min-height",$(window).height()+"px")
-
-    $(window).resize(() => {
-        $('body').css("min-height",$(window).height()+"px")
-    })
-
-    $('body').css("padding-bottom", $('footer').outerHeight() + "px")
-    
-
-    
 })
 
 

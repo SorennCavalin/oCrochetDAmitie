@@ -69,17 +69,32 @@ class Verificateur {
      * @param string $modifier
      * [optionnel]
      * Le string dont vous souhaitez verifier l'égalité avec $string
+     * 
+     * @param string $existe
+     * [optionnel]
+     * Vérifie l'existance de cet email dans la bdd (l'email étant unique a user)
      */
-    static function verifyEmail(string $email,string $modifier = ""): bool|int|string {
+    static function verifyEmail(string $email,string $modifier = "", bool $existe = false): bool|int|string {
         
         // verification de modifier en premier pour ne pas avoir a faire des opérations inutiles en cas d'egalité
         if ($modifier && $modifier === $email){
             return 1;
         }
 
+        // trim et addslash a email
         $email = self::traitementString($email);
+        // utilise un regex pour vérifier que le string ressemble a un email 
         if(preg_match("^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}^",$email)){
+            // utilise le filtre email pour garantir la validitée de l'email
             if(filter_var($email,FILTER_VALIDATE_EMAIL)){
+                // si le parametre $existe a été activé, va chercher dans la bdd si un enregistrement avec cet email existe déjà (évite les erreur sql constaint)
+                if ($existe){
+                    // si la recherche porte ses fruits renvoi false sinon continu le code jusqu'au return email plus bas
+                    if (Bdd::selection(["compare" => "email" , "where" => "= '$email'" , "table" => "user"])){
+                        Session::messages("danger" , "Un compte est déjà relié à cette adresse mail");
+                        return false;
+                    }
+                }
                 return $email;
             } else{
                 Session::messages("danger","l'adresse email n'est pas valide");
@@ -301,7 +316,7 @@ class Verificateur {
         
         // verification de email avec la fonction verifyemail ligne 73
         if(isset($email) && !empty($email)){
-            if($emailVerifie = self::verifyEmail($email)){
+            if($emailVerifie = self::verifyEmail($email, "", true)){
                 $tableau["email"] = $emailVerifie;
             }
         } else {
@@ -385,11 +400,13 @@ class Verificateur {
             if(Bdd::insertBdd("user",$tableau)){
                 Session::messages("success", "L'inscription est un success");
                 return true;
-            }
-        } else {
+            } else {
                 Session::messages("danger","L'inscription a échouer");
                 return $form;
             }
+        } else {
+            return $form;
+        }
     }
 
 
@@ -403,7 +420,7 @@ class Verificateur {
      * @param User $user
      * L'utilisateur qui va être modifié
      */
-     static function verifyModifUser(array $form,User $user){
+    static function verifyModifUser(array $form,User $user){
         extract($form);
 
         $tableau = [];
@@ -412,7 +429,7 @@ class Verificateur {
         // verification des variable nom et prenom
         
         if(isset($email) && !empty($email)){
-            if($emailVerifie = Verificateur::verifyEmail($email,$user->getEmail())){
+            if($emailVerifie = Verificateur::verifyEmail($email,$user->getEmail(),true)){
                 if ( $emailVerifie !== 1){
                     $tableau["email"] = $emailVerifie;
                 }

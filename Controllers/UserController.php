@@ -242,5 +242,28 @@ class UserController extends BaseController{
             "css" => "profil"
         ]);
     }
+
+    public function inscription(){
+
+        if (Session::isConnected()){
+            return $this->redirection(lien("user","profil"));
+        }
+
+        if (!empty($_POST)){
+            if ($form = Verificateur::verifyNewUser($_POST)){
+                return $this->redirection(lien('user','profil'));
+            } else {
+                return $this->affichage('user/inscription.html.php',[
+                    'form' => $form,
+                ]);
+            }
+        }
+
+
+        $this->affichage('user/inscription.html.php',[
+            'css' => 'inscription'
+        ]);
+
+    }
 }
 

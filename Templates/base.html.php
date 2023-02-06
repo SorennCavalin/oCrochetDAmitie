@@ -40,10 +40,6 @@
     </div>
 
 <?php endforeach; endforeach; endif; 
-
-// echo Session::messages("danger", Session::isAdmin());
-// echo Session::messages("danger", Session::isConnected());
-// echo Session::messages("danger", Session::getUser()->getRole());
 ?>
 
 

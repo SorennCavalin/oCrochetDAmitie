@@ -1,0 +1,86 @@
+@import url('var.css');
+
+main{
+    width: 30%;
+    aspect-ratio: 1/1;
+    border: .5px solid gray;
+    background-color: white;
+    padding: 20px;
+    margin: 150px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);
+}
+
+input {
+    width: 50%;
+    height: 18px;
+    margin-bottom: 10px;
+    /* je fais disparaitre les bodures les input */
+    border: none;
+    /* et je redonne juste une bordure du bas en pointillé pour un effet formulaire papier */
+    border-bottom: 1px dotted black;
+    /* le bgc blanc empêche la couleur de l'input de virer au bleu lors du remplissage */
+    background-color: #fff;
+}
+
+.loupe{
+    display: inline-block;
+    /* background-color: var(--site_bgc); */
+    border-radius: 0px 3px 3px 0px;
+    cursor: pointer;
+}
+label{
+    text-align: center;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+label::after{
+    content: ":";
+    /* display inline block pour pouvoir lui donner une taille plus grande */
+    display: inline-block;
+    width: 10px;
+    text-align: center;
+}
+button{
+    margin-top: 10px;
+    background-color: rgba(52, 73, 94, 0.9);
+    color: white;
+    padding: 5px;
+    border: .5px solid white;
+    border-radius: 15px;
+    cursor: pointer;
+}
+.inscription{
+    text-align: center;
+}
+.inscription a:hover {
+    text-decoration: underline;
+}
+.unclicked{
+    box-shadow: rgba(52, 73, 94, 0.9) 0px 1px 3px, rgba(52, 73, 94, 0.9) 0px 1px 2px;
+}
+.clicked{
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+}
+
+@media screen and (max-width: 1200px) {
+    form{
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    form{
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    form{
+        width: 90%;
+    }
+}
