@@ -61,7 +61,6 @@ class UserController extends BaseController{
 
     public function connexion(){
         if(Session::isConnected()){
-            Session::messages("secondary",'Vous êtes déja connecté');
             $this->redirection(lien("user","profil"));
         }
 
@@ -183,7 +182,8 @@ class UserController extends BaseController{
                 $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[
-                    "email" => $tableau["email"] ?? $user->getemail(), 
+                    "email" => $tableau["email"] ?? $user->getemail(),
+                    "mdp" => $tableau["mdp"] ?? $user->getMdp(), 
                     "nom" => $tableau["nom"] ?? $user->getNom(), 
                     "prenom" => $tableau["prenom"] ?? $user->getprenom(), 
                     "telephone" => $tableau["telephone"] ?? $user->gettelephone(), 
@@ -203,8 +203,9 @@ class UserController extends BaseController{
             "region" => $user->getregion(),
             "departement" => $user->getdepartement(),
             "email" => $user->getemail(),
+            "mdp" => $user->getMdp(),
             "role" => $user->getRole(),
-            "mode" => "modify"
+            "mode" => "Modification"
         ]);
     }
 
@@ -253,16 +254,48 @@ class UserController extends BaseController{
             if ($form = Verificateur::verifyNewUser($_POST)){
                 return $this->redirection(lien('user','profil'));
             } else {
-                return $this->affichage('user/inscription.html.php',[
-                    'form' => $form,
-                ]);
+                return $this->affichage('user/formClient.html.php',$form);
             }
         }
 
 
         $this->affichage('user/inscription.html.php',[
-            'css' => 'inscription'
+            'css' => 'inscription',
+            'js' => 'inscription',
         ]);
+
+    }
+
+    public function editer(){
+        if (!Session::isConnected()){
+            return $this->redirection(lien("user","connexion"));
+        }
+
+        $user = Session::getUser();
+
+        if ($_POST){
+            if (($form = Verificateur::verifyModifUser($_POST,$user,true))){
+                return $this->redirection(lien("user","profil"));
+            } else {
+                return $this->affichage('user/formClient.html.php',$form);
+            }
+        }
+
+        return $this->affichage('user/formClient.html.php',[
+            "nom" => $user->getNom(),
+            "prenom" => $user->getprenom(),
+            "telephone" => $user->gettelephone() ?? "",
+            "adresse" => $user->getadresse() ?? "",
+            "region" => $user->getregion(),
+            "departement" => $user->getdepartement(),
+            "email" => $user->getemail(),
+            "mdp" => $user->getMdp(),
+            'js' => "inscription",
+            'css' => "inscription",
+            // mode servira pour afficher modification au lieu de inscription sur la page
+            'mode' => "Modification",
+        ]);
+
 
     }
 }

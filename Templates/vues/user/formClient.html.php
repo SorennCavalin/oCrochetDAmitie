@@ -1,5 +1,5 @@
 <main>
-    <h1>Inscription</h1>
+    <h1><?= $mode ?? "inscription" ?></h1>
 
     <?php include 'form.html.php' ?>
 

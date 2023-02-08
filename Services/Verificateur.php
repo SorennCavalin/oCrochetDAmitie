@@ -368,6 +368,8 @@ class Verificateur {
             } else {
                 $tableau["role"] = "ROLE_BENEVOLE";
             }
+        } else {
+            $tableau["role"] = "ROLE_BENEVOLE";
         }
 
         // departement signifie le code postal, le client pouvant avoir des bénévoles dans les pays étrangés le code postal ne peut pas etre un nombre uniquemnet  verifyString est donc la solution (avec une restriction de taille de 10 max ou 5 min)
@@ -419,8 +421,11 @@ class Verificateur {
      * 
      * @param User $user
      * L'utilisateur qui va être modifié
+     * 
+     * @param bool $recupUser
+     * Définit la modification à été effectuée par un utilisateur ou un admin
      */
-    static function verifyModifUser(array $form,User $user){
+    static function verifyModifUser(array $form,User $user, bool $client = false){
         extract($form);
 
         $tableau = [];
@@ -464,7 +469,7 @@ class Verificateur {
         }
 
         if (isset($region) && !empty($region)){
-            if ($regionVerifie = self::verifyString($prenom,$user->getRegion(),["stringVerifie" => "région","verifierTaille" => false])){
+            if ($regionVerifie = self::verifyString($region,$user->getRegion(),["stringVerifie" => "région","verifierTaille" => false])){
                 if ( $regionVerifie !== 1) {
                     $tableau["region"] = $regionVerifie;
                 }
@@ -508,17 +513,23 @@ class Verificateur {
             }
         }
 
+        // d_exit($tableau);
         if (!Session::getItemSession("messages")){
             if ($tableau){
                 if(Bdd::update("user",$tableau,$user->getId())){
-                    Session::messages("success", "La modification de l'utilisateur " . $user->getPrenom() . "a bien été effectuée");
+                    Session::messages("success modification", "La modification de l'utilisateur " . $user->getPrenom() . " a bien été effectuée");
+                    // si la modification vient du coté client alors php met a jour l'utilisateur en session depuis les données du formulaire reçu (utilise le mdp de $form étant donné que si il arrive la alors le mdp est bon (juste un coup de traitement string suffira) et que le mdp de tableau est une version hashée qui ne peut pas etre utilisée pour l'autentification)
+                    if($client){
+                        $userModifie = Bdd::selectionId(["table" => "user"],$user->getId());
+                        Bdd::connexion($userModifie);
+                    } 
                     return true;
                 } else {
                     Session::messages("danger","La modification a échouer");
                     return false;
                 }
             } else {
-                Session::messages("secondary","Aucune modification n'a été effectuée sur l'utilisateur " . $user->getPrenom() );
+                Session::messages("secondary modification","Aucune modification n'a été effectuée sur l'utilisateur " . $user->getPrenom() );
                 return true;
             }
         } else {

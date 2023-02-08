@@ -20,12 +20,11 @@ html
 body
 {
     position: relative;
-    padding-top: 60px;
     font-size: var(--font-size);
     width: 100%;
     height: 100%;
     background-color: var(--site_bgc);
-    min-height: 1200px;
+    /* min-height: 1200px; */
 }
 
 /* .btn {
@@ -40,7 +39,7 @@ body
     padding: .375rem .75rem;
 } */
 
-/* empêche le highlight à la sélection */
+/* empêche le highlight à la sélection des inputs */
 input:focus{
     outline: none;
     -moz-user-select: none; /* Firefox */
@@ -49,28 +48,11 @@ input:focus{
     user-select: none; /* Propriété standard */
 }
 
-/* reprend quelques valeurs css de bootstrap (pour les formulaire inscrpition et
+/* permet e coller le tooltip au bon input */
 
-.form-row {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    margin-right: -5px;
-    margin-left: -5px;
+.div_tool{
+    position: relative;
 }
-.col {
-    -ms-flex-preferred-size: 0;
-    flex-basis: 0;
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    max-width: 100%;
-}
-.form-row>.col, .form-row>[class*=col-] {
-    padding-right: 5px;
-    padding-left: 5px;
-} */
-
 
 /*                  media width 480px                   */
 
@@ -84,10 +66,16 @@ header{
     height: 60px;
     background-color: var(--header-color);
     backdrop-filter: blur(var(--header-blur));
+    width: 100%;
+}
+/* classe decolle pour decoller le header et le mettre en position fixed avec du js */
+.decolle {
     position: fixed;
     top: 0;
     z-index: 2;
-    width: 100vw;
+}
+.sans-header{
+    padding-top: 60px;
 }
 
 .network{
@@ -329,7 +317,7 @@ footer {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    width: 100vw;
+    /* width: 100vw; */
     background-color: var(--footer-color);
     padding: 20px 0;
 }

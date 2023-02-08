@@ -112,7 +112,7 @@ class Bdd {
         }
         
         $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id");
-        
+        // d_exit($requete);
         if($requete) {
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
@@ -123,6 +123,7 @@ class Bdd {
             return $requete->fetch();
         }
         
+
         return null;
     }
 
@@ -285,6 +286,7 @@ class Bdd {
 
     static function autentication($mdp, $email){
         if(!isset($email) && empty($email)){
+           
             return false;
         }
         $query = self::connexion()->query("SELECT * FROM user WHERE email = '$email'");
@@ -296,8 +298,12 @@ class Bdd {
             return false;
         }
 
+        echo $mdp ; exit;
+        
 
         if (password_verify($mdp,$user->getMdp())){
+            echo "lol" ; exit;
+
             Session::connexion($user);
             Session::messages("success", "bonjour " . $user->getPrenom() . " " . $user->getNom() . ", vous êtes bien connecté");
             return true;

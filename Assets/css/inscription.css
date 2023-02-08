@@ -14,8 +14,15 @@ main{
     box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);
 }
 
+main form {
+    /* supprime le margin-top pour ne pas avoir un trop grand espace vide entre h4 et form */
+    margin-top: 0;
+    padding-bottom: 20px;
+    width: 85%;
+}
+
 input {
-    width: 50%;
+    width: 60%;
     height: 18px;
     margin-bottom: 10px;
     /* je fais disparaitre les bodures les input */
@@ -60,6 +67,11 @@ button{
 .inscription a:hover {
     text-decoration: underline;
 }
+.centrer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 .unclicked{
     box-shadow: rgba(52, 73, 94, 0.9) 0px 1px 3px, rgba(52, 73, 94, 0.9) 0px 1px 2px;
 }
@@ -67,20 +79,124 @@ button{
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
 }
 
+/* replace le tooltip sans toucher au fichier tooltip.css pour ne pas casser le coté admin */
+
+main .tool-tip.top{
+    width: 100%;
+    height: 33px;
+    top: -26px;
+    background-color: var(--header-color);
+}
+
+/* reponse correspond au reponse ajax pour l'inscription et la modification (coté admin et client) pour la recherche des adresses */
+
+.position{
+    position: relative;
+}
+
+.reponse {
+    /* la longeur x de la div (400 pour ne pas casser la ligne des adresses les plus longues) */
+    min-width:400px;
+    /* height 150 pour faire passer 3 résultats mais en gardant le rendu aéré */
+    height: 150px;
+    /* top et left pour le placer a doite de l'input recherche */
+    top: 56px;
+    left: 89%;
+    margin-left:20px;
+    transform:translate(0, -50%);
+    color:#000000;
+    background-color:#FFFFFF;
+    /* border radius pour un rendu plus agréable */
+    border-radius:8px;
+    /* position pour le placer en dehors du formulaire */
+    position:absolute;
+    z-index:10;
+    box-sizing:border-box;
+    border:1px solid #DDDDDD;box-shadow:0 1px 8px rgba(0,0,0,0.5);
+}
+.reponse::before {
+    /* rend un petite fleche qui pointe vers l'input adresse et en face de l'input */
+    content:'';
+    position:absolute;
+    width:12px;
+    height:12px;
+    left:-15px;
+    top:35px;
+    transform:translate(50%,-50%) rotate(-45deg);
+    background-color:#FFFFFF;
+    border:1px solid #DDDDDD;box-shadow:0 1px 8px rgba(0,0,0,0.5);
+    /* -1 pour la faire apparaître derriere la div et ainsi ne montrer qu'un triangle plutot qu'un losange */
+    z-index: -1;
+}
+
+.reponse ul {
+    /* met en forme les li */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    height: 100%;
+    /* met un leger padding top pour ne pas coller les li au haut
+       ainsi que padding left pour un rendu moins compacte et décaler les li du bord
+    */
+    padding: 5px 0px 0px 20px;
+    background-color: #fff;
+}
+
+.reponse li {
+    /* retire le style list */
+    list-style-type: none;
+    /* 3 rendu a 30% pour prendre 90 % de la taille et laisser une marge pour le justify space between */
+    height: 30%;
+    /* line height pour centrer le texte au milieu du li */
+    line-height: 39px;
+    /* cursor pour simuler un boutton lors du mouseover */
+    cursor: pointer;
+}
+
+
+
 @media screen and (max-width: 1200px) {
-    form{
+    main{
         width: 50%;
+    }
+    .reponse {
+        /* réduit la taille de la police pour pouvoir réduire la taille de la div et prévenir la casse du site trop tôt */
+        font-size: calc(var(--font-size) - 0.1rem);
+        min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .reponse{
+        left: -53px;
+        top: 122px;
+    }
+    .reponse::before{
+        left: 47px;
+        top: 0px;
+    }
+    .reponse ul {
+        padding-left: 10px;
     }
 }
 
 @media screen and (max-width: 800px) {
-    form{
+    main{
         width: 70%;
     }
 }
 
 @media screen and (max-width: 500px) {
-    form{
+    main{
         width: 90%;
+        padding: 10px;
+    }
+    .reponse{
+        width: 100%;
+    }
+
+    main input {
+        width: 100%;
     }
 }

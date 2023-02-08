@@ -14,13 +14,15 @@
     <?php if (isset($css)) :?>
         <link rel='stylesheet' href='/oCrochetDAmitie/Assets/css/<?= "$css" ?>.css'>
     <?php endif ?>
+    <link rel='stylesheet' href='/oCrochetDAmitie/Assets/css/tooltip.css'>
+
 
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 
     <script src="/oCrochetDAmitie/Assets/app.js"></script>
 
     <?php if (isset($js)) :?>
-        <script src="/oCrochetDAmitie/Assets/js/<?= $js ?>.js"></script>
+        <script type='module' src="/oCrochetDAmitie/Assets/js/<?= $js ?>.js"></script>
     <?php endif ?>
 
 

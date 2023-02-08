@@ -10,7 +10,7 @@ function mobilecheck() {
 
 
 
-window.addEventListener('load', ()=> {
+window.addEventListener('load', () => {
 
     let $network = $('.network');
     let $nav = $('.nav-ul');
@@ -77,6 +77,25 @@ window.addEventListener('load', ()=> {
             $('nav').children().first().after($('.nav-ul .network'));
         };
     })
+
+
+    // ajout d'une classe au header lors du scroll vers le bas et retire la classe lorsque le site est tout en haut
+
+    if (window.scrollY > $("header").height()) {
+            $("body").addClass("sans-header");
+            $("header").addClass("decolle");
+    }
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > $("header").height()) {
+            $("header").addClass("decolle");
+            $("body").addClass("sans-header");
+        } else if (window.scrollY === 0) {
+            $('header').removeClass("decolle");
+            $('body').removeClass("sans-header");
+        }
+    })
+
 })
 
 

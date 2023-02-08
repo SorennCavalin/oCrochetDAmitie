@@ -1,13 +1,14 @@
 const urls = {
 
     /**
-     * l'url pour récupérer les adresses 
+     * l'url pour récupérer les adresses. Attention pour la recherche un minimum de 3 caractères son nécessaires
      * 
      * @param {string} q 
      * l'adresse rentrée dans l'input (q stands for query)
      * @param {string} limit
      * assez explicite
      * @param {string} autocomplete
+     * 
      * 
      */
 

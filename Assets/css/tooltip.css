@@ -1,4 +1,4 @@
-/* tooltip (code chippé)*/
+/* tool-tip (code chippé)*/
 
 
 .tool-tip{
@@ -98,3 +98,4 @@
 .on-focus > input:focus + .tool-tip.slideIn.top{
 	bottom: 110%;
 }	
+
