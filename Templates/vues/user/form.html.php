@@ -8,7 +8,7 @@
     </div>
     <div class="form-group col div_tool">
       <label for="mdp">Mot de passe</label>
-      <input type="password" name="mdp" class="form-control" id="mdp" placeholder="mot de passe" <?= $mode === 'Modification' ? '' : "required" ?>>
+      <input type="password" name="mdp" class="form-control" id="mdp" placeholder="mot de passe" >
       <div class="tool-tip top slideIn">Sans espace, un caractère spécial ($*_-!?.), une majuscule, un chiffre et de 5 à 16 caractères</div>
     </div>
   </div>

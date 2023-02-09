@@ -215,7 +215,7 @@ class Verificateur {
         $tailleMini = $tailleMini ?? 5;
         $tailleMax = $tailleMax ?? 16;
         $hasSpace = $hasSpace ?? "le mot de passe ne peut pas contenir d'espace";
-        $mauvaiseTaille = $mauvaiseTaille ?? "la taille du mot de passe doit faire entre $tailleMini et $tailleMax lettres";
+        $mauvaiseTaille = $mauvaiseTaille ?? "la taille du mot de passe doit faire entre $tailleMini et $tailleMax caractères";
         $mauvaisCaracteres = $mauvaisCaracteres ?? "Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre, 1 caractère spécial parmi ($ * ? , . ! - _ )";
 
         if (!strpos(" " , $mdp)){
@@ -306,9 +306,12 @@ class Verificateur {
      * 
      * @param array $form
      * Le formulaire retourné par l'utilisateur/administrateur ($_POST peut etre envoyé)
+     * 
+     * @param bool $verification
+     * booléen qui gère l'envoi de mail pour la vérification du compte utilisateur (à mettre en false si côté admin)
      */
 
-    static function verifyNewUser(array $form){
+    static function verifyNewUser(array $form, bool $verification = true){
         extract($form);
 
         $tableau = [];
@@ -400,6 +403,12 @@ class Verificateur {
         // verifie la présence d'erreur si non rentre le nouvel utilisateur en bdd, si oui renvoi le formulaire au controlleur qui affichera les messages d'erreur et remettra les valeurs dans leurs champs respectifs
         if (!Session::getItemSession("messages")){
             if(Bdd::insertBdd("user",$tableau)){
+                if ($verification){
+                    $to = $tableau["email"];
+                    $subject = "Confirmation de compte ocrochetdamitié";
+                    $message = "test";
+                    mail($to , $subject, $message);
+                }
                 Session::messages("success", "L'inscription est un success");
                 return true;
             } else {
@@ -535,6 +544,44 @@ class Verificateur {
         } else {
                 return $form;
             }
+    }
+
+    /**
+     * verifyConnexion permet la vérification du formulaire de connexion et la mise en session de l'utilisateur 
+     * 
+     * @param array $form
+     * le formulaire rempli avec les données de l'utilisateur (email et mdp)
+     */
+    static function verifyConnexion(array $form){
+        extract($form);
+
+        $tableau = [];
+
+        if (isset($mdp) && !empty($mdp)){
+            if ($mdpVerifie = self::verifyPassword($mdp)){
+                $tableau["mdp"] = $mdpVerifie;
+            }
+        } else {
+            Session::messages("danger mdp","Veuillez entrer un mot de passe");
+        }
+
+
+        if (isset($email) && !empty($email)){
+            if ($emailVerifie = self::verifyEmail($email)){
+                $tableau["email"] = $emailVerifie;
+            }
+        } else {
+            Session::messages("danger email","Une adresse mail est requise pour la connexion");
+        }
+
+        if (!Session::getItemSession("messages")){
+            if (Bdd::autentication($tableau["mdp"],$tableau['email'])){
+                return true;
+            } else {
+                Session::messages("danger misc", "Une erreur c'est produite lors de la connexion, veuillez réessayer.");
+                return false;
+            }
+        } return $form;
     }
 
     /**

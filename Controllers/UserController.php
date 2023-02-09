@@ -259,7 +259,7 @@ class UserController extends BaseController{
         }
 
 
-        $this->affichage('user/inscription.html.php',[
+        return $this->affichage('user/formClient.html.php',[
             'css' => 'inscription',
             'js' => 'inscription',
         ]);
