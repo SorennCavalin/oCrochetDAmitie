@@ -7,6 +7,8 @@ use Modeles\Bdd;
 use Modeles\Entities\Projet;
 use Modeles\Entities\User;
 use Modeles\Entities\Video;
+use Modeles\Entities\Don;
+use Modeles\Entities\Concours;
 use Modeles\Session;
 
 class Verificateur {
@@ -302,6 +304,30 @@ class Verificateur {
     }
 
     /**
+     * verifyIdRelie vérifie que les id qui entrent dans les colonnes x_id soient correctent et correspondent à une entitée existante
+     * @param string $id
+     * l'id qui vas être vérifié
+     * @param string $table
+     * la table qui possède $id en tant qu'id et pas x_id
+     * @param string $modifier 
+     * [optionnel]
+     * l'id déjà existant lors de la modification 
+     * 
+     */
+    static function verifyIdRelie(int $id, string $table, string $modifier = ""){
+        if ($modifier){
+            if($id === $modifier){
+                return 1;
+            }
+        }
+
+        if(Bdd::selectionId($table,$id)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Verify new user permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'un compte utilisateur
      * 
      * @param array $form
@@ -433,8 +459,9 @@ class Verificateur {
      * 
      * @param bool $recupUser
      * Définit la modification à été effectuée par un utilisateur ou un admin
+     * si true reconnecte l'utilisateur avec l'id de l'utilisateur modifié
      */
-    static function verifyModifUser(array $form,User $user, bool $client = false){
+    static function verifyModifUser(array $form,User $user, bool $recupUser = false){
         extract($form);
 
         $tableau = [];
@@ -527,9 +554,9 @@ class Verificateur {
             if ($tableau){
                 if(Bdd::update("user",$tableau,$user->getId())){
                     Session::messages("success modification", "La modification de l'utilisateur " . $user->getPrenom() . " a bien été effectuée");
-                    // si la modification vient du coté client alors php met a jour l'utilisateur en session depuis les données du formulaire reçu (utilise le mdp de $form étant donné que si il arrive la alors le mdp est bon (juste un coup de traitement string suffira) et que le mdp de tableau est une version hashée qui ne peut pas etre utilisée pour l'autentification)
-                    if($client){
-                        $userModifie = Bdd::selectionId(["table" => "user"],$user->getId());
+                    // si la modification vient du coté recupUser alors php met a jour l'utilisateur en session depuis les données du formulaire reçu (utilise le mdp de $form étant donné que si il arrive la alors le mdp est bon (juste un coup de traitement string suffira) et que le mdp de tableau est une version hashée qui ne peut pas etre utilisée pour l'autentification)
+                    if($recupUser){
+                        $userModifie = Bdd::selectionId("user",$user->getId());
                         Bdd::connexion($userModifie);
                     } 
                     return true;
@@ -579,7 +606,7 @@ class Verificateur {
                 return true;
             } else {
                 Session::messages("danger misc", "Une erreur c'est produite lors de la connexion, veuillez réessayer.");
-                return false;
+                return $form;
             }
         } return $form;
     }
@@ -588,7 +615,7 @@ class Verificateur {
      * Verify new project permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'un nouveau projet
      * 
      * @param array $form
-     * Le formulaire retourné par l'uadministrateur ($_POST peut etre envoyé)
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
      */
     static function verifyNewProject(array $form) {
         extract($form);
@@ -640,7 +667,7 @@ class Verificateur {
                 return true;
             } else {
                 Session::messages("danger","La création du projet a échoué");
-                return false;
+                return $form;
             }
         } else {
             return $form;
@@ -652,7 +679,7 @@ class Verificateur {
      * Verify modif project permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'un projet
      * 
      * @param array $form
-     * Le formulaire retourné par l'uadministrateur ($_POST peut etre envoyé)
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
      * 
      * @param Projet $projet
      * Le projet qui va être modifié
@@ -725,7 +752,15 @@ class Verificateur {
 
     }
 
-    //  la suite des verification n'aura pas ou peu de commentaire donc si quelque chose est étrange se referer a newUser/modifyUser ou aller lire directement les fonction verify
+    //  la suite des verification n'aura pas ou peu de commentaire concernant le fonctionnement des fonctions verify donc si quelque chose est étrange se referer a newUser/modifyUser ou aller lire directement les fonction verify
+
+    /**
+     * Verify new video permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'une vidéo
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     */
     static function verifyNewVideo(array $form){
 
         extract($form);
@@ -769,6 +804,16 @@ class Verificateur {
        
     }
 
+    /**
+     * Verify modif video permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'une video
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     * @param Video $video
+     * La vidéo qui va être modifiée
+     * 
+     */
     static function verifyModifVideo(array $form, Video $video){
 
         extract($form);
@@ -805,17 +850,25 @@ class Verificateur {
                     return true;
                 } else {
                     Session::messages("danger","Un problème est survenu lors de la modification, veuillez réessayer");
-                    return $form;
+                    return false;
                 }
             }
         }
     }
 
+    /** 
+     * Verify new don permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'un don
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     * 
+     */
     static function verifyNewDon(array $form){
         
         extract($form);
         if (isset($type) && !empty($type)){
-            if ($type === "reception" || $type = "envoi"){
+            if ($type === "reception" || $type === "envoi"){
                 $tableau["type"] = self::verifyString($type);
 
                 // la vérification de donataire et organisme se fait ici pour eviter les problemes si type n'existe pas pour ne pas voir a refaire un if
@@ -927,73 +980,103 @@ class Verificateur {
 
        
     }
-    static function verifyModifDon(array $form){
+
+    /**
+     * Verify modif don permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'un don
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     * @param Don $don
+     * Le don qui va être modifié
+     * 
+     */
+    static function verifyModifDon(array $form,Don $don){
         
         extract($form);
+
         if (isset($type) && !empty($type)){
-            if ($type === "reception" || $type = "envoi"){
-                $tableau["type"] = self::verifyString($type);
+            if ($type === "reception" || $type === "envoi"){
+                if (($typeVerifie = self::verifyString($type)) !== $don->getType() ){
+                    $tableau["type"] = self::verifyString($type);
+                }
 
                 // la vérification de donataire et organisme se fait ici pour eviter les problemes si type n'existe pas pour ne pas voir a refaire un if
                 if($type === "reception"){
                     if(isset($donataire) && !empty($donataire)){
-                        if ($donataireVerifie = self::verifyString($donataire,"",["verifieTaille" => false])){
-                            $tableau["donataire"] = $donataireVerifie;
+                        if ($donataireVerifie = self::verifyString($donataire,$don->getDonataire(),["verifieTaille" => false])){
+                            if ($donataireVerifie !== 1){
+                                $tableau["donataire"] = $donataireVerifie;
+                            }
+                            
                         }
-                    } else {
-                         Session::messages("danger","Veuillez saisir un donataire");
                     }
                 }
         
                 if($type === "envoi"){
                     if(isset($organisme) && !empty($organisme)){
-                        if ($organismeVerifie = self::verifyString($organisme,"",["verifieTaille" => false])){
-                            $tableau["organisme"] = $organismeVerifie;
+                        if ($organismeVerifie = self::verifyString($organisme,$don->getOrganisme(),["verifieTaille" => false])){
+                            if ($organismeVerifie !== 1){
+                                $tableau["organisme"] = $organismeVerifie;
+                            }
                         }
-                    } else {
-                         Session::messages("danger","Veuillez saisir un organisme");
                     }
                 }
             } else {
                  Session::messages("danger","Le type de don n'est pas reconnu");
             }
-        } else {
-             Session::messages("danger","Veuillez choisir si le don est un envoi ou une réception avec le champs type");
         }
 
         if (isset($date) && !empty($date)){
-            if($dateVerifie = self::verifyDate($date)){
-                $tableau["date"] = $dateVerifie;
-            } else {
-                Session::messages("danger","La date n'est pas valable");
+            if($dateVerifie = self::verifyDate($date,$don->getDate())){
+                if ($dateVerifie !== 1){
+                    $tableau["date"] = $dateVerifie;
+                }
             }
-        } else {
-            Session::messages("danger","Une date est nécessaire pour enregistrer le don");
         }
+        // verifie que le don ne comporte pas d'erreur avant de verifier les details
         if(!Session::getItemSession("messages")){
-              // afin de pouvoir traiter un nombre inconnu de valeur on utilise un array dans le name de l'input (pour plus de précision aller voir Assets/js/ajouter_don ligne 42)
+
+            // afin de pouvoir traiter un nombre inconnu de valeur on utilise un array dans le name de l'input (pour plus de précision aller voir Assets/js/ajouter_don ligne 42)
 
             // initialise une variable pour mettre toute les erreur mais permettre de continuer la vérification des details suivants
             $erreur = [];
-            // 
+            // une variable pour connaitre créer un nouvel index numérique correspondant au numéro du détail défectueux servant pour les erreur a chaque boucle (utiliser index de foreach n'aurait pas fonctionner, les index étant des string)
             $boucle = 0;
             $tableauDetails = [];
+            $detailsExistants = $don->getDetails();
             foreach ($donDetails as $index => $details){
-                $boucle++;
-                // verifie le nom et la quantite
-                // donDetails est un array d'array donc je dois utiliser les clef nom et qte 
-                // extract est aussi un choix possible pour se servir de variable plutot que de propriétées d'array
-                if ($detailNomVerifie = self::verifyString($details["nom"],"",["verifieTaille" => false])){
-                    $tableauDetails["detail" . $index]["nom"] = $detailNomVerifie;
-                } else {
-                    // je met dans le tableau erreur le numéro de la boucle qui correspond au detail erroné et met true a nom ou qte  
-                    $erreur["$boucle"]["nom"] = true;
+                // variable identique sert dans la vérification des détails inchangés lors de la modification et sera réinitialisée a chaque détail
+                $identique = false;
+                // vérifie si le nom et la quantité du don son identique a ceux déjà existants
+                // un array d'objet en objet puis getnom ou qte pour vérifier 
+                // si nom et qte du meme detail sont identique il ne le rentrera pas dans tableauDetails
+                foreach($detailsExistants as $detail){
+                    if ($details['nom'] === $detail->getNom() && (int)$details["qte"] === $detail->getQte()){
+                        $identique = true;
+                        break;
+                    }
                 }
-                // n'ayant pas de test pour les nombre dans Verificateur un simple is_int suffira 
-                if (is_int( (int) $details["qte"])){
-                    $tableauDetails["detail" . $index]["qte"] = $details["qte"];
-                } else {
-                    $erreur["$boucle"]["qte"] = true;
+                $id = $detailsExistants[$boucle]->getId();
+                $boucle++;
+                if (!$identique){
+                    // verifie le nom et la quantite
+                    // donDetails est un array d'array donc je dois utiliser les clef nom et qte 
+                    // extract est aussi un choix possible pour se servir de variable plutot que de propriétées d'array
+                    // la fonction verifyString ne se sert pas de sa capacité à comparer pour des raisons de clartée du code
+                    if ($detailNomVerifie = self::verifyString($details["nom"],"",["verifieTaille" => false])){
+                        $tableauDetails[$index]["nom"] = $detailNomVerifie;
+                    } else {
+                        // je met dans le tableau erreur le numéro de la boucle qui correspond au detail erroné et met true a nom ou qte  
+                        $erreur["$boucle"]["nom"] = true;
+                    }
+                    // n'ayant pas de test pour les nombre dans Verificateur un simple is_int suffira 
+                    if (is_int((int) $details["qte"])){
+                        $tableauDetails[$index]["qte"] = $details["qte"];
+                    } else {
+                        $erreur["$boucle"]["qte"] = true;
+                    }
+                    $tableauDetails[$index]['id'] = $id;
                 }
             }
 
@@ -1001,46 +1084,199 @@ class Verificateur {
                 // j'utilise le tableau erreur pour savoir si les details sont corrects
                 // si erreur n'est pas vide des messages adaptés a l'erreur s'afficheront
                 // $index étant le numéro de la boucle avec l'erreur mais aussi le numéro du détail erroné
-                // si une erreur est détectée la mise en bdd ne commencera pas
+                // si une erreur est détectée la mise en bdd ne commencera pas et le formulaire est renvoyé
                 foreach ($erreur as $index => $detail){
-                    
                     if (isset($detail["nom"] )&& isset($detail["qte"])){
-
                          Session::messages("danger detail","Le nom et la quantité du don don n°". $index . " ne sont pas corrects");
-
                     } elseif (isset($detail["nom"])) {
-
                          Session::messages("danger detail","Le nom du don n°". $index . " n'est pas conforme");
-
                     } elseif (isset($detail["qte"])) {
-
-                        // echo "$index";exit;
-                        Session::messages("danger detail","La quantité du don n°". $index  . " n'est pas un nombre");
-
+                        Session::messages("danger detail","La quantité du don n°". $index . " n'est pas un nombre");
                     }
                 }
                 return $form;
             }
 
-            if(Bdd::insertBdd("don",$tableau)){
-                // si l'enregistrement du don a fonctionner on passe au détails qui ont été rajoutés en quantité inconnue par l'utilisateur
-                // recupération du don qui vient d'être créé (pour récupérer l'id)
-                $nouveauDon = Bdd::selection([ "table" => "don", "order" => "id DESC", "limit" => 1])[0];
-                // je réinitialise boucle pour le réutiliser dans les messages d'erreurs (boucle commence toujours a 1 et la taille de tableauDetail est la même que pour les vérification sur donDetails)
-                $boucle = 1;
-                foreach ($tableauDetails as $index => $detail){
-                    if (!Bdd::insertBdd("don_details",["nom" => $detail["nom"], "qte"=> $detail["qte"],"don_id" => $nouveauDon->getId()])){
-                        Session::messages("danger","erreur lors de l'enregistrement du don n°". $index + 1 . "(" . $detail["nom"] . " : " . $detail["qte"] . ")");
+            // verifie encore une fois les messages d'erreur avant de mettre a jour
+            if (!Session::getItemSession("messages")){
+                if ($tableau || $tableauDetails){
+                    if ($tableau){
+                        if(!Bdd::update("don",$tableau,$don->getId())){
+                            Session::messages("danger","Erreur lors de la modification du don");
+                            return $form;
+                        }
                     }
-                } return true;
+                    
+                    if ($tableauDetails){
+                        foreach ($tableauDetails as $index => $detail){
+                            if (!Bdd::update("don_details",["nom" => $detail["nom"], "qte" => $detail["qte"]],$detail["id"])){
+                                $message = "erreur la modification du détails du don"; 
+                                $message .= " n°". $index + 1 ;
+                                $message .= " (" . $detail["nom"] . " : " . $detail["qte"] . ")";
+                                Session::messages("danger",$message);
+                            }
+                        } return true;
+                    }
+                } else {
+                    $message = "Aucune modification n'a été effectuée sur le don" ;
+                    $message .= ($don->getType() === "envoi") ? " reçu de " . $don->getOrganisme() : "envoyé à " .$don->getDonataire();
+                    Session::messages("secondary modification", $message);
+                    return true;
+                }
             } else {
-                Session::messages("danger","Erreur lors de l'enregistrement du don");
                 return $form;
             }
+            
         } else {
             return $form;
         }
 
        
+    }
+
+    /**
+     * Verify new concours permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'un concours
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     */
+    
+    static function verifyNewConcours(array $form){
+        extract($form);
+
+        if(isset($projet) && $projet != 0){
+            if (is_int((int)$projet)){
+                if($projetVerifie = self::verifyIdRelie((int)$projet,"projet")){
+                    $tableau["projet_id"] = $projetVerifie;
+                } else {
+                    Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
+                }
+            } else {
+                Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
+            }
+        }
+
+
+        if(isset($nom)){
+            if($nomVerifie = self::verifyString($nom,"",["verifierTaille" => false])){
+                if (!Bdd::selection(["table" => 'concours', "compare" => "nom" , "where" => " = '$nomVerifie'"])){
+                    $tableau["nom"] = $nomVerifie;
+                } else {
+                    Session::messages("danger" , "Un concours avec ce nom existe déjà");
+                }
+            }
+        } else {
+            Session::messages("danger" , "Un nom est necessaire au concours");
+        }
+
+
+        if (isset($date_debut)){
+            if ($date_debutVerifie = self::verifyDate($date_debut)){
+                $tableau["date_debut"] = $date_debutVerifie;
+            }
+        } else {
+            Session::messages("danger","Une date de début est nécessaire au concours");
+        }
+
+        if (isset($date_fin)){
+            if ($date_finVerifie = self::verifyDate($date_fin)){
+                $tableau["date_fin"] = $date_finVerifie;
+            }
+        } else {
+            Session::messages("danger","Une date de fin est nécessaire au concours");
+        }
+
+        if(!Session::getItemSession("messages"))
+        {
+             if(Bdd::insertBdd("concours",$tableau))
+                  //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
+             {
+                  Session::messages("success" , "Le concours a bien été enregistré");
+                  return true;
+             }
+             else //Sinon (la fonction renvoie FALSE).
+             {    
+                  Session::messages("danger" , "Erreur lors de l'enregistrement");
+                  return $form;
+             }
+        } else {
+            return $form;
+        }
+    }
+
+    /**
+     * Verify modif concours permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'un concours
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'administrateur ($_POST peut etre envoyé)
+     * 
+     * @param Concours $concours
+     * le concours qui va être modifié
+     */
+    
+    static function verifyModifConcours(array $form,Concours $concours){
+
+        extract($form);
+        $tableau = [];
+
+        if(isset($projet)){
+            if (is_int((int)$projet) && $projet != $concours->getProjet_id()){
+                if($projetVerifie = self::verifyIdRelie((int)$projet,"projet")){
+                    $tableau["projet_id"] = $projetVerifie;
+                } else {
+                    Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
+                }
+            } else {
+                Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
+            }
+        }
+
+
+        if(isset($nom)){
+            if($nomVerifie = self::verifyString($nom,$concours->getNom(),["verifierTaille" => false])){
+                if ($nomVerifie !== 1){
+                     if (!Bdd::selection(["table" => 'concours', "compare" => "nom" , "where" => " = $nomVerifie"])){
+                        $tableau["nom"] = $nomVerifie;
+                    } else {
+                        Session::messages("danger" , "Un concours avec ce nom existe déjà");
+                    }
+                }
+            }
+        }
+
+        if (isset($date_debut)){
+            if ($date_debutVerifie = self::verifyDate($date_debut,$concours->getDate_debut())){
+                if ($date_debutVerifie !== 1){
+                    $tableau["date_debut"] = $date_debutVerifie;
+                }
+            }
+        }
+
+        if (isset($date_fin)){
+            if ($date_finVerifie = self::verifyDate($date_fin,$concours->getDate_fin())){
+                if ($date_finVerifie !== 1){
+                    $tableau["date_fin"] = $date_finVerifie;
+                }
+            }
+        }
+
+        if(!Session::getItemSession("messages"))
+        {
+            if ($tableau){
+                if(Bdd::update("concours",$tableau,$concours->getId())){
+                    Session::messages("success" , "Le concours a bien été modifié");
+                    return true;
+                } else {    
+                    Session::messages("danger" , "Erreur lors de l'enregistrement");
+                    return false;
+                }
+            } else {
+                Session::messages("secondary", "Aucune modification apportée au concours '" . $concours->getNom() . "'");
+                return true;
+            }
+        } else {
+            return $form;
+        }
     }
 }

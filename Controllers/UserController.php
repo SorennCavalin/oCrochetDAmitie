@@ -65,82 +65,11 @@ class UserController extends BaseController{
         }
 
         if (!empty($_POST)){
-            extract($_POST);
-            $toutBon = false;
-            
-            if(isset($email)){
-                if(preg_match("^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}^",$email)){
-                    if(filter_var($email,FILTER_VALIDATE_EMAIL)){ 
-                        $toutBon = true;
-                        $email = $this->traitementString($email);
-                    } else{
-                       
-                        Session::messages("danger","Veuillez rentrer une adresse mail valide ex : email@email.com.");
-                    }
-                } else{
-                    Session::messages("danger","Veuillez rentrer une adresse mail valide ex : email@email.com.");
-                }
+           
+            if ($form = Verificateur::verifyConnexion($_POST) === true){
+                return $this->redirection(lien("user","profil"));
             } else {
-                Session::messages("danger","Une adresse mail est requise pour la connexion");
-            }
-
-            if (Session::getItemSession("messages")){
-                return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
-            }
-
-            if(isset($mdp)){
-                if( strlen($mdp) >= 5 || strlen($mdp) <= 16 ){
-                    $caracteres = str_split($mdp, 1);
-                    $minusucle = false;
-                    $majuscule = false;
-                    $chiffre = false;
-                    $special = false;
-                    foreach($caracteres as $car){
-                        if( $car >= 'a' && $car <= 'z' ){
-                            $minusucle = true;
-                        }
-            
-                        if( $car >= 'A' && $car <= 'Z' ){
-                            $majuscule = true;
-                        }
-            
-                        if( $car >= '0' && $car <= '9' ){
-                            $chiffre = true;
-                        }
-                        if( in_array($car, ['$', '*', '_', '-','!','?','.',',' ]) ){
-                            $special = true;
-                        }
-                    }
-                    if( $minusucle && $majuscule && $chiffre && $special ){
-                        
-                        $mdp = $this->traitementString($mdp);
-                        $toutBon = true;
-                        } else {
-                            $toutBon = false;
-                            Session::messages('danger',"Le mot de passe doit contenir au moins 1 minuscule, 1 majuscule, 1 chiffre et 1 caractère spécial parmi ($ * ? , . ! - _ )") ;
-                        }
-                    } else {
-                        $toutBon = false;
-                        Session::messages('danger',"Le mot de passe doit faire au minimum 5 caractères et au maximum 16.") ;
-                    }
-                } else {
-                    
-                    $toutBon = false;
-                    Session::messages("danger","Veuillez rentrer un mot de passe");
-                }
-
-                if (Session::getItemSession("messages")){
-                    return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
-                }
-                
-                
-            if($toutBon){
-                if( Bdd::autentication($mdp,$email)){
-                    $this->redirection(lien("user","profil"));
-                } else {
-                    Session::messages("error", "L'adresse mail ou mot de passe sont érronés");
-                    return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion","email" =>$email]);
-                }
+                return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion", "email" => $form["email"]]);
             }
         }
         return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
@@ -160,9 +89,8 @@ class UserController extends BaseController{
 
         if (!Session::isAdmin()){
             $this->redirectionError();
-
         }
-        $user = Bdd::selectionId([ "table" => "user" ],$id);
+        $user = Bdd::selectionId("user",$id);
         $this->affichageAdmin("user/fiche.html.php",[
              "user" => $user
         ]);
@@ -174,23 +102,23 @@ class UserController extends BaseController{
             $this->redirectionError();
         }
 
-        $user = Bdd::selectionId(["table" => "user"],$id);
+        $user = Bdd::selectionId("user",$id);
         if (!empty($_POST)){
 
             
-            if($tableau = Verificateur::verifyModifUser($_POST,$user) === true){
+            if($form = Verificateur::verifyModifUser($_POST,$user) === true){
                 $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[
-                    "email" => $tableau["email"] ?? $user->getemail(),
-                    "mdp" => $tableau["mdp"] ?? $user->getMdp(), 
-                    "nom" => $tableau["nom"] ?? $user->getNom(), 
-                    "prenom" => $tableau["prenom"] ?? $user->getprenom(), 
-                    "telephone" => $tableau["telephone"] ?? $user->gettelephone(), 
-                    "region" => $tableau["region"] ?? $user->getregion(),
-                    "departement" => $tableau["departement"] ?? $user->getdepartement(), 
-                    "adresse" => $tableau["adresse"] ?? $user->getadresse(),
-                    "role" => $tableau["role"] ?? $user->getRole(),
+                    "email" => $form["email"] ?? $user->getemail(),
+                    "mdp" => $form["mdp"] ?? $user->getMdp(), 
+                    "nom" => $form["nom"] ?? $user->getNom(), 
+                    "prenom" => $form["prenom"] ?? $user->getprenom(), 
+                    "telephone" => $form["telephone"] ?? $user->gettelephone(), 
+                    "region" => $form["region"] ?? $user->getregion(),
+                    "departement" => $form["departement"] ?? $user->getdepartement(), 
+                    "adresse" => $form["adresse"] ?? $user->getadresse(),
+                    "role" => $form["role"] ?? $user->getRole(),
                 ]);
             }
         }
@@ -245,14 +173,19 @@ class UserController extends BaseController{
     }
 
     public function inscription(){
-
+        $to = "xodiha4984@ekcsoft.com";
+        $subject = "Confirmation de compte ocrochetdamitié";
+        $message = "test";
+        // if (mail($to , $subject, $message)){
+        //     
+        // }
         if (Session::isConnected()){
             return $this->redirection(lien("user","profil"));
         }
 
         if (!empty($_POST)){
             if ($form = Verificateur::verifyNewUser($_POST)){
-                return $this->redirection(lien('user','profil'));
+                return $this->redirection(lien('user','connexion'));
             } else {
                 return $this->affichage('user/formClient.html.php',$form);
             }

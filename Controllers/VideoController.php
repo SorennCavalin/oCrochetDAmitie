@@ -64,7 +64,7 @@ class VideoController extends BaseController{
 
         }
 
-        $video = Bdd::selectionId(["table" => "video"],$id);
+        $video = Bdd::selectionId("video",$id);
 
         if (!empty($_POST)){
             if(($form = Verificateur::verifyModifVideo($_POST,$video)) === true){
@@ -94,7 +94,7 @@ class VideoController extends BaseController{
 
         }
 
-        $video = Bdd::selectionId(["table" => "video"],$id);
+        $video = Bdd::selectionId("video",$id);
 
         $this->affichageAdmin("video/fiche.html.php",[
             'video' => $video

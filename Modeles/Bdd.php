@@ -78,8 +78,8 @@ class Bdd {
         
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
-        // echo "SELECT $select FROM $table $where $and $order $limit";
         $textRequete = "SELECT $select FROM $table $where $and $order $limit";
+        // \d_exit($textRequete);
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
@@ -95,24 +95,16 @@ class Bdd {
     
     
     /**
-     * Besoin d'un id
+     * Renvoir l'entité correspondante avec l'id en parametre
      * 
-     * Envoyer un array avec les cléfs suivantes :
-     * "select" => colonne de la bdd ex: id | si tout select laisser vide,
-     * "table" => nom de l'entité desirée ex: user.
-     * "limit" => nombre de resultat max voulu
+     * @param string $table
+     * le nom de la table/entite voulue
+     * @param int $id
+     * l'id de l'entité
      */
 
-    static function selectionId(array $para, int $id): object|bool{
-
-        extract($para);
-        
-        if(!isset($select)){
-            $select = "*";
-        }
-        
-        $requete = self::connexion()->query("SELECT $select FROM $table WHERE id = $id");
-        // d_exit($requete);
+    static function selectionId(string $table, int $id): object|bool{
+        $requete = self::connexion()->query("SELECT * FROM $table WHERE id = $id");
         if($requete) {
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
@@ -175,7 +167,7 @@ class Bdd {
 
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
-        $textRequete = "SELECT $select FROM $table $where";
+        $textRequete = "SELECT $select FROM $table $where GROUP BY id";
         // return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
@@ -200,7 +192,7 @@ class Bdd {
      * @param int $id 
      * La valeur de la colonne tableRelie_id de la table qui appelle (don_details a une colonne don_id donc don_id de don_details sera rentré pour appeler don)
      * 
-     * @return array
+     * @return bool|object
      */
     static function getEntiteRelie($table, $tableRelie, $id){
         $table = addslashes(trim($table));
@@ -243,7 +235,7 @@ class Bdd {
             return $requete->fetch();
         }
 
-        return [];
+        return false;
 
     }
     /**
@@ -275,7 +267,7 @@ class Bdd {
         }
         $textRequete .= ");";
 
-
+        // echo $textRequete; exit;
         if (self::connexion()->query($textRequete)){
             return true ;
         } else {
@@ -308,8 +300,8 @@ class Bdd {
     /**
      * Besoin de la table en question et de l'id de la ligne a supprimer
      */
-    static function drop($table, $id){
-        $textRequete = "DELETE FROM $table WHERE id = $id";
+    static function drop(string $table,int $id,string $champs = "id"){
+        $textRequete = "DELETE FROM $table WHERE $champs = $id";
         if(self::connexion()->query($textRequete)){
             Session::messages("success", "$table n°$id à bien été supprimé" );
             return true;
@@ -323,13 +315,12 @@ class Bdd {
     static function dropRelie($table, $id, $relie){
         $requete1 = "DELETE FROM $relie WHERE " .$table . "_id = $id";
         if(self::connexion()->query($requete1)){
-            $textRequete = "DELETE FROM $table WHERE id = $id";
-            if(self::connexion()->query($textRequete)){
-                Session::messages("success", "$table n°$id à bien été supprimé" );
+            
+            if(self::drop($table,$id)){
                 return true;
-            } 
-            Session::messages("danger","$table n°$id n'a pas pu etre supprimer");
-            return false;
+            } else {
+                
+            }
         }
         Session::messages("danger","Les détails du $table n°$id n'ont pas pu être supprimés ce qui a mis fin à l'opération");
         return false;

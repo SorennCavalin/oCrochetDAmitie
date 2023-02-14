@@ -7,17 +7,21 @@ use Modeles\Bdd;
 
 class Concours {
     private int $id;
-    private $nom;
-    private $projet_id;
-    private $date_debut;
-    private $date_fin;
+    private string $nom;
+    private int|null $projet_id;
+    private string $date_debut;
+    private string $date_fin;
 
     public function getParticipants(){
-        return Bdd::getEntitesRelies(["select" => "p.*","table" => "participant p , concours c", "where" => $this->id ." = p.concours_id "]);
+        return Bdd::getEntitesRelies("concours","participant",$this->id);
+    }
+
+    public function nombreParticipants(){
+        return count($this->getParticipants());
     }
 
     public function getProjet(){
-        return Bdd::getEntiteRelie(["select" => "p.*","table" => "projet p , concours c", "where" => "p.id = " . $this->projet_id]);
+        return Bdd::getEntiteRelie("concours","projet",$this->projet_id);
     }
 
 

@@ -63,7 +63,7 @@ class ProjetController extends BaseController{
                $this->redirectionError();
           }
           
-          $projet = Bdd::selectionId([ "table" => "projet" ],$id);
+          $projet = Bdd::selectionId("projet",$id);
           if(!empty($_POST)){
 
                if(($form = Verificateur::verifyModifProject($_POST,$projet)) !== 1){
@@ -101,6 +101,7 @@ class ProjetController extends BaseController{
   
           }
   
+          
           Bdd::dropRelie("projet",$id,"concours");
           $this->redirection(lien("projet"));
           
@@ -113,7 +114,7 @@ class ProjetController extends BaseController{
 
           }
 
-          $projet = Bdd::selectionId([ "table" => "projet" ],$id);
+          $projet = Bdd::selectionId("projet",$id);
           $this->affichageAdmin("projet/fiche.html.php",[
                "projet" => $projet
           ]);

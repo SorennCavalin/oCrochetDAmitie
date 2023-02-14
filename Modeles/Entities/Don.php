@@ -14,6 +14,17 @@ class Don  {
     private int $concours_id;
 
     /**
+     * Retourne organisme ou donataire basé sur type
+     */
+    public function getCible(){
+        return ($this->type === "envoi") ? $this->organisme : $this->donataire ;
+    }
+
+    public function getQuantite(){
+        return count($this->getDetails());
+    }
+
+    /**
      * Get the value of type
      */ 
     public function getType()
