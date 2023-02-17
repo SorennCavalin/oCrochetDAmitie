@@ -1,3 +1,5 @@
+let urlDebut = "http://localhost/oCrochetDAmitie/";
+
 const urls = {
 
     /**
@@ -57,12 +59,19 @@ const urls = {
     /**
     * L'url pour la récupération des noms des tables de la bdd
     */
-    TablesUrl: "http://localhost/oCrochetDAmitie/ajax/dynaFormTables",
+    TablesUrl: urlDebut + "ajax/dynaFormTables",
 
     /**
     * L'url pour la récupération des colonnes de la table sélectionnée
     */
-    ColonnesUrl : "http://localhost/oCrochetDAmitie/ajax/dynaFormColonnes"
+    ColonnesUrl:  urlDebut + "ajax/dynaFormColonnes",
+    
+
+    /**
+     * L'url pour confirmer la réception du colis
+     */
+    confirmationColis :  urlDebut + "ajax/confirmerColis",
+
 }
 
 export { urls };

@@ -69,7 +69,7 @@ class UserController extends BaseController{
             if ($form = Verificateur::verifyConnexion($_POST) === true){
                 return $this->redirection(lien("user","profil"));
             } else {
-                return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion", "email" => $form["email"]]);
+                return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion", "email" => $form["email"] ?? ""]);
             }
         }
         return $this->affichage("user/connexion.html.php",["css" => "connexion","js" => "connexion"]);
@@ -106,7 +106,7 @@ class UserController extends BaseController{
         if (!empty($_POST)){
 
             
-            if($form = Verificateur::verifyModifUser($_POST,$user) === true){
+            if($form = Verificateur::verifyModifUser($_POST,$user, true) === true){
                 $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[
@@ -173,9 +173,7 @@ class UserController extends BaseController{
     }
 
     public function inscription(){
-        $to = "xodiha4984@ekcsoft.com";
-        $subject = "Confirmation de compte ocrochetdamitié";
-        $message = "test";
+        
         // if (mail($to , $subject, $message)){
         //     
         // }

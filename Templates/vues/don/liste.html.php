@@ -14,6 +14,7 @@
             <th>destinataire/organisme</th>
             <th>taille</th>
             <th>date</th>
+            <th>reception</th>
             <th>action</th>
         </tr>
     </thead>
@@ -37,6 +38,9 @@
                     <?= $don->getDate() ?>
                 </td>
                 <td>
+                    <input type="checkbox" name="reception" class="checkReception" idReception='<?= $don->getId() ?>' nom='<?= $don->getDonataire() ? $don->getDonataire() : $don->getOrganisme() ?>'  <?= $don->getReception() ? "checked" : "" ?>><span id='etat<?= $don->getId() ?>' class="pl-1"> <?= $don->getReception() ? "reçu" : "attente" ?></span>
+                </td>
+                <td>
                     <a href="<?= lien("don","detail",$don->getId())  ?>" class="btn btn-primary">
                         details
                     </a>
@@ -46,8 +50,6 @@
                     <a href="<?= lien("don","supprimer",$don->getId()) ?>" class="btn btn-danger">
                         supprimer
                     </a>
-
-                    
                 </td>
             </tr>
         <?php endforeach; ?>

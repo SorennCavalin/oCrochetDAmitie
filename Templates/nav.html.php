@@ -20,8 +20,8 @@
             <li><a href="<?= lien("video","accueil") ?>">Vidéos</a></li>
             <li><a href="<?= lien("don","accueil") ?>">Dons</a></li>
             <li><a href="">Partenaires</a></li>
-            <li><a href="">Adhésions</a></li>
-            <li><a href="<?= Session::isConnected() ? lien("user", "profil") : lien("user","connexion") ?>"><?= Session::isConnected() ? "Profil" : "Connexion" ?></a></li>
+            <li><a href="<?= Session::isConnected() ? lien("user", "profil") : lien("user","connexion") ?>"><?= Session::isConnected() ? "Profil" : "Connexion"?></a></li>
+            <li><a href="<?= lien("user", "inscription") ?>">Inscription</a></li>
         </ul>
     </nav>
 </header>

@@ -280,20 +280,21 @@ class Bdd {
         if(!$email){
             return false;
         }
+        
         $query = self::connexion()->query("SELECT * FROM user WHERE email = '$email'");
-
+        
         $query->setFetchMode(PDO::FETCH_CLASS,"Modeles\Entities\User");
 
         if(!$user = $query->fetch()){
             Session::messages("danger email", "Cet adresse mail n'est liée à aucun compte");
             return false;
         }
-        
-
         if (password_verify($mdp,$user->getMdp())){
+            Session::messages("success","bonjour " . $user->getPrenom());
             Session::connexion($user);
             return true;
         }
+        Session::messages("danger","Le mot de passe est erroné");
         return false;
     }
 

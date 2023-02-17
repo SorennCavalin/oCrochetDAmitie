@@ -10,7 +10,8 @@
     <title>O'Crochet d'amitié</title>
 
   
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
         
@@ -21,7 +22,7 @@
     <script src="/oCrochetDAmitie/Assets/js/popup_suppr.js"></script>
 
     <?php if (isset($js)) :?>
-        <script src="/oCrochetDAmitie/Assets/js/<?=$js?>.js"></script>
+        <script type='module' src="/oCrochetDAmitie/Assets/js/<?=$js?>.js"></script>
     <?php endif ?>
 
     <script type='module' src="/oCrochetDAmitie/Assets/js/recherche.js"></script>
@@ -55,18 +56,15 @@ if (isset($resultat)) {
 <?php endforeach; endforeach; endif; ?>
 
 
-<!-- <script>
-    $.ajax(
-        {
-            type : "GET",
-            url:"https://geo.api.gouv.fr/communes",
-            data : {"codePostal" : "44200","fields" : "nom", "format" : "json"},
-            success : (data) => {
-                console.log(data)
-            }
-        }
-    )
-</script> -->
+<?php if (isset($incl)) : foreach ($incl as $lien) : 
+
+    include $lien .".html.php";
+
+
+
+endforeach ; endif
+?>
+
 
 
 

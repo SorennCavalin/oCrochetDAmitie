@@ -3,6 +3,8 @@
 
 namespace Controllers;
 
+use Modeles\Bdd;
+
 class BaseController {
 
     public function affichage($fichier, array $parametres = [])
@@ -18,6 +20,8 @@ class BaseController {
     public function affichageAdmin($fichier, array $parametres = [], $navbar = true)
     {
         extract($parametres);
+        // prototype nav dynamique pour plus tard pas le temps
+        // $tables = Bdd::getTablesNames("ocrochet");
 
         include "Templates/base_admin.html.php";
         include "Templates/vues/$fichier";

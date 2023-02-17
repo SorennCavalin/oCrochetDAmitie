@@ -11,6 +11,7 @@ class Don  {
     private string $organisme ;
     private string|int $donataire ;
     private string $date ;
+    private bool $reception;
     private int $concours_id;
 
     /**
@@ -163,6 +164,26 @@ class Don  {
     public function setConcours_id($concours_id)
     {
         $this->concours_id = $concours_id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of reception
+     */ 
+    public function getReception()
+    {
+        return $this->reception;
+    }
+
+    /**
+     * Set the value of reception
+     *
+     * @return  self
+     */ 
+    public function setReception($reception)
+    {
+        $this->reception = $reception;
 
         return $this;
     }

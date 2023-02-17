@@ -557,7 +557,7 @@ class Verificateur {
                     // si la modification vient du coté recupUser alors php met a jour l'utilisateur en session depuis les données du formulaire reçu (utilise le mdp de $form étant donné que si il arrive la alors le mdp est bon (juste un coup de traitement string suffira) et que le mdp de tableau est une version hashée qui ne peut pas etre utilisée pour l'autentification)
                     if($recupUser){
                         $userModifie = Bdd::selectionId("user",$user->getId());
-                        Bdd::connexion($userModifie);
+                        Session::connexion($userModifie);
                     } 
                     return true;
                 } else {
@@ -602,7 +602,7 @@ class Verificateur {
         }
 
         if (!Session::getItemSession("messages")){
-            if (Bdd::autentication($tableau["mdp"],$tableau['email'])){
+            if (Bdd::autentication(self::traitementString($mdp),$tableau['email'])){
                 return true;
             } else {
                 Session::messages("danger misc", "Une erreur c'est produite lors de la connexion, veuillez réessayer.");

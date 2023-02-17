@@ -43,7 +43,7 @@
                     <?= $user->getTelephone() ?>
                 </td>
                 <td >
-                    <?= $user->getregion() . ", " . $user->getDepartement() . ", " . ($user->getAdresse() ?? "") ?>
+                    <?= $user->getregion() . ", " . ($user->getAdresse() ?? "") ?>
                 </td>
                 <td>
                     <?= date("d/m/Y",strtotime($user->getDate_inscription())) ?>

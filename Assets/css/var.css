@@ -5,26 +5,45 @@
 
     /*font size*/
     --font-size: 1rem;
-    /* couleur de font pour header et footer */
+    --font-size-h1-accueil : calc(var(--font-size) + 2rem);
+    --font-size-p-accueil : calc(var(--font-size) + .3rem);
+    --font-size-h4-accueil : calc(var(--font-size) + 1.5rem);
+
+
+    /* couleurs de font */
     --font-color: white ;
-    /* font header et footer */
+
+
+
+
+    /* font familys */
     --font-family-nav: ormont ;
     --font-family-adresse: pt ;
+
+
+
+
+
     /* couleur de fond du site */
     --site_bgc : rgb(237, 237, 237);
+
+
+
     /*              variables du header                  */
     
     /* couleurs du header */
     --header-color: rgba(52, 73, 94, 0.9);
     --header-blur: 4px;
 
+
     /* position et taille de nav-ul */
     --width-nav-ul: 65%;
     --position-nav-ul: -65%;
 
-    /*padding de nav-ul li*/
 
+    /*padding de nav-ul li*/
     --padding_nav_li: 1vh;
+
 
     /* durée de transition nav-ul */
     --transition-nav: 0.5s;

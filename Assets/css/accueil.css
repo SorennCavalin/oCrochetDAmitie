@@ -1,8 +1,11 @@
+/* contient toutes les couleurs et autres parametres suceptibles de changer */
+@import url("css/var.css");
 
 .banner{
     position: relative;
     width: 100%;
     aspect-ratio: var(--bannieres-ratio);
+    margin-bottom: 50px;
 }
 
 .banner img {
@@ -15,6 +18,25 @@
     width: 100%;
 }
 
-.accueil {
-    width: 1000px;
+#accueil {
+    width: 100%;
+    padding: 10px;
+}
+
+h1{
+    font-size: var(--font-size-h1-accueil);
+    margin-bottom: 50px ;
+}
+
+h4{
+    font-size: var(--font-size-h4-accueil);
+}
+
+p{
+    font-size: var(--font-size-p-accueil);
+} 
+
+#accueil .m-top{
+    display: block;
+    margin-top: 5px;
 }

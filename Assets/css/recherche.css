@@ -3,7 +3,7 @@
 }
 
 
-#div_recherche{
+/* #div_recherche{
     position: fixed;
     z-index: 20;
     top: 50%;
@@ -17,7 +17,7 @@
     padding: 20px;
     margin: 20px auto;
     box-shadow: 1px 1px 1px 100vw rgba(0,0,0,.1);
-}
+} */
 .resultat{
     width: 100% !important;
     overflow: auto;
@@ -77,7 +77,7 @@
     top: 0;
     left: 0;
     position: absolute;
-    z-index: 10;
+    z-index: 2;
 };
 
 #adresse_trouve{

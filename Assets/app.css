@@ -48,11 +48,12 @@ input:focus{
     user-select: none; /* Propriété standard */
 }
 
-/* permet e coller le tooltip au bon input */
+/* permet de coller le tooltip au bon input */
 
 .div_tool{
     position: relative;
 }
+
 
 /*                  media width 480px                   */
 

@@ -1,27 +1,26 @@
 
-
 <form id="test"method="POST" enctype="multipart/form-data">
-  <div class="form-group">
+  <div class="mb-3">
 
   <label for="type">Type de don</label>
-    <select name="type" class="form-control" id='type' placeholder="role">
-      <option hidden selected> Choisissez si le don est un envoi ou une réception</option>
+    <select name="type" class="form-select" id='type' placeholder="role">
+      <option hidden> Choisissez si le don est un envoi ou une réception</option>
       <option <?= ( (isset($type) && $type === "reception") ?"selected" : "") ?> id='reception' value="reception">Réception</option>
       <option <?= ( (isset($type) && $type === "envoi") ? "selected" : "") ?> id='envoi' value="envoi">Envoi vers un organisme</option>
     </select>
   </div>
 
-  <div class="form-group" id="organisme">
+  <div class="mb-3" id="organisme">
     <label for="">Organisme</label>
     <input type="test" class="form-control" value="<?=(isset($type) && $type === "envoi") ? $cible : "" ?>" name="organisme"  >
   </div>
 
-  <div class="form-group" id="donataire" >
+  <div class="mb-3" id="donataire" >
     <label for="donataire">Donataire</label>
     <input type="text" name="donataire" value="<?=(isset($type) && $type === "reception") ? $cible : "" ?>" class="form-control" >
   </div>
   
-  <div class="form-group" id="date">
+  <div class="mb-4" id="date">
     <label for="date" id="label_date"></label>
     <input name="date" class="form-control" type="date" value='<?= $date ?? "" ?>'>
   </div>
@@ -31,7 +30,7 @@
   <?php $nb=0;  if (isset($details)) : foreach($details as $detail) : $nb++?>
     <label for="nom" id="label_detail<?=$nb?>">don n°<?=$nb?></label>
    
-        <div class='form-row mb-2' id="detail<?=$nb?>" <?= ($nb === $quantite) ? "dernier='$nb'" : ""  ?>>
+        <div class='row mb-2' id="detail<?=$nb?>" <?= ($nb === $quantite) ? "dernier='$nb'" : ""  ?>>
             <div class="col"> 
                 <input name="donDetails[details<?=$nb?>][nom]" class="form-control noms" type="text" id='nom_don<?=$nb?>' value='<?=$detail->getNom()?>'>
             </div> 
@@ -41,11 +40,9 @@
         </div>
   <?php endforeach; endif?>
 
-  <div class="form-group"><button class="btn btn-primary" id="plus" type="button">ajouter un détail au don</button></div>
-
-
+  <div class="form-group"><button class="btn btn-primary m-1 mt-2" id="plus" type="button">ajouter un détail au don</button></div>
   
-  <button type="submit" class="btn btn-primary" id="conf">Submit</button>
+  <button type="submit" class="btn btn-primary m-1" id="conf">Submit</button>
 </form>
 
 

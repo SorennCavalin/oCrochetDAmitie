@@ -246,18 +246,19 @@ class AjaxController extends BaseController {
         $table = $_POST["table"];
         $toutesTables = Bdd::getColumnsNames('ocrochet',$table);
         // je choisi ici les colonnes que je ne veut pas afficher dans ma recherche
-        $champsIndesirables = ["role",'lien','page','mdp',"telephone"];
+        // $champsIndesirables = ["role",'lien','page','mdp',"telephone",];
         $colonnes = [];
         // si la requete a bien fonctionner le tableau ne devrait pas rendre false
         if($toutesTables){
             // pour chaque ligne renvoyée par la bdd on verifie que le nom de la colonne ne fais pas partie de ceux qui sont dans le tableau indésirable
                 foreach($toutesTables as $colonne){
-                    if (!in_array($colonne["COLUMN_NAME"],$champsIndesirables)){
                         // création de ['colonne'] pour pouvoir afficher les noms des colonnes du côté js et de type pour les colonnes qui ne peuvent avoir que des valeurs prédéfinies
-                            $colonnes["colonnes"][] = $colonne["COLUMN_NAME"];
-                            if ($colonne["COLUMN_COMMENT"] !== ""){
+                        if ($colonne["COLUMN_COMMENT"] !== ""){
+                            if (stristr($colonne["COLUMN_COMMENT"],"/")){
                                 $colonnes["type"] = explode("/",$colonne["COLUMN_COMMENT"]);
                             }
+                        } else {
+                            $colonnes["colonnes"][] = $colonne["COLUMN_NAME"];
                         }
                 }
         }

@@ -11,6 +11,7 @@ class AccueilController extends BaseController {
 
     public function afficher()
     {
+       
         $this->affichage("accueil.html.php", [
             "css" => "accueil"
         ]);

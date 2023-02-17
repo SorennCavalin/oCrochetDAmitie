@@ -2,12 +2,12 @@
     <div class="banniere">
         <img src="<?= imgLink("Projets.jpg")?>" alt="Projets">
     </div>
-    <h1> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae, saepe commodi eos nostrum ducimus tempora hic adipisci maxime veniam! Mollitia aliquam cum nihil repellendus suscipit iure minus deleniti optio ratione? </h1>
+    <h1> Aidons ensemble les plus démunis ! </h1>
 
 
 
 
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti nesciunt sint porro velit ipsa, mollitia, hic ex error illum necessitatibus consequuntur est doloremque esse. Dolorum cum omnis perferendis dolore aspernatur!</p>
+    <p>ici vous pouvez voir les derniers projets menés par notre association ansi que revoir ceux qui sont déjà cloturés</p>
 
     <?php if ($pause) : ?>
         <p>Il n'y a aucun projet encore en activité mais voici les 3 derniers</p>

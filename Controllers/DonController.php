@@ -30,7 +30,9 @@ class DonController extends BaseController{
         $this->affichageAdmin("don/liste.html.php",[
             "dons" => $dons,
             "pageMax" => $pageMax,
-            "page" => $page
+            "page" => $page,
+            "js" => 'don_back',
+            "incl" => ["div_confirmation"]
         ]);
     }
 
@@ -51,7 +53,7 @@ class DonController extends BaseController{
 
 
         return $this->affichageAdmin("don/form.html.php",[
-            "js" => "ajouter_don"
+            "js" => "don_form"
         ]);
     }
 
@@ -68,6 +70,8 @@ class DonController extends BaseController{
             if (($form = Verificateur::verifyModifDon($_POST,$don)) === true){
                 $this->redirection(lien("don"));
             } else {
+                // comme form est mis en parametre plutot qu'un tableau fait mains. Je met le js avant d'appeler la fonction affichage
+                $form["js"] = "don_form";
                 return $this->affichageAdmin("don/form.html.php",$form);
             }
         }
@@ -77,8 +81,7 @@ class DonController extends BaseController{
                 "type" => $don->getType(),
                 "details" => $don->getDetails(),
                 "quantite" => $don->getQuantite(),
-                "js" => "modifier_don"
-                
+                "js" => "don_form"
             ]);
     }
 
@@ -92,16 +95,17 @@ class DonController extends BaseController{
         $don = Bdd::selectionId("don",$id);
 
         $this->affichageAdmin("don/fiche.html.php",[
-            'don' => $don
+            'don' => $don,
+            'js' => "don_back"
         ]);
     } 
 
     public function accueil(){
-        $videos = Bdd::selection(["table" => "video", "where" => "LIMIT 6"]);
+        $dons = Bdd::selection(["table" => "don", "where" => "LIMIT 6"]);
 
-        $this->affichage("video/accueil.html.php", [
-            "videos" => $videos,
-            "css" => "video"
+        $this->affichage("don/accueil.html.php", [
+            "dons" => $dons,
+            "css" => "don"
         ]);
     }
 

@@ -1,11 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="<?= lien("accueil") ?>">Retour</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
+    
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+  <a class="navbar-brand" href="<?= lien("accueil") ?>">Retour</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
           Utilisateurs
@@ -46,10 +50,24 @@
           <a class="dropdown-item" href="<?= lien("concours") ?>">Liste</a>
           <a class="dropdown-item" href="<?= lien("concours","ajouter") ?>">Ajouter </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="<?= lienAdmin("accueil") ?>">Statistiques</a>
-      </li>
-    </ul>
-      <button class="form-inline my-2 my-lg-0 btn btn-outline-success my-2 my-sm-0" type="submit" id="search">effectuer un recherche</button>
+      </ul>
+      <button class="form-inline my-2 my-lg-0 btn btn-outline-success my-2 my-sm-0" type="submit" id="search">effectuer une recherche</button>
+    </div>
   </div>
 </nav>
+
+<!-- <li><hr class="dropdown-divider"></li> -->
+<!-- <li><a class="dropdown-item" href="#">Something else here</a></li> -->
+
+
+<!-- prototype navbar dynamique pas le temps -->
+  <!-- < ?php foreach ($tables as $table): ?>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+            < ?= $table["TABLE_NAME"] ?>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="< ?= lien($table["TABLE_NAME"]) ?>">Liste</a>
+            <a class="dropdown-item" href="< ?= lien($table["TABLE_NAME"],"ajouter") ?>">Ajouter </a>
+        </li>
+      < ?php endforeach; ?> -->

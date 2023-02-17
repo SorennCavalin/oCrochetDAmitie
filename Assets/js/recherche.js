@@ -13,27 +13,27 @@ window.addEventListener("load", () => {
          * l'entièretée du pop up de recherche
          */
         div_recherche =
-            `<div id="div_recherche" >
+            `<div id="div_recherche" class=' position-fixed top-50 start-50 translate-middle p-5 bg-white' style='z-index : 2000'>
                 <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1 recherche"></span><span class="span-bouton-2">x</span></div>
                 <form id='recherche' action="http://localhost/oCrochetDAmitie/ajax/recherche" method="POST">
                     <h4 class="text-center mb-4">Vous allez faire une recherche spécifique. <br> Nous avons quelques question à poser pour vous rendre le meilleur résultat</h4>
-                    <div class="form-group table">
+                    <div class="mb-3 table">
                         <label for="table">Quel type recherchez-vous ?</label>
                         <select id="table" class="form-control" name="table">
                         </select>
                     </div>
-                    <div class="form-group selecteur">
+                    <div class="mb-3 selecteur">
                         <label for="selecteur">par quoi rechercher ?</label>
                         <select id="selecteur" class="form-control" name='selecteur'>
                         </select>
                     </div>
         
-                    <div class='form-group ' id='text_recherche'>
+                    <div class='mb-3 ' id='text_recherche'>
                         <label for="">Entrez votre recherche</label>
                         <input class='form-control' type="number" id='text_search' name='search'>
                     </div>
         
-                    <div class="form-group classement">
+                    <div class="mb-3 classement">
                         <label id="change">Par quoi les classer ?</label>
                         <select id="classement" class="form-control" name="classement" disabled>
                             <option selected> Ne pas classer </option>
@@ -45,9 +45,9 @@ window.addEventListener("load", () => {
                         </select>
                     </div>
         
-                    <div class="form-group limit">
+                    <div class="mb-3 limit">
                         <label for="classement">choisir une limite ?</label>
-                        <input type="range" class="form-control-range" id="limit" name="limit" disabled>
+                        <input type="range" class="form-range" id="limit" name="limit" disabled>
                         <p id="maximum" class="text-center"></p>
                     </div>
         
@@ -58,7 +58,7 @@ window.addEventListener("load", () => {
          * la div pour la précision de la recherche pour les dates
          */
         div_dates_pre =
-            `<div class="form-group precision">
+            `<div class="mb-3 precision">
                 <label for="precision">précision de la recherche</label>
                 <select id="precision" class="form-control" name='precision'>
                     <option value="0">Date exacte</option>
