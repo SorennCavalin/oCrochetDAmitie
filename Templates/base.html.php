@@ -29,20 +29,9 @@
 </head>
 <body>
 <?php include "nav.html.php" ?>
-<?php 
-    if(Session::getItemSession("messages")):
-        foreach (Session::getMessages() as $type => $messages) :
+<?php include "messages.html.php" ?>
 
-            foreach ($messages as $message):
-        
-?>
 
-    <div class="alert alert-<?= $type ?>">
-            <?= $message ?>
-    </div>
-
-<?php endforeach; endforeach; endif; 
-?>
 
 
 

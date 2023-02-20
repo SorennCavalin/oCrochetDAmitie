@@ -34,26 +34,8 @@
 
 <?php 
     include "navbar_admin.html.php";
-
-if (isset($resultat)) {
-    echo '<div class="alert alert-primary"> <?= $resultat ?> </div>';
-}
-
-
-
-
-    if(Session::getItemSession("messages")):
-        foreach (Session::getMessages() as $type => $messages) :
-            foreach ($messages as $message) :
+    include "messages.html.php";
 ?>
-
-    <div class="alert alert-<?= $type ?>">
-            <?= $message ?>
-    </div>
-
-
-
-<?php endforeach; endforeach; endif; ?>
 
 
 <?php if (isset($incl)) : foreach ($incl as $lien) : 

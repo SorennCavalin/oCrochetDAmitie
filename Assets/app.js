@@ -81,20 +81,38 @@ window.addEventListener('load', () => {
 
     // ajout d'une classe au header lors du scroll vers le bas et retire la classe lorsque le site est tout en haut
 
-    if (window.scrollY > $("header").height()) {
-            $("body").addClass("sans-header");
-            $("header").addClass("decolle");
-    }
+    // if (window.scrollY > $("header").height()) {
+    //         $("body").addClass("sans-header");
+    //         $("header").addClass("decolle");
+    // }
 
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > $("header").height()) {
-            $("header").addClass("decolle");
-            $("body").addClass("sans-header");
-        } else if (window.scrollY === 0) {
-            $('header').removeClass("decolle");
-            $('body').removeClass("sans-header");
-        }
+    // window.addEventListener("scroll", () => {
+    //     if (window.scrollY > $("header").height()) {
+    //         $("header").addClass("decolle");
+    //         $("body").addClass("sans-header");
+    //     } else if (window.scrollY === 0) {
+    //         $('header').removeClass("decolle");
+    //         $('body').removeClass("sans-header");
+    //     }
+    // })
+
+
+    // pose un boutton qui ferme les alert
+
+    $('.alert').each(function (index, boite) { 
+        boite = $(boite);
+        boite.append('<div class="suppr">x</div>')
+        
     })
+    $('.suppr').each((i, suppr) => {
+        suppr = $(suppr);
+        suppr.on("click", () => {
+            let parent = suppr.parent("div.alert");
+            suppr.parents("div.alert").remove();
+            
+        })
+    });
+    
 
 })
 

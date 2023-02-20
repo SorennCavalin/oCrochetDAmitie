@@ -25,19 +25,56 @@ body
     height: 100%;
     background-color: var(--site_bgc);
     /* min-height: 1200px; */
+    padding-top: 60px;
 }
 
-/* .btn {
-    color: white;
-    border: 1px solid #007bff;
-    background-color: #007bff;
-    vertical-align: middle;
-    user-select: none;
-    text-align: center;
-    white-space: nowrap;
-    border-radius: .25rem;
-    padding: .375rem .75rem;
+form{
+    margin-top: 100px;
+}
+
+
+/* donne une forme aux messages côté client */
+.messages {
+    position : fixed ;
+    margin-top: 10px;
+    z-index: 1;
+    width: 200px;
+}
+.suppr{
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    cursor: pointer;
+}
+/* .remove{
+    opacity: 0;
 } */
+/* copie de bootstrap pour les "alert" | avec transition en plus */
+.alert {
+    position: relative;
+    padding: 1rem 1.5rem 1rem 1rem;
+    margin-bottom: .5rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    /* transition: opacity .5s; */
+}
+.alert-danger {
+    color: #842029;
+    /* background-color: rgb(248,215,218,0.5); */
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+.alert-success {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+.alert-secondary {
+    color: #41464b;
+    background-color: #eeeeee;
+    border-color: #d3d6d8;
+}
+
 
 /* empêche le highlight à la sélection des inputs */
 input:focus{
@@ -68,17 +105,10 @@ header{
     background-color: var(--header-color);
     backdrop-filter: blur(var(--header-blur));
     width: 100%;
-}
-/* classe decolle pour decoller le header et le mettre en position fixed avec du js */
-.decolle {
     position: fixed;
     top: 0;
     z-index: 2;
 }
-.sans-header{
-    padding-top: 60px;
-}
-
 .network{
    width: 100%;
 }
@@ -172,7 +202,7 @@ header{
     top: 60px;
     width: var(--width-nav-ul);
     right: var(--position-nav-ul);
-    z-index: 0;
+    z-index: 10;
 }
 
 .transition{
@@ -286,25 +316,6 @@ p {
     border-radius: var(--radius-banieres);
 }
 
-.conteneur-alert{
-    position: absolute;
-    top: 70px;
-    
-}
-.alert{
-    width: 200px;
-    height: auto;
-
-} 
-.alert-secondary{
-
-}
-.alert-success{
-
-}
-.alert-danger{
-
-}
 
 /* fin css général */
 
@@ -366,6 +377,9 @@ pour eviter la disparution du burger */
     header {
         height: 30px;
     }
+    .haut{
+        height: calc(100vh - 30px);
+    }
     .logo{
         height: 100%;
     }
@@ -392,7 +406,11 @@ pour eviter la disparution du burger */
 
 /*                      Fin media 480                    */
 
-
+@media screen and (min-width: 600px){
+    .alert{
+        width: 300px;
+    }
+}
 
 
 
@@ -412,7 +430,6 @@ pour eviter la disparution du burger */
     .network{
         justify-content: center;
     }
-    
 
     /*              footer               */
 
@@ -476,6 +493,3 @@ pour eviter la disparution du burger */
     }
 }
 
-form{
-    margin-top: 100px;
-}

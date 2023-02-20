@@ -1,8 +1,7 @@
 /* contient toutes les couleurs et autres parametres suceptibles de changer */
-@import url("css/var.css");
+@import url("var.css");
 
 .banner{
-    position: relative;
     width: 100%;
     aspect-ratio: var(--bannieres-ratio);
     margin-bottom: 50px;

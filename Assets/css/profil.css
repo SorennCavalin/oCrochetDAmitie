@@ -82,6 +82,8 @@ svg {
     margin: 20px auto;
     box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);
     border-radius: 20px 0 0 0;
+    /* empeche le profil de passer sur la nav en format mobile */
+    z-index: 0;
 }
 .profil h2 {
     text-align: center;
@@ -126,10 +128,6 @@ svg {
     display: flex;
     justify-content: center;
     margin-top: auto;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
 }
 .button{
     margin-top: 10px;
