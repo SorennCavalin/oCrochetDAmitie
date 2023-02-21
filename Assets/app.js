@@ -101,7 +101,13 @@ window.addEventListener('load', () => {
 
     $('.alert').each(function (index, boite) { 
         boite = $(boite);
-        boite.append('<div class="suppr">x</div>')
+        boite.append('<div class="suppr">x</div>');
+        if (boite.hasClass("alert-success") || boite.hasClass("alert-secondary")) {
+            setTimeout(() => {
+                console.log("ok")
+                boite.remove();
+            },5000)
+        }
         
     })
     $('.suppr').each((i, suppr) => {

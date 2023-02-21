@@ -50,11 +50,11 @@ label::after{
     width: 10px;
     text-align: center;
 }
-button{
+.button{
     margin-top: 10px;
     background-color: rgba(52, 73, 94, 0.9);
     color: white;
-    padding: 5px;
+    padding: 5px 10px;
     border: .5px solid white;
     border-radius: 15px;
     cursor: pointer;

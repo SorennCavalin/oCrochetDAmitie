@@ -63,7 +63,7 @@ class Bdd {
             $order = "";
         }
 
-        if(isset($and)&&isset($andCompare)){
+        if(isset($and) && isset($andCompare)){
             if(isset($andWhere)){
                 $and = "AND $andCompare $andWhere";
             } 

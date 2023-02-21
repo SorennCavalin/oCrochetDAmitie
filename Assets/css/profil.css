@@ -78,6 +78,7 @@ svg {
     width: 40%;
     aspect-ratio: 1/.5;
     border: .5px solid gray;
+    background-color: white;
     padding: 20px;
     margin: 20px auto;
     box-shadow: 18px 19px 8px 0px rgba(0,0,0,0.1);

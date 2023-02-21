@@ -121,16 +121,14 @@ class ProjetController extends BaseController{
      }
 
      public function accueil(){
-          if(!$projets = Bdd::selection(["table" => "projet", "where" => "WHERE date_fin >= '". date("Y-m-d",time()) ."' ORDER BY date_fin DESC"])){
-               $pause = true;
-               $projets = Bdd::selection(["table" => "projet", "where" => "ORDER BY date_fin DESC LIMIT 3"]);
-          }
+          $projets = Bdd::selection(["table" => "projet", "compare" => "date_debut", "where" => " <= '". date("Y-m-d",time()) . "'", "and" => true, "andCompare" => "date_fin", "andWhere" => ">= '". date("Y-m-d",time()) . "'",  "order" => "id DESC", "limit" => "3"]);
+          // \d_exit($projet);
           
 
           $this->affichage("projet/accueil.html.php",[
                "projets" => $projets,
-               "css" => "projet",
-               "js" => "projets",
+               "css" => "projet_accueil",
+               "js" => "SliderProjets",
                "pause" => isset($pause) ? $pause : false
           ]);   
      }

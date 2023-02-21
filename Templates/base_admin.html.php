@@ -25,7 +25,7 @@
         <script type='module' src="/oCrochetDAmitie/Assets/js/<?=$js?>.js"></script>
     <?php endif ?>
 
-    <script type='module' src="/oCrochetDAmitie/Assets/js/recherche.js"></script>
+    <script type='module' src="/oCrochetDAmitie/Assets/js/Recherche.js"></script>
 
 
 </head>

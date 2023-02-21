@@ -52,7 +52,7 @@
   </div>  
  </div> 
  <div class='centrer'>
-   <button type="submit" class="btn btn-primary">enregistrer</button>
+  <button type="submit" class="btn btn-primary button" >enregistrer</button>
  </div>
  
 </form>

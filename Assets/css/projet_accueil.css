@@ -1,42 +1,36 @@
 
-
-
-.projets {
-    padding: 10px 0;
-}
-.projet{
-    overflow: hidden;
+#projets{
     position: relative;
-    transition: .2s;
-    padding: 5px 10px 10px 10px;
-    height: auto;
-    border-right: .5px solid;
-    border-left: .5px solid;
+    padding: 20px 70px;
+    /* background-color: #fff;
+    border: 1px solid black; */
 }
-.ferme {
-    max-height: 35px;
-}
-.arrow {
+
+.fleche{
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 0;
-    height: 0;
-    margin: 0;
-    border-style: solid;
-    border-width: 10px 5px 0 5px;
-    border-color: #000000 transparent transparent transparent;
-    transition: .2s;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    /* opacity: 0; */
+    font-size: 100px;
+    color: rgba(186, 186, 186, 0.8);
+    /* background-color: rgba(0, 0, 0, 0.8); */
+    padding: 10px;
 }
-.retourne{
-    transform: rotate(180deg);
+#Moins{
+    left: 0;
 }
-hr:last-of-type{
+#Plus{
+    right: 0;
+}
+.infoSup{
+    font-size: 12px;
+    text-align: right;
+    color: gray;
+}
+.autreProjets{
+    padding: 10px;
+    text-align: right;
     margin-bottom: 10px;
-}
-.lien_tout{
-    text-align: end;
-}
-.projet_titre{
-    margin-bottom: 23px;
 }

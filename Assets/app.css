@@ -23,13 +23,23 @@ body
     font-size: var(--font-size);
     width: 100%;
     height: 100%;
-    background-color: var(--site_bgc);
+    /* background-color: var(--site_bgc); */
     /* min-height: 1200px; */
     padding-top: 60px;
 }
 
 form{
     margin-top: 100px;
+}
+
+.button{
+    margin-top: 10px;
+    background-color: rgba(52, 73, 94, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border: .5px solid white;
+    border-radius: 15px;
+    cursor: pointer;
 }
 
 
