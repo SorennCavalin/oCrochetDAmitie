@@ -1,8 +1,9 @@
 <?php
-    // $page = $_GET["page"] ?? 1;
-    // $prev = $page - 1;
-    // $next = $page + 1;
-    // $next = $next <= $pageMax ? $next : $pageMax;
+
+    $prev = $page - 1;
+    $next = $page + 1;
+   
+
 ?>
 
 <table class="table table-bordered table-striped">
@@ -50,10 +51,10 @@
     </tbody>
 </table>
 <div class="d-flex justify-content-around">
-    <a href="<?= lien("projet", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
+    <a href="<?= lienAdmin("projet", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
         précédent
     </a>
-    <a href="<?=lien("projet", "afficher",$next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
+    <a href="<?= lienAdmin("projet", "afficher",$next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
         suivant
     </a>
 </div>

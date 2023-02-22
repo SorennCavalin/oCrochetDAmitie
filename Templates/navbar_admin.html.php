@@ -23,7 +23,7 @@
           Projets
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="<?= lien("projet") ?>">Liste</a>
+          <a class="dropdown-item" href="<?= lienAdmin("projet") ?>">Liste</a>
           <a class="dropdown-item" href="<?= lien("projet","ajouter") ?>">Ajouter </a>
       </li>
       <li class="nav-item dropdown">

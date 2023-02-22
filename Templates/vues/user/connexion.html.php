@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <button type="submit" class="unclicked">Se connecter</button>
+    <button type="submit" class="unclicked button">Se connecter</button>
 
     <p class='inscription'>Vous n'avez pas de compte? <br> <a href="<?= lien("user","inscription") ?>">inscrivez-vous ici</a></p>
     

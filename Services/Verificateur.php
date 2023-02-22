@@ -629,6 +629,7 @@ class Verificateur {
                     Session::messages("danger", "Un projet avec le nom '$nomVerifie' existe déjà.");
                 } else {
                     $tableau["nom"] = $nomVerifie;
+                    $tableau["slug"] = slugify($nomVerifie);
                 }
             }
         } else {
@@ -698,6 +699,7 @@ class Verificateur {
                         Session::messages("danger", "Un projet avec le nom '$nomVerifie' existe déjà.");
                     } else {
                         $tableau["nom"] = $nomVerifie;
+                        $tableau["slug"] = slugify($nomVerifie);
                     }
                 }
                 

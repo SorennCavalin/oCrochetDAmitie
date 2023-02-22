@@ -42,6 +42,17 @@ form{
     cursor: pointer;
 }
 
+/* class qui donne la couleur de font noir (surtout pour les liens) */
+.lien{
+    color: black;
+}
+
+/* sert a mettre de petits texte avec des infos supplémentaires */
+.infoSup{
+    font-size: 12px;
+    text-align: right;
+    color: gray;
+}
 
 /* donne une forme aux messages côté client */
 .messages {

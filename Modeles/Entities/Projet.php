@@ -12,6 +12,7 @@ class Projet{
     private string $page;
     private string $date_debut;
     private string $date_fin;
+    private string $slug;
 
     /**
      * Get the value of nom
@@ -140,5 +141,25 @@ class Projet{
         return false ;
 
         
+    }
+
+    /**
+     * Get the value of slug
+     */ 
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set the value of slug
+     *
+     * @return  self
+     */ 
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
     }
 }

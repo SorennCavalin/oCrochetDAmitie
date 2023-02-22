@@ -8,9 +8,9 @@ session_start();
 define("ROOT", __DIR__ . "/../");
 // include ROOT . "assets/app.css";
 
-function lien($controleur, $methode = "afficher", $id = null) {
+function lien($controleur, $methode = "afficher", $id = null, $page = null) {
     // return ROOT . "?controleur=$controleur&methode=$methode" . ($id ? "&id=$id" : "");
-    return "/oCrochetDAmitie/$controleur/$methode" . ($id ? "/$id" : "");
+    return "/oCrochetDAmitie/$controleur/$methode" . ($id ? "/$id" : "") . ($page ? "/$page" : "");
     
 };
 function lienAdmin($controleur, $methode = "afficher", $id = null) {
@@ -42,4 +42,8 @@ function d_exit($var){
     var_dump($var);
     echo "</pre>";
     exit;
+}
+function slugify($nom){
+    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $nom)));
+    return $slug;
 }

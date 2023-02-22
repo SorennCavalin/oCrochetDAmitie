@@ -9,22 +9,23 @@ use Services\Verificateur;
 
 class ProjetController extends BaseController{
 
-     public function afficher(){
+     public function afficherAdmin($page = 1){
           if (!Session::isAdmin()){
                $this->redirectionError();
-           }
-          $page = empty($_GET["id"]) ? 1 : $_GET["id"];
+          }
+          $page = $page ? $page : 1;
           $nbParPage = 10;
           $offset = (($page - 1) * $nbParPage) - 1;
 
-          $projets = Bdd::selection(["table" => "projet", "where" => "LIMIT " . ($page == 1 ? "" : "$offset," ) . " $nbParPage"]) ;
+
+          $projets = Bdd::selection(["table" => "projet", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
 
           $pageMax =  count($projets) !== 10 ?  true : false;
-               
           $this->affichageAdmin("projet/liste.html.php" , [
                "projets" => $projets,
                "pageMax" => $pageMax,
-               "page" => $page
+               "page" => $page,
+               "banniere" => "Projets.jpg"
           ]);
 
      }
@@ -39,7 +40,7 @@ class ProjetController extends BaseController{
 
                if(($form = Verificateur::verifyNewProject($_POST)) === true){
 
-                    $this->redirection(lien("projet"));
+                    $this->redirection(lienAdmin("projet"));
 
                } else{
                     extract($form);
@@ -68,7 +69,7 @@ class ProjetController extends BaseController{
 
                if(($form = Verificateur::verifyModifProject($_POST,$projet)) !== 1){
 
-                    $this->redirection(lien("projet"));
+                    $this->redirection(lienAdmin("projet"));
                
                }else {
                     if(is_array($form)){
@@ -103,7 +104,7 @@ class ProjetController extends BaseController{
   
           
           Bdd::dropRelie("projet",$id,"concours");
-          $this->redirection(lien("projet"));
+          $this->redirection(lienAdmin("projet"));
           
      }
   
@@ -121,15 +122,48 @@ class ProjetController extends BaseController{
      }
 
      public function accueil(){
-          $projets = Bdd::selection(["table" => "projet", "compare" => "date_debut", "where" => " <= '". date("Y-m-d",time()) . "'", "and" => true, "andCompare" => "date_fin", "andWhere" => ">= '". date("Y-m-d",time()) . "'",  "order" => "id DESC", "limit" => "3"]);
-          // \d_exit($projet);
-          
+               $projets = Bdd::selection(["table" => "projet", "compare" => "date_debut", "where" => " <= '". date("Y-m-d",time()) . "'", "and" => true, "andCompare" => "date_fin", "andWhere" => ">= '". date("Y-m-d",time()) . "'",  "order" => "id DESC"]);
+               // si il n'y a pas de projet actif
+               if (!$projets){
+                    Session::messages("secondary","Aucun projet en cours, voici tout les projets qui ont été mener a bien par notre association");
+                    return $this->redirection(lien("projet","tout"));
+               }
+               
 
-          $this->affichage("projet/accueil.html.php",[
-               "projets" => $projets,
-               "css" => "projet_accueil",
-               "js" => "SliderProjets",
-               "pause" => isset($pause) ? $pause : false
-          ]);   
+               return $this->affichage("projet/accueil.html.php",[
+                    "projets" => $projets,
+                    "css" => "projet_accueil",
+                    "js" => "SliderProjets",
+               ]);
+          
+     }
+     
+     public function tout(null|string $slug = null){
+
+          if ($slug){
+               $projet = Bdd::selection(["table" => "projet", "compare" => "slug", "where" => " = '$slug'"]);
+               return $this->affichage("projet/accueil.html.php",[
+                    "projets" => $projet,
+                    "css" => "projet_accueil",
+               ]);
+
+          } else {
+               // le code pour la pagination
+               $page = empty($_GET["id"]) ? 1 : $_GET["id"];
+               $nbParPage = 25;
+               $offset = (($page - 1) * $nbParPage) - 1;
+
+               $projets = Bdd::selection(["table" => "projet", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
+
+               $pageMax =  count($projets) !== 25 ?  true : false;
+
+               return $this->affichage("projet/tout.html.php",[
+                    "projets" => $projets,
+                    "pageMax" => $pageMax,
+                    "page" => $page,
+                    "css" => "projet_accueil"
+               ]);
+          }
+          
      }
 }

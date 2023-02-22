@@ -52,7 +52,7 @@
 
 
 <div class="d-flex justify-content-between">
-    <a href="<?= lien('projet') ?>" class="btn btn-primary">
+    <a href="<?= lienAdmin('projet') ?>" class="btn btn-primary">
         retour a la liste
     </a>
     <a href="<?= lien('projet',"modifier",$projet->getId()) ?>" class="btn btn-primary">

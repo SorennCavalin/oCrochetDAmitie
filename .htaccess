@@ -6,4 +6,7 @@ RewriteEngine On
 RewriteRule ^$                          index.php
 RewriteRule ^(\w+)/?$                   index.php?controleur=$1 [L,QSA]
 RewriteRule ^(\w+)[/-](\w+)$            index.php?controleur=$1&methode=$2 [L,QSA]
-RewriteRule ^(\w+)[/-](\w+)[/-](\d+)$   index.php?controleur=$1&methode=$2&id=$3 [L,QSA]
+# route pour les slugs des projets
+RewriteRule ^(\w+)[/-](\w+)[/-]([a-z0-9]+(?:-[a-z0-9]+)*)$   index.php?controleur=$1&methode=$2&id=$3 [L,QSA]
+RewriteRule ^(\w+)[/-](\w+)[/-]([a-z0-9]+(?:-[a-z0-9]+)*)[/-](\d+)$   index.php?controleur=$1&methode=$2&id=$3&page=$4 [L,QSA]
+# RewriteRule ^(\w+)[/-](\w+)[/-](\d+)$   index.php?controleur=$1&methode=$2&id=$3 [L,QSA]

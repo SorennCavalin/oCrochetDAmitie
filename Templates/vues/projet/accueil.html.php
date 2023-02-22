@@ -1,8 +1,17 @@
 <div class="container">
 
+    <div class="banniere"> 
+        <img src="<?= imgLink("Projets.jpg")?>" alt="Projets"> 
+    </div> 
+
+
+
     <div id="projets">
+        <?php if (!isset($_GET['id'])) :?>
         <div class='fleche' id='Moins'>{</div>
         <div class="fleche" id='Plus'>}</div>
+        <div id='nb'>1/<?= count($projets) ?></div>
+        <?php endif?>
         <?php foreach ($projets as $index => $projet) :?>
             <div class="projet" id='<?= "projet" . $index ?>'>
                 <h1 class="projet_titre"><?= $projet->getNom() ?></h1>
