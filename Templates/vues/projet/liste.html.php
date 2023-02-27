@@ -1,9 +1,6 @@
 <?php
-
     $prev = $page - 1;
     $next = $page + 1;
-   
-
 ?>
 
 <table class="table table-bordered table-striped">
@@ -51,10 +48,10 @@
     </tbody>
 </table>
 <div class="d-flex justify-content-around">
-    <a href="<?= lienAdmin("projet", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
+    <a href="<?= lienAdmin("projet", "afficher", $prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
         précédent
     </a>
-    <a href="<?= lienAdmin("projet", "afficher",$next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
+    <a href="<?= lienAdmin("projet", "afficher", $next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
         suivant
     </a>
 </div>

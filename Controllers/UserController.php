@@ -174,9 +174,6 @@ class UserController extends BaseController{
 
     public function inscription(){
         
-        // if (mail($to , $subject, $message)){
-        //     
-        // }
         if (Session::isConnected()){
             return $this->redirection(lien("user","profil"));
         }

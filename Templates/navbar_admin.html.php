@@ -31,7 +31,7 @@
           Vidéos
         </a>
         <div class="dropdown-menu">
-          <a class="dropdown-item" href="<?= lien("video") ?>">Liste</a>
+          <a class="dropdown-item" href="<?= lienAdmin("video") ?>">Liste</a>
           <a class="dropdown-item" href="<?= lien("video","ajouter") ?>">Ajouter </a>
       </li>
       <li class="nav-item dropdown">

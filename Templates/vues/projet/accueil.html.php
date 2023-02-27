@@ -7,6 +7,7 @@
 
 
     <div id="projets">
+        <!--  -->
         <?php if (!isset($_GET['id'])) :?>
         <div class='fleche' id='Moins'>{</div>
         <div class="fleche" id='Plus'>}</div>
@@ -22,5 +23,5 @@
             </div>
         <?php endforeach?>
     </div>
-    <div class='autreProjets '><a href="<?= lien("projet","tout") ?>" class='button'>Voir tout les projets</a></div>
+    <div class='tout'><a href="<?= lien("projet","tout") ?>" class='button'>Voir tout les projets</a></div>
 </div>

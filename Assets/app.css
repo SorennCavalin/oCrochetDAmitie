@@ -42,6 +42,18 @@ form{
     cursor: pointer;
 }
 
+/* rend opaque les lien avec l'attibut disabled */
+*[disabled]{
+    opacity: .5;
+}
+
+/* gère les bouttons "voir tout les" */
+.tout {
+    padding: 10px;
+    text-align: right;
+    margin-bottom: 10px;
+}
+
 /* class qui donne la couleur de font noir (surtout pour les liens) */
 .lien{
     color: black;

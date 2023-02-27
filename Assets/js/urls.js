@@ -67,10 +67,10 @@ const urls = {
     ColonnesUrl:  urlDebut + "ajax/dynaFormColonnes",
     
 
-    /**
-     * L'url pour confirmer la réception du colis
-     */
-    confirmationColis :  urlDebut + "ajax/confirmerColis",
+    // /**
+    //  * L'url pour confirmer la réception du colis (inachevé)
+    //  */
+    // confirmationColis :  urlDebut + "ajax/confirmerColis",
 
 }
 

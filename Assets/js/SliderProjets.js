@@ -74,6 +74,7 @@ window.addEventListener("load", () => {
         afficheIdActuel() {
             // lorsqu'une fleche est en mouseover(hover css) la div du compte apparaît et disparait lors du mouseleave(fin de hover)
             $('.fleche').on("mouseover", () => {
+                // $('#nb').;
                 $('#nb').css("opacity", 1);
             })
             $('.fleche').on("mouseleave", () => {

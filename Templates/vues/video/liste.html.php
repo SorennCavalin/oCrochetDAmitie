@@ -7,7 +7,7 @@
         <tr>
             <th>ID</th>
             <th>nom</th>
-            <th>lien</th>
+            <th>plateforme</th>
             <th>type</th>
             <th>actions</th>
         </tr>
@@ -24,7 +24,7 @@
                     <?= $video->getNom() ?>
                 </td>
                 <td>
-                    <?= explode("?", $video->getLien())[0] ?>
+                    <?= $video->getPlateforme()?>
                 </td>
                 <td>
                     <?= $video->getType() ?>

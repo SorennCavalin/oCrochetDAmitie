@@ -7,24 +7,24 @@ use Modeles\Session;
 use Services\Verificateur;
 
 class VideoController extends BaseController{
-    public function afficher(){
+    public function afficherAdmin($page = 1){
         if (!Session::isAdmin()){
             $this->redirectionError();
 
         }
 
         // utilisation de id inutilisé dans l'url pour la pagination.
-        $page = empty($_GET["id"]) ? 1 : $_GET["id"];
-        $nbParPage = 10;
+        $page = $page ? $page : 1;
+        $nbParPage = 30;
         $offset = (($page - 1) * $nbParPage) - 1;
 
 
       
 
        
-        $videos = Bdd::selection(["table" => "video", "where" => "LIMIT " . ($page == 1 ? "" : "$offset," ) . " $nbParPage" , "order" => "id DESC"]);
+        $videos = Bdd::selection(["table" => "video", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
 
-        $pageMax =  count($videos) !== 10 ?  true : false;  //ceil($nbLignes / $nbParPage);
+        $pageMax =  count($videos) !== 30 ?  true : false;  //ceil($nbLignes / $nbParPage);
         
 
         $this->affichageAdmin("video/liste.html.php",[
@@ -43,7 +43,7 @@ class VideoController extends BaseController{
 
         if (!empty($_POST)){
             if(($form = Verificateur::verifyNewVideo($_POST)) === true){
-                $this->redirection(lien("video"));
+                $this->redirection(lienAdmin("video"));
             } else {
                 extract($form);
                 return $this->affichageAdmin("video/form.html.php",[
@@ -68,7 +68,7 @@ class VideoController extends BaseController{
 
         if (!empty($_POST)){
             if(($form = Verificateur::verifyModifVideo($_POST,$video)) === true){
-                $this->redirection(lien("video"));
+                $this->redirection(lienAdmin("video"));
             } else {
                 extract($form);
                 return $this->affichageAdmin("video/form.html.php",[
@@ -102,12 +102,43 @@ class VideoController extends BaseController{
     } 
 
     public function accueil(){
-        $videos = Bdd::selection(["table" => "video", "where" => "LIMIT 6"]);
+
+        $videos = Bdd::selection(["table" => "video", "limit" => "6", "order" => "id DESC"]);
 
         $this->affichage("video/accueil.html.php", [
             "videos" => $videos,
-            "css" => "video"
+            "css" => "video",
+            'js' => "VideoStand"
         ]);
+    }
+
+    public function tout($page = 1) {
+        // le code pour la pagination
+        $page = $page ?? 1;
+        $nbParPage = 24;
+        $offset = (($page - 1) * $nbParPage) - 1;
+
+        $videos = Bdd::selection(["table" => "video", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
+
+        $pageMax =  count($videos) !== 24 ?  true : false;
+
+        return $this->affichage("video/tout.html.php",[
+             "videos" => $videos,
+             "pageMax" => $pageMax,
+             "page" => $page,
+             "css" => "video"
+        ]);
+    }
+
+    public function afficher(null|string $slug) {
+        // la fonction selection renvoi un tableau
+        $video = Bdd::selection(["table" => "video", "compare" => "slug", "where" => " = '$slug'"])[0];
+        \d_exit($video);
+        return $this->affichage("video/afficherVideo.html.php",[
+             "video" => $video,
+             "css" => "video",
+        ]);
+
     }
 
     public function supprimer($id) {
@@ -118,7 +149,7 @@ class VideoController extends BaseController{
         }
 
         Bdd::drop("video",$id);
-        $this->redirection(lien("video"));
+        $this->redirection(lienAdmin("video"));
         
     }
 

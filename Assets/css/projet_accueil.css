@@ -41,12 +41,13 @@
 
 .tout-les-projets{
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     flex-direction: row;
     margin: 50px;
 }
 .tout-les-projets .projet{
-    width: 25%;
+    width: 400px;
     padding: 5px 5px;
 }
 .border {
@@ -56,7 +57,12 @@
 .tout-les-projets p {
     margin: 10px;
 }
-
+.tout-les-projets .pagination{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    padding: 10px 20px;
+}
 @media screen and (max-width: 900px) {
     .fleche{
         font-size: 70px;
@@ -64,5 +70,13 @@
     }
     #projets{
         padding: 20px 40px;
+    }
+}
+@media screen and (max-width: 500px) {
+    .tout-les-projets .projet{
+        width: 100%;
+    }
+    .tout-les-projets{
+        margin: 10px;
     }
 }

@@ -138,32 +138,31 @@ class ProjetController extends BaseController{
           
      }
      
-     public function tout(null|string $slug = null){
+     public function tout($page = 1){
 
-          if ($slug){
-               $projet = Bdd::selection(["table" => "projet", "compare" => "slug", "where" => " = '$slug'"]);
-               return $this->affichage("projet/accueil.html.php",[
-                    "projets" => $projet,
-                    "css" => "projet_accueil",
-               ]);
+          // le code pour la pagination
+          $page = $page ? $page : 1;
+          $nbParPage = 24;
+          $offset = (($page - 1) * $nbParPage) - 1;
 
-          } else {
-               // le code pour la pagination
-               $page = empty($_GET["id"]) ? 1 : $_GET["id"];
-               $nbParPage = 25;
-               $offset = (($page - 1) * $nbParPage) - 1;
+          $projets = Bdd::selection(["table" => "projet", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
 
-               $projets = Bdd::selection(["table" => "projet", "limit" => ($page == 1 ? "" : "$offset," ) . " $nbParPage", "order" => "id DESC" ]);
+          $pageMax =  count($projets) !== 24 ?  true : false;
 
-               $pageMax =  count($projets) !== 25 ?  true : false;
-
-               return $this->affichage("projet/tout.html.php",[
-                    "projets" => $projets,
-                    "pageMax" => $pageMax,
-                    "page" => $page,
-                    "css" => "projet_accueil"
-               ]);
-          }
-          
+          return $this->affichage("projet/tout.html.php",[
+               "projets" => $projets,
+               "pageMax" => $pageMax,
+               "page" => $page,
+               "css" => "projet_accueil"
+          ]);
      }
+
+     public function afficher(null|string $slug){
+
+          $projet = Bdd::selection(["table" => "projet", "compare" => "slug", "where" => " = '$slug'" ]);
+          return $this->affichage("projet/afficherProjet.html.php",[
+               "projet" => $projet,
+               "css" => "projet_accueil",
+          ]);
+     } 
 }

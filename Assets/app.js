@@ -79,7 +79,7 @@ window.addEventListener('load', () => {
     })
 
 
-    // ajout d'une classe au header lors du scroll vers le bas et retire la classe lorsque le site est tout en haut
+    // ajout d'une classe au header lors du scroll vers le bas et retire la classe lorsque le site est tout en haut (inutilisée)
 
     // if (window.scrollY > $("header").height()) {
     //         $("body").addClass("sans-header");
@@ -119,6 +119,9 @@ window.addEventListener('load', () => {
         })
     });
     
+
+    // tout les éléments ayant l'attibut disabled sont inclickable
+    $('*[disabled]').on("click", (e) => { e.preventDefault() });
 
 })
 

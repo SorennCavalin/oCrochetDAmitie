@@ -772,6 +772,7 @@ class Verificateur {
         if (isset($nom) && !empty($nom)){
             if($nomVerifie = self::verifyString($nom)){
                 $tableau["nom"] = $nomVerifie;
+                $tableau["slug"] = slugify($nomVerifie);
             }
         } else {
              Session::messages("danger","Veuillez renter un nom pour la vidéo");
@@ -783,14 +784,27 @@ class Verificateur {
                 if ($lienVerifie = self::verifyString($lien,'',["verifierTaille" => false , "stringVerifie" => "lien", ])){
                     $tableau["lien"] = $lienVerifie;
 
-                    // récupération du type de la vidéo (facebook, youtube, etc...) depuis l'url en le découpant
-                    $tableau["type"] = explode(".",$lienVerifie)[1];
+                    // récupération de la plateforme qui heberge la vidéo (facebook, youtube, etc...) depuis l'url en le découpant
+                    $tableau["plateforme"] = explode(".",$lienVerifie)[1];
                 }
             } else {
                  Session::messages("danger","Le lien n'est pas valide");
             }
         } else {
              Session::messages("danger","Veuiller entrer un lien pour la vidéo");
+        }
+
+        if (isset($type) && !empty($type)){
+            $typesDispo = ["live","presentation","tuto","autre"];
+            if (in_array($type,$typesDispo)){
+                if ($typeVerifie = self::verifyString("$type","",["stringVerifie" => "type","verifierTaille" => false])){
+                    $tableau["type"] = $typeVerifie;
+                }
+            } else {
+                Session::messages("danger","Le type choisi n'est pas conforme");
+            }
+        } else {
+            Session::messages("danger","Veuiller choisir un type pour la vidéo");
         }
 
         if (!Session::getItemSession("messages")){
@@ -826,6 +840,7 @@ class Verificateur {
             if($nomVerifie = self::verifyString($nom, $video->getNom(),["maj"=> false])){
                 if ($nomVerifie !== 1){
                     $tableau["nom"] = $nomVerifie;
+                    $tableau["slug"] = slugify($nomVerifie);
                 }
             }
         }
@@ -836,13 +851,28 @@ class Verificateur {
                 if ($lienVerifie = self::verifyString($lien,$video->getLien(),["verifierTaille" => false , "stringVerifie" => "lien",  ])){
                     if ($lienVerifie !== 1){
                         $tableau["lien"] = $lienVerifie;
-                        // récupération du type de la vidéo (facebook, youtube, etc...) depuis l'url en le découpant
-                        $tableau["type"] = explode(".",$lien)[1];
+                        // récupération la plateforme qui heberge la vidéo (facebook, youtube, etc...) depuis l'url en le découpant
+                        $tableau["plateforme"] = explode(".",$lien)[1];
                     }
                 }
             } else {
                 Session::messages("danger","Le lien n'est pas valide");
             }
+        }
+        
+        if (isset($type) && !empty($type)){
+            $typesDispo = ["live","presentation","tuto","autre"];
+            if (in_array($type,$typesDispo)){
+                if ($typeVerifie = self::verifyString("$type",$video->getType(),["stringVerifie" => "type","verifierTaille" => false])){
+                    if ($typeVerifie != 1){
+                        $tableau["type"] = $typeVerifie;
+                    }
+                }
+            } else {
+                Session::messages("danger","Le type choisi n'est pas conforme");
+            }
+        } else {
+            Session::messages("danger","Veuiller choisir un type pour la vidéo");
         }
 
         if (!Session::getItemSession("messages")){
@@ -854,6 +884,9 @@ class Verificateur {
                     Session::messages("danger","Un problème est survenu lors de la modification, veuillez réessayer");
                     return false;
                 }
+            } else {
+                Session::messages("secondary","Aucune modification apportée à la vidéo " . $video->getNom());
+                return true ;
             }
         }
     }
