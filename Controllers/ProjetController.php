@@ -159,7 +159,7 @@ class ProjetController extends BaseController{
 
      public function afficher(null|string $slug){
 
-          $projet = Bdd::selection(["table" => "projet", "compare" => "slug", "where" => " = '$slug'" ]);
+          $projet = Bdd::selection(["table" => "projet", "compare" => "slug", "where" => " = '$slug'" ])[0];
           return $this->affichage("projet/afficherProjet.html.php",[
                "projet" => $projet,
                "css" => "projet_accueil",

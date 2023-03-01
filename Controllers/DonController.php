@@ -101,13 +101,25 @@ class DonController extends BaseController{
     } 
 
     public function accueil(){
-        $dons = Bdd::selection(["table" => "don", "where" => "LIMIT 6"]);
 
-        $this->affichage("don/accueil.html.php", [
-            "dons" => $dons,
-            "css" => "don"
-        ]);
+        if ($_POST){
+            if ($form = Verificateur::verifyNewDonAbonne($_POST) === true){
+                return $this->redirection(lien("don","accueil"));
+            } else {
+                return $this->affichage("don/accueil.html.php", $form ?? []);
+            }
+        } else {
+            $dons = Bdd::selection(["table" => "don", "compare" => "type" , "where" => " = 'reception'", 'order' => "id DESC"]);
+
+            $this->affichage("don/accueil.html.php", [
+                "dons" => $dons,
+                "css" => "don",
+                "js" => "donShow"
+            ]);
+        }
     }
+
+
 
     public function supprimer($id) {
 

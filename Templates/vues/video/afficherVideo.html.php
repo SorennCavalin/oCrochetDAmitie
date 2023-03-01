@@ -17,4 +17,10 @@
         <a href="<?= lien("video","tout") ?>" class="button">Voir toutes les vidéos</a>
     </div>
     
+    <script>
+        window.addEventListener("load" , () => {
+            $("#highlight .iframe").css("height",($("#highlight").css("height").split("px")[0] - $("#highlight h4").css("height").split("px")[0]) + "px");
+
+        })
+    </script>
 </div>

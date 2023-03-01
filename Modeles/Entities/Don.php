@@ -12,7 +12,8 @@ class Don  {
     private string|int $donataire ;
     private string $date ;
     private bool $reception;
-    private int $concours_id;
+    private string|null $description;
+    private int|null $concours_id;
 
     /**
      * Retourne organisme ou donataire basé sur type
@@ -134,10 +135,10 @@ class Don  {
     }
 
     public function getUser(){
-        if (is_int($donataire)){
+        if (is_numeric($this->donataire)){
             return Bdd::getEntiteRelie("don","user",$this->donataire);
         }
-        return [];
+        return false;
     }
 
     public function getTaille(){
@@ -184,6 +185,26 @@ class Don  {
     public function setReception($reception)
     {
         $this->reception = $reception;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of description
+     */ 
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set the value of description
+     *
+     * @return  self
+     */ 
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }

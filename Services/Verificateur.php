@@ -247,7 +247,6 @@ class Verificateur {
         
     }
 
-
     /**
      * function verifyPhone sert à verifier que les numéros de téléphones soient bien conformes
      * 
@@ -445,8 +444,6 @@ class Verificateur {
             return $form;
         }
     }
-
-
 
     /**
      * Verify modif user permet d'alleger le controller en effectuant toutes les modification nécessaire a la modification d'un compte utilisateur
@@ -771,8 +768,13 @@ class Verificateur {
 
         if (isset($nom) && !empty($nom)){
             if($nomVerifie = self::verifyString($nom)){
-                $tableau["nom"] = $nomVerifie;
-                $tableau["slug"] = slugify($nomVerifie);
+                if(Bdd::selection([ "table" => "video" , "compare" => "nom" , "where" => "= '$nomVerifie'"])){
+                    Session::messages("danger", "Une vidéo avec le nom '$nomVerifie' existe déjà.");
+                } else {
+                    $tableau["nom"] = $nomVerifie;
+                    $tableau["slug"] = slugify($nomVerifie);
+                }
+               
             }
         } else {
              Session::messages("danger","Veuillez renter un nom pour la vidéo");
@@ -839,8 +841,12 @@ class Verificateur {
         if (isset($nom) && !empty($nom)){
             if($nomVerifie = self::verifyString($nom, $video->getNom(),["maj"=> false])){
                 if ($nomVerifie !== 1){
-                    $tableau["nom"] = $nomVerifie;
-                    $tableau["slug"] = slugify($nomVerifie);
+                    if(Bdd::selection([ "table" => "video" , "compare" => "nom" , "where" => "= '$nomVerifie'"])){
+                        Session::messages("danger", "Une vidéo avec le nom '$nomVerifie' existe déjà.");
+                    } else {
+                        $tableau["nom"] = $nomVerifie;
+                        $tableau["slug"] = slugify($nomVerifie);
+                    }
                 }
             }
         }
@@ -1008,6 +1014,46 @@ class Verificateur {
             } else {
                 Session::messages("danger","Erreur lors de l'enregistrement du don");
                 return $form;
+            }
+        } else {
+            return $form;
+        }
+
+       
+    } 
+    
+    /** 
+     * Verify new don abonné permet d'alleger le controller en effectuant toutes les modification nécessaire a la création d'un don par un abonné
+     * 
+     * @param array $form
+     * Le formulaire retourné par l'abonné ($_POST peut etre envoyé)
+     * 
+     * 
+     */
+    static function verifyNewDonAbonne(array $form){
+        
+        extract($form);
+
+        $tableau["type"] = "reception";
+        $tableau["donataire"] = Session::getUser()->getId();
+        $tableau["date"] = date("Y-m-d");
+
+        if (isset($description) && !empty($description)){
+            if ($descVerifie = self::verifyString($description,"",["stringVerifie" => "description","verifierTaille" => false])){
+                $tableau["description"] = $descVerifie;
+            }
+        } else {
+            Session::messages("danger","Veuiller décrire votre don pour que l'association puisse traiter votre don dans les meilleurs conditions");
+        }
+        
+
+        if(!Session::getItemSession("messages")){
+            
+            if(!Bdd::insertBdd("don",$tableau)){
+                Session::messages("danger","Erreur lors de l'enregistrement du don");
+                return $form;
+            } else {
+                return true;
             }
         } else {
             return $form;

@@ -117,8 +117,9 @@ window.addEventListener('load', () => {
             suppr.parents("div.alert").remove();
             
         })
-    });
-    
+    }); 
+
+    console.log(4 >= 4 && ( 2 > 3 || (6%3 < 1))) ;
 
     // tout les éléments ayant l'attibut disabled sont inclickable
     $('*[disabled]').on("click", (e) => { e.preventDefault() });

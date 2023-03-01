@@ -133,7 +133,7 @@ class VideoController extends BaseController{
     public function afficher(null|string $slug) {
         // la fonction selection renvoi un tableau
         $video = Bdd::selection(["table" => "video", "compare" => "slug", "where" => " = '$slug'"])[0];
-        \d_exit($video);
+        // \d_exit($video);
         return $this->affichage("video/afficherVideo.html.php",[
              "video" => $video,
              "css" => "video",
