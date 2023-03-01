@@ -67,3 +67,5 @@ class Session {
 
 
 }
+
+// \session_cache_expire()

@@ -11,7 +11,8 @@ class AccueilController extends BaseController {
 
     public function afficher()
     {
-       
+        setcookie("cookieTest", "test ok", time() + (86400), "/"); // 86400 = 1 day
+
         $this->affichage("accueil.html.php", [
             "css" => "accueil"
         ]);

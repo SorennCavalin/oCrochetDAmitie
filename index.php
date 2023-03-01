@@ -23,6 +23,7 @@ $classControleur = "Controllers\\" . ucfirst($controller) . "Controller";
 
 $controleur = new $classControleur;
 
+
 //lancement de la fonction pour l'affichage utilisateur
 //selon l'url exemple la methode n'est pas designée et sera donc par défault affichage 
 $controleur->$methode($id,$page);

@@ -2,24 +2,23 @@ import { urls } from "./urls.js";
 
 window.addEventListener("load", () => {
     $(".roles").remove();
-
-    $("#adresse").on("keyup", () => {
-        let divReponse = 
+    let divReponse =
         `<div class='reponse' id='reponse'>
             <ul>
             </ul>
-        </div>`
-
-        // console.log($("#adresse").val())
-        if ($("#adresse").val().length > 3) {
+        </div>`;
+    $("#adresse").on("keydown", () => {
+        
+        let adresse = $("#adresse").val();
+        if (adresse.length > 3) {
             // si l'input possede plus de 3 caracteres alors la recherche s'effectue
             $.ajax({
                 type: "GET",
                 url: urls.urlAPIAdresse,
                 data: {
-                    q: $("#adresse").val(),
-                    limit: 10,
-                    autocomplete : 1
+                    q: adresse, // un string d'une taille minimum de 3
+                    limit: 10, //la limite pour le nombre de résultats reçus
+                    autocomplete : 1 // booléen pour l'auto-complétion des navigateurs
                 },
                 success: (data) => {
                     // créer 2 variables 
