@@ -13,7 +13,7 @@ window.addEventListener("load", () => {
          * l'entièretée du pop up de recherche
          */
         div_recherche =
-            `<div id="div_recherche" class=' position-fixed top-50 start-50 translate-middle p-5 bg-white' style='z-index : 2000'>
+            `<div id="div_recherche" class=' position-fixed border border-dark top-50 start-50 translate-middle p-5 lg-p-4 bg-white' style='z-index : 2000'>
                 <div class="d-flex justify-content-between div-boutons"><span class="span-bouton-1 recherche"></span><span class="span-bouton-2">x</span></div>
                 <form id='recherche' action="http://localhost/oCrochetDAmitie/ajax/recherche" method="POST">
                     <h4 class="text-center mb-4">Vous allez faire une recherche spécifique. <br> Nous avons quelques question à poser pour vous rendre le meilleur résultat</h4>
@@ -199,8 +199,10 @@ window.addEventListener("load", () => {
         toggleDivRecherche(etat) {
             if (etat) {
                 $('.container').append(this.div_recherche);
+                $('body').css("overflow","hidden");
             } else {
                 this.getDivRecherche().remove();
+                $('body').css("overflow","auto");
             }
 
         }
@@ -558,9 +560,9 @@ window.addEventListener("load", () => {
         toggleAntiClick(actif = true) {
             // empeche les clic externes au pop up de recherche
             if (actif) {
-                $('body').append(`<div id='div_blocage'></div>`);
+                $('body').append(`<div class='div_blocage'></div>`);
             } else {
-                $('#div_blocage').remove();
+                $('.div_blocage').remove();
             }
         }
 
@@ -705,7 +707,7 @@ window.addEventListener("load", () => {
             // modifications de search pour s'accorder avec le type de données selectionnées
             this.selecteurChange()
 
-            this.recupRegionAPI("94")
+            this.recupRegionAPI()
 
             // fermeture de la div si clique sur la croix
             this.fermetureRecherche()

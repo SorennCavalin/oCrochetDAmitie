@@ -1,6 +1,6 @@
 <?php
-    $prev = $page - 1;
-    $next = $page + 1;
+    $prev = isset($page) ? $page - 1 : 0;
+    $next = isset($page) ? $page + 1 : 0;
 ?>
 
 <table class="table table-bordered table-striped">
@@ -47,14 +47,17 @@
         <?php endforeach; ?>
     </tbody>
 </table>
-<div class="d-flex justify-content-around">
-    <a href="<?= lienAdmin("projet", "afficher", $prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
-        précédent
-    </a>
-    <a href="<?= lienAdmin("projet", "afficher", $next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
-        suivant
-    </a>
-</div>
+
+<?php if (!isset($reponse)) :?>
+    <div class="d-flex justify-content-around">
+        <a href="<?= lienAdmin("projet", "afficher", $prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
+            précédent
+        </a>
+        <a href="<?= lienAdmin("projet", "afficher", $next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
+            suivant
+        </a>
+    </div>
+<?php endif ?>
 
 <div class="popup closed" id="popup">
     <p>Vous êtes sur le point de supprimer le projet : <span id='cible'></span> </p>

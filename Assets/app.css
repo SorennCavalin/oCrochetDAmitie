@@ -129,28 +129,20 @@ input:focus{
 
 /*          header               */
 
-header{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    height: 60px;
-    background-color: var(--header-color);
-    backdrop-filter: blur(var(--header-blur));
+header {
     width: 100%;
     position: fixed;
     top: 0;
     z-index: 2;
+    height: 60px;
+    background-color: var(--header-color);
+    backdrop-filter: blur(var(--header-blur));
 }
+
 .network{
    width: 100%;
 }
 .network svg{
-    /* aspect-ratio permet a la width ou height d'etre proportionnelle a l'autre 
-    ex: aspect-ratio:  1   /   1
-                     width    height
-    1/1 permet a la width et height recuperer une taille choisi par le dev ou la plus grande taille par default et de l'appliquer aux 2
-    */
     text-align: center;
     /* aspect-ratio: var(--ratio); */
     width: var(--width-nav-network);

@@ -17,29 +17,18 @@ window.addEventListener("load", () => {
                 url: urls.urlAPIAdresse,
                 data: {
                     q: adresse, // un string d'une taille minimum de 3
-                    limit: 10, //la limite pour le nombre de résultats reçus
-                    autocomplete : 1 // booléen pour l'auto-complétion des navigateurs
+                    limit: 3, //la limite pour le nombre de résultats reçus
+                    autocomplete: 1, // booléen pour l'auto-complétion des navigateurs
+                    type: "housenumber" // le type de donnée voulue (street, housenumber, etc ...)
                 },
                 success: (data) => {
-                    // créer 2 variables 
                     // reponse sera un string qui contient toutes les réponse qui serront affichée (3 max)
                     let reponse = '';
-                    let tour = 1;
                     $(data.features).each((i, obj) => {
-                        if (tour <= 3) {
-                            tour++;
-                            console.log(obj.properties);
                             let prop = obj.properties;
-                            if (prop.type !== 'housenumber') {
-                                tour += -1;
-                            } else {
-                                // je récupère la region depuis la propriété contexte qui contient " numéro du département , nom du département , nom de la région " (donc je divise le string avec split() sur les virgules et ne prend que l'index 2 (3eme information/nom de la region))
-                                let region = prop.context.split(',')[2]
-                                reponse += `<li val='${prop.name}' region='${region}' postal='${prop.postcode}'>${prop.label}</li>`;
-                            }
-                            
-                        }
-                        
+                            // je récupère la region depuis la propriété contexte qui contient " numéro du département , nom du département , nom de la région " (donc je divise le string avec split() sur les virgules et ne prend que l'index 2 (3eme information/nom de la region))
+                            let region = prop.context.split(',')[2]
+                            reponse += `<li val='${prop.name}' region='${region}' postal='${prop.postcode}'>${prop.label}</li>`;
                     })
                     if (reponse) {
                         if (!$("#reponse")[0]) {

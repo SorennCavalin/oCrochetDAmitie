@@ -39,7 +39,7 @@ class AjaxController extends BaseController {
 
             // recherche avec id classique retourne 1 seul resultat sous forme de fiche
             if($where === "id" ){
-                $recherche = Bdd::selectionId(["table"=>$table],$search);
+                $recherche = Bdd::selectionId($table,$search);
                 return $this->affichageAjax("$table/fiche.html.php",[
                     "$table" => $recherche,
                 ]);
@@ -52,7 +52,7 @@ class AjaxController extends BaseController {
             // sinon une liste sera affichée pour que l'utilisateur puisse choisir le concours qu'il veut
             if ($where === "projet_id" ){
                 if (is_numeric($search)){
-                    $recherche = Bdd::selectionId(["table"=>'projet'],$search);
+                    $recherche = Bdd::selectionId('projet',$search);
                     $concours = $recherche->getConcours();
                     $plusieurs = count($concours) > 1;
                     return $this->affichageAjax("$table/".( $plusieurs ? "liste" : "fiche" ).".html.php",[
@@ -81,9 +81,19 @@ class AjaxController extends BaseController {
                 // si on cherche un user, met tout en minuscule avec une maj en premier sinon le mot est cherché tel quel (avec un peu de sécu quand même )
                 $nom = ($table === "user") ? ucfirst(strtolower($this->traitementString($search))) : $this->traitementString($search);
                 $recherche = Bdd::selection(["table" => $table, "compare" => "$where", "like" => "'%$nom%'", "limit" => $limit, "order" => $order]);
-                return $this->affichageAjax("$table/liste.html.php",[
-                    ($table === "concours") ? "$table" : "$table" . "s" => $recherche
-                ],false);
+                $plusieurs = count($recherche);
+                if ($plusieurs){
+                    return $this->affichageAjax("$table/liste.html.php",[
+                        "$table" . "s" => $recherche,
+                        "reponse" => true
+                    ]);
+                } else {
+                    return $this->affichageAjax("$table/fiche.html.php",[
+                        ($table === "concours") ? "$table" : "$table" . "s" => $recherche,
+                        "reponse" => true
+                    ]);
+                }
+                
             }
 
 
@@ -98,7 +108,7 @@ class AjaxController extends BaseController {
                         // vérifie si plusieurs dates sont pareils que celle reçue et s'adapte
                         if(count($recherche_date_exacte) > 1){
                             return $this->affichageAjax("$table/liste.html.php", [
-                                "$table" . "s" => $recherche_date_exacte
+                                "$table" . "s" => $recherche_date_exacte,
                             ]);
                         }
                         return $this->affichageAjax("$table/fiche.html.php", [

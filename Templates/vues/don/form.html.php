@@ -8,6 +8,7 @@
       <option <?= ( (isset($type) && $type === "reception") ?"selected" : "") ?> id='reception' value="reception">Réception</option>
       <option <?= ( (isset($type) && $type === "envoi") ? "selected" : "") ?> id='envoi' value="envoi">Envoi vers un organisme</option>
     </select>
+    <small class="text-muted">Des champs adaptés a votre réponse va s'afficher</small>
   </div>
 
   <div class="mb-3" id="organisme">
@@ -40,7 +41,12 @@
         </div>
   <?php endforeach; endif?>
 
-  <div class="form-group"><button class="btn btn-primary m-1 mt-2" id="plus" type="button">ajouter un détail au don</button></div>
+  <div class="form-group mb-3">
+    <button class="btn btn-primary m-1 mt-2" id="plus" type="button">ajouter un détail au don</button>
+    <br>
+    <small class="text-muted">Une fois ajouté un, détail ne peut pas être retiré</small>
+  </div>
+  
   
   <button type="submit" class="btn btn-primary m-1" id="conf">Submit</button>
 </form>

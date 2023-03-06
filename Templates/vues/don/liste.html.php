@@ -57,7 +57,7 @@
 </table>
 
 
-
+<?php if (!isset($reponse)) :?>
 <div class="d-flex justify-content-around">
     <a href="<?= lien("don", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
         précédent
@@ -66,6 +66,8 @@
         suivant
     </a>
 </div>
+<?php endif?>
+
 
 
 <div class="popup closed" id="popup">

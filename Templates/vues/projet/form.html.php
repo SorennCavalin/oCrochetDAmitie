@@ -4,14 +4,15 @@
   <div class="mb-3">
     <label for="nom">Nom du projet</label>
     <input type="text" name="nom" class="form-control" id="nom" value="<?= $nom ?? "" ?>" >
+    <small class="text-muted">Plusieurs projets ne peuvent pas avoir le même nom</small>
   </div>
   <div class="row">
      <div class="mb-3 col-5">
-     <label for="date_debut">Date de lancement du projet</label>
+     <label for="date_debut">Début du projet</label>
      <input type="date" class="form-control" value="<?= $date_debut ?? "" ?>" name="date_debut" id="date_debut" >
      </div>
      <div class="mb-3 offset-1 col-5">
-     <label for="date_fin">Date de fin du projet</label>
+     <label for="date_fin">Fin du projet</label>
      <input type="date" name="date_fin" value="<?= $date_fin ?? "" ?>" class="form-control" id="date_fin" >
      </div>
   </div>
