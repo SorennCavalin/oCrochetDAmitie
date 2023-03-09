@@ -62,12 +62,11 @@ class Bdd {
         } else {
             $order = "";
         }
-
         if(isset($and) && isset($andCompare)){
             if(isset($andWhere)){
                 $and = "AND $andCompare $andWhere";
-            } 
-            if(isset($andLike)){
+            } elseif(isset($andLike)){
+                var_dump($and);
                 $and = "AND $andCompare $andLike";
             } else {
                 $and = "";

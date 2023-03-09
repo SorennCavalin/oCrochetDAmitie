@@ -25,3 +25,17 @@
 
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script>
+ window.addEventListener("load",() => {
+    let dateDebut = $('#date_debut');
+    let dateFin = $('#date_fin');
+
+    dateDebut.on("change", () => {
+      dateFin.attr("min",dateDebut.val())
+    });
+    dateFin.on("change", (e) => {
+      dateDebut.attr("max",dateFin.val())
+    })
+})
+</script>

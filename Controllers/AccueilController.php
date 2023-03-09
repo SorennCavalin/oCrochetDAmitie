@@ -24,7 +24,9 @@ class AccueilController extends BaseController {
             var_dump($_POST); exit;
         }
         
-        $this->affichageAdmin("stats.html.php");
+        $this->affichageAdmin("stats.html.php",[
+            "js" => "block_dates"
+        ]);
 
 
     }

@@ -116,14 +116,28 @@ class ProjetController extends BaseController{
           }
 
           $projet = Bdd::selectionId("projet",$id);
+          $dateFin = $projet->getDate_fin();
+          $dateDebut = $projet->getDate_debut();
+          $tot = $dateDebut > \date("Y-m-d");
+          $tard = $dateFin < \date("Y-m-d");
+          // $actif = $date_debut < \date("Y-m-d") && $date_fin > \date("Y-m-d") ;
+          if ($tot){
+               $etat = "Ce projet n'a pas encore débuté";
+          } elseif ($tard){
+               $etat = "Ce projet est terminé";
+          } else {
+               $etat = "Ce projet est actuellement en cours";
+          }
           $this->affichageAdmin("projet/fiche.html.php",[
-               "projet" => $projet
+               "projet" => $projet,
+               "etat" => $etat
           ]);
      }
 
      public function accueil(){
                $projets = Bdd::selection(["table" => "projet", "compare" => "date_debut", "where" => " <= '". date("Y-m-d",time()) . "'", "and" => true, "andCompare" => "date_fin", "andWhere" => ">= '". date("Y-m-d",time()) . "'",  "order" => "id DESC"]);
                // si il n'y a pas de projet actif
+               // \d_exit($projets);
                if (!$projets){
                     Session::messages("secondary","Aucun projet en cours, voici tout les projets qui ont été mener a bien par notre association");
                     return $this->redirection(lien("projet","tout"));

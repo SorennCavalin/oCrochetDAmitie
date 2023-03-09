@@ -21,7 +21,11 @@ class Concours {
     }
 
     public function getProjet(){
-        return Bdd::getEntiteRelie("concours","projet",$this->projet_id);
+        if ($this->projet_id) {
+            return Bdd::getEntiteRelie("concours","projet",$this->projet_id);
+        } 
+        return false;
+        
     }
 
 

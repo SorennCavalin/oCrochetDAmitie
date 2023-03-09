@@ -119,7 +119,7 @@ class AjaxController extends BaseController {
 
                 } 
                 elseif ($precision === 1){
-                    // strtotime("+/- n y/m/d") permet de rajouter ou retirer du temps du timestamp donné à la fonction
+                    // strtotime("+/- n, y/m/d") permet de rajouter ou retirer du temps du timestamp donné à la fonction
                     // ex: strtotime("+1 day", "2022-12-01") => 2022-12-02
                     $recherche_date_anterieur = Bdd::selection(
                         [
@@ -266,6 +266,7 @@ class AjaxController extends BaseController {
                         if ($colonne["COLUMN_COMMENT"] !== ""){
                             if (stristr($colonne["COLUMN_COMMENT"],"/")){
                                 $colonnes["type"] = explode("/",$colonne["COLUMN_COMMENT"]);
+                                $colonnes["colonnes"][] = $colonne["COLUMN_NAME"];
                             }
                         } else {
                             $colonnes["colonnes"][] = $colonne["COLUMN_NAME"];

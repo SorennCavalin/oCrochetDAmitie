@@ -256,9 +256,7 @@ window.addEventListener("load", () => {
                     // si un choix (uniquement pour type de don en l'occurence) entre des valeurs prédéfinies est obligatoire, un array supplémentaire est reçu par le serveur contenant les choix dispo
                     // les choix sont stockés dans la propriété types de l'objet
                     let types = data.type ?? false;
-                    if (types) {
-                        obj.types = types;
-                    }
+                    
                     obj.getSelecteur().children().remove()
                     obj.getClassement().children().remove()
                     colonnes.forEach(el => {

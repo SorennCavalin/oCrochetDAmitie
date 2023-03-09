@@ -105,7 +105,6 @@ window.addEventListener('load', () => {
 
     // tout les éléments ayant l'attibut disabled sont inclickable
     $('*[disabled]').on("click", (e) => { e.preventDefault() });
-    console.log(4 >= 4 && ( 2 > 3 || (6%3 < 1))) ;
 
 })
 

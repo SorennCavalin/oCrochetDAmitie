@@ -7,7 +7,7 @@
 
   <div class="mb-3">
   <label for="projet">Projet en lien</label>
-    <select name="projet" class="form-control" id='projet' placeholder="role" >
+    <select name="projet" class="form-select" id='projet' placeholder="role" >
       <option hidden value='0' selected> Choisissez le projet en lien avec le concours</option>
       <?php foreach($projets as $projet) : ?>
       <option <?= (isset($select) && ($select === $projet->getId())) ? "selected" : ""?> value="<?=$projet->getId() ?>"><?= $projet->getNom() ?></option>
@@ -15,7 +15,8 @@
     </select>
     <small class="text-muted">Les projet sont affichés par dates décroissantes</small> 
     <br>
-    <small class="text-muted">Les dates du concours seront automatiquement alignées avec celles du projet selectionné</small>
+    <small class="text-muted">Les dates du concours seront automatiquement alignées avec celles du projet selectionné</small><br>
+    <small class="text-muted">Liaison optionnelle</small>
   </div>
 
 
@@ -41,22 +42,37 @@
   
 
   window.addEventListener("load",() => {
+    let dateDebut = $('#date_debut');
+    let dateFin = $('#date_fin');
+    let dateDebutProjet;
+    let dateFinProjet;
     $('#projet').change((e) => {
       var $projet = e.target.value
-      var compte = 1
-      console.log($projet)
 
       $.post(
         "http://127.0.0.1/oCrochetDAmitie/concours/recup/" + $projet,
         {
-          
+
         },
         (data)  => {
-          var dates = data.split(" ") ;
-          $('input[name="date_debut"]').val(dates[0])
-          $('input[name="date_fin"]').val(dates[1])
+          var dates = data.split(" ");
+
+          $('input[name="date_debut"]').val(dates[0]);
+          dateDebutProjet = dates[0];
+          dateDebut.attr("max",dates[1]);
+
+          $('input[name="date_fin"]').val(dates[1]);
+          dateFinProjet = dates[1];
+          dateFin.attr("min",dates[0]);
+
         }
       )
+    })
+    dateDebut.on("change", () => {
+      dateFin.attr("min",dateDebut.val())
+    });
+    dateFin.on("change", (e) => {
+      dateDebut.attr("max",dateFin.val())
     })
 
 
