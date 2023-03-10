@@ -50,10 +50,16 @@ class AjaxController extends BaseController {
             // en cas de recherche avec prenom plusieurs projets peuvent être sélectionnés, ce qui réduira la precision de la recherche
             // si un seul concours est trouvé a partir de la recherche fiche.html.php sera utilisée 
             // sinon une liste sera affichée pour que l'utilisateur puisse choisir le concours qu'il veut
-            if ($where === "projet_id" ){
+            elseif ($where === "projet_id" ){
                 if (is_numeric($search)){
                     $recherche = Bdd::selectionId('projet',$search);
                     $concours = $recherche->getConcours();
+                    if (!$concours){
+                        return $this->affichageAjax("rechercheRate.html.php", [
+                            'messageErreur' => 'Un concours relié au projet n°' . $search . " nommé " . $recherche->getNom()
+                        ]);
+                    }
+                    // \d_exit($recherche);
                     $plusieurs = count($concours) > 1;
                     return $this->affichageAjax("$table/".( $plusieurs ? "liste" : "fiche" ).".html.php",[
                         "$table" =>  $plusieurs ? $concours : $concours[0]
@@ -77,7 +83,7 @@ class AjaxController extends BaseController {
             // si on recherche avec un nom 
             // un user sera cherché avec une maj et tout minuscule les autres entreront tel quel dans la recherche (avec un traitement anti intrusion dans les 2 cas)
             // retourne une liste
-            if ($where === "nom") {
+            elseif ($where === "nom") {
                 // si on cherche un user, met tout en minuscule avec une maj en premier sinon le mot est cherché tel quel (avec un peu de sécu quand même )
                 $nom = ($table === "user") ? ucfirst(strtolower($this->traitementString($search))) : $this->traitementString($search);
                 $recherche = Bdd::selection(["table" => $table, "compare" => "$where", "like" => "'%$nom%'", "limit" => $limit, "order" => $order]);
@@ -100,7 +106,7 @@ class AjaxController extends BaseController {
             // si la recherche est une date
             // utilise $precision et $search pour recherche une date exacte ou dans les 3 mois d'ecarts au maximum
             // retourne une liste si plusieurs résultat sont retournés (même en date exacte) et une fiche si la date exacte ne représente qu'un seul enregistrement
-            if (strpos($where, "date") !== false){
+            elseif (strpos($where, "date") !== false){
                 // garantie le bon format de la date reçu
                 $dateRecherche = date("Y-m-d",strtotime($search));
                 if($precision === 0){
@@ -210,10 +216,25 @@ class AjaxController extends BaseController {
                     return $this->aucuneReponse($table,"un $table avec une $date". (($precision) ? " d'environ $precision mois autour du $dateRecherche" : "le $dateRecherche"),"date",($rattrapage ?? false));
             }
 
-            if ($where === "type"){
+            elseif ($where === "type"){
                 $type = $this->traitementString($search);
 
                 Bdd::selection(["table" => $table]);
+            }
+            else {
+                $recherche = Bdd::selection(["table" => $table, "compare" => "$where", "like" => "'%$where%'", "limit" => $limit, "order" => $order]);
+                $plusieurs = count($recherche);
+                if ($plusieurs){
+                    return $this->affichageAjax("$table/liste.html.php",[
+                        "$table" . "s" => $recherche,
+                        "reponse" => true
+                    ]);
+                } else {
+                    return $this->affichageAjax("$table/fiche.html.php",[
+                        ($table === "concours") ? "$table" : "$table" . "s" => $recherche,
+                        "reponse" => true
+                    ]);
+                }
             }
 
 
