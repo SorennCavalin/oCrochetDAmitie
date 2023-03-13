@@ -103,10 +103,21 @@ class ProjetController extends BaseController{
           }
   
           
-          Bdd::dropRelie("projet",$id,"concours");
+          Bdd::drop("projet",$id);
           $this->redirection(lienAdmin("projet"));
           
      }
+
+     public function recover(int $id) {
+          if (!Session::isAdmin()){
+              $this->redirectionError();
+          }
+  
+          Bdd::recover('projet',$id);
+          $this->redirection(lienAdmin("projet"));
+  
+      }
+  
   
 
      public function detail($id){

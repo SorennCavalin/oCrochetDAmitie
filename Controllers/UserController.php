@@ -85,7 +85,7 @@ class UserController extends BaseController{
 
     }
 
-    public function detail($id){
+    public function detail(int $id){
 
         if (!Session::isAdmin()){
             $this->redirectionError();
@@ -97,7 +97,7 @@ class UserController extends BaseController{
     }
 
  
-    public function modifier($id) {
+    public function modifier(int $id) {
         if (!Session::isAdmin()){
             $this->redirectionError();
         }
@@ -137,16 +137,26 @@ class UserController extends BaseController{
         ]);
     }
 
-    public function supprimer($id) {
+    public function supprimer(int $id) {
 
         if (!Session::isAdmin()){
             $this->redirectionError();
 
         }
 
-        Bdd::drop("user",$id);
+        Bdd::dropRelie("user",$id,"participant");
         $this->redirection(lien("user"));
         
+    }
+
+    public function recover(int $id) {
+        if (!Session::isAdmin()){
+            $this->redirectionError();
+        }
+
+        Bdd::recoverRelie('user',$id,"participant");
+        $this->redirection(lien("user"));
+
     }
 
     public function profil(){

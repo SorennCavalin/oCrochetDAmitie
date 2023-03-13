@@ -127,9 +127,19 @@ class ConcoursController extends BaseController{
             $this->redirectionError();
         }
 
-        Bdd::dropRelie("concours",$id,"participants");
+        Bdd::dropRelie("concours",$id,'participant');
         $this->redirection(lien("concours"));
         
+    }
+
+    public function recover(int $id) {
+        if (!Session::isAdmin()){
+            $this->redirectionError();
+        }
+
+        Bdd::recoverRelie('concours',$id,'participant');
+        $this->redirection(lien("concours"));
+
     }
 
 }

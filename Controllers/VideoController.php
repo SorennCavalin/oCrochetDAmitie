@@ -152,5 +152,16 @@ class VideoController extends BaseController{
         $this->redirection(lienAdmin("video"));
         
     }
+    
+    public function recover(int $id) {
+        if (!Session::isAdmin()){
+            $this->redirectionError();
+        }
+
+        Bdd::recover('video',$id);
+        $this->redirection(lienAdmin("video"));
+
+    }
+
 
 }

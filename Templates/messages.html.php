@@ -1,12 +1,8 @@
-<?php use Modeles\Session; ?>
+<?php use Modeles\Session; 
 
 
 
-<!-- créer des message tests -->
-<!-- < ?php Session::messages("danger","un message super mega giga long pour rien d'erreur"); Session::messages("success","un message très très très très très très très très très très très très très très très très très long de succes"); Session::messages("secondary","un message"); ?> -->
-
-
-<?php if(Session::getItemSession("messages")):?>
+if(Session::getItemSession("messages")):?>
     <!-- div contenant les messages front -->
     <div class="messages">
     <!-- sépare l'array message en plusieurs groupes selon le type (danger, success, etc...) et pour chaque type affiche le nombre de message de l'array messages (x message success, x messages danger, etc ...) -->

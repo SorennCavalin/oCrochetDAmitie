@@ -49,7 +49,7 @@
 </table>
 
 
-<div class="d-flex justify-content-around">
+<div class="d-flex justify-content-around mb-3">
     <a href="<?= lien("video", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
         précédent
     </a>

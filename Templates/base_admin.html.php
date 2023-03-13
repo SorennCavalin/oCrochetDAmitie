@@ -1,6 +1,4 @@
-<?php use Modeles\Session;
 
- ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -35,16 +33,6 @@
 <?php 
     include "navbar_admin.html.php";
     include "messages.html.php";
-?>
-
-
-<?php if (isset($incl)) : foreach ($incl as $lien) : 
-
-    include $lien .".html.php";
-
-
-
-endforeach ; endif
 ?>
 
 

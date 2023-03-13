@@ -1,5 +1,3 @@
-
-
 <form action="" method="post">
   <div class="form-row mt-2">
     <div class="form-group col">
@@ -34,7 +32,7 @@
     </div>
     <div class="form-group col-md-2">
       <label for="departement">Code_postal</label>
-      <input type="text" id="departement" name="departement" id="departement" placeholder='94200' class="form-control mb-3" pattern="^[0-9]{5}" title="ex: 94200" required value='<?= $departement ?? ''?>'>
+      <input type="text" id="departement" name="departement" id="departement" placeholder='94200' class="form-control mb-3" title="ex: 94200" required value='<?= $departement ?? ''?>'>
       </select>
     </div>
     <div class="form-group col-md-4">
@@ -52,5 +50,4 @@
  <div class='centrer'>
   <button type="submit" class="btn btn-primary button" >enregistrer</button>
  </div>
- 
 </form>

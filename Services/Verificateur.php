@@ -888,12 +888,14 @@ class Verificateur {
                     return true;
                 } else {
                     Session::messages("danger","Un problème est survenu lors de la modification, veuillez réessayer");
-                    return false;
+                    return $form;
                 }
             } else {
                 Session::messages("secondary","Aucune modification apportée à la vidéo " . $video->getNom());
                 return true ;
             }
+        } else {
+            return $form;
         }
     }
 

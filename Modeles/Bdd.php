@@ -6,6 +6,8 @@ use PDO;
 
 class Bdd {
 
+    static $supprimer = ' and supprimer != 1';
+
     static function connexion()
     {
         return new PDO("mysql:host=localhost;dbname=ocrochet","root","");
@@ -74,10 +76,16 @@ class Bdd {
         } else {
             $and = "";
         }
+
+        if (!$where){
+            $supprimer = "WHERE supprimer != 1";
+        } else {
+            $supprimer = self::$supprimer;
+        }
         
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
-        $textRequete = "SELECT $select FROM $table $where $and $order $limit";
+        $textRequete = "SELECT $select FROM $table $where $and $supprimer $order $limit" ;
         // \d_exit($textRequete);
         if($requete = self::connexion()->query($textRequete)){
             //création du string nécessaire à la recupération des données sous forme d'entité
@@ -103,7 +111,7 @@ class Bdd {
      */
 
     static function selectionId(string $table, int $id): object|bool{
-        $requete = self::connexion()->query("SELECT * FROM $table WHERE id = $id");
+        $requete = self::connexion()->query("SELECT * FROM $table WHERE id = $id" . self::$supprimer);
         if($requete) {
             //création du string nécessaire à la recupération des données sous forme d'entité
             //exemple où $table = user : $classFetch =  "Modeles\Entities\User";
@@ -118,11 +126,8 @@ class Bdd {
         return null;
     }
 
-
-
-
-     /**
-      * Récupère l'entité qui possède un champs contenant l'id de l'entité appelante
+    /**
+     * Récupère l'entité qui possède un champs contenant l'id de l'entité appelante
      * @param string $table
      * L'entitée qui appelle la base de donnée
      * @param string $tableRelie
@@ -163,10 +168,12 @@ class Bdd {
         // prépare la variable $table avec 
         $table = $table . " $aliasEntiteActuelle, ". $tableRelie . " $aliasEntiteRelie" ;
 
+        $supprimer = " AND $aliasEntiteRelie.supprimer != 1 ";
+
 
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
-        $textRequete = "SELECT $select FROM $table $where GROUP BY id";
+        $textRequete = "SELECT $select FROM $table $where $supprimer  GROUP BY id";
         // return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
@@ -181,7 +188,7 @@ class Bdd {
         
     }
 
-     /**
+    /**
      * Récupère l'entitée qui possède l'entitée appelante
      * 
      * @param string $table
@@ -219,10 +226,13 @@ class Bdd {
         // prépare la variable $table avec 
         $table = $table . " $aliasEntiteActuelle, ". $tableRelie . " $aliasEntiteRelie" ;
 
+        $supprimer = " AND $aliasEntiteRelie.supprimer != 1 ";
+
 
         // pose toutes les variables dans l'ordre. Les variables qui n'ont pas été entrée en parametre contiennent un string vide
 
-        $textRequete = "SELECT $select FROM $table $where";
+        $textRequete = "SELECT $select FROM $table $where $supprimer ";
+        // $textRequete = "SELECT $select FROM $table $where AND $aliasEntiteRelie != 1". self::$supprimer;
         // return $textRequete;
         $requete = self::connexion()->query($textRequete);
 
@@ -301,35 +311,69 @@ class Bdd {
      * Besoin de la table en question et de l'id de la ligne a supprimer
      */
     static function drop(string $table,int $id,string $champs = "id"){
-        $textRequete = "DELETE FROM $table WHERE $champs = $id";
+        $textRequete = "UPDATE $table SET supprimer = 1 WHERE $champs = $id";
         if(self::connexion()->query($textRequete)){
-            Session::messages("success", "$table n°$id à bien été supprimé" );
+            $lienRetour = "<a href='".lien("$table","recover",$id)."'>ici</a>" ;
+            Session::messages("success", "$table n°$id à bien été supprimé. cliquez $lienRetour pour annuler l'opération"  );
             return true;
         } 
         Session::messages("danger","$table n°$id n'a pas pu etre supprimer");
         return false;
     }
+
     /**
-     * Besoin de la table en question et de l'id de la ligne a supprimer
+     * Besoin de la table en question et de l'id ansi que l'entité reliée à la ligne a supprimer
      */
     static function dropRelie($table, $id, $relie){
-        $requete1 = "DELETE FROM $relie WHERE " .$table . "_id = $id";
+        $requete1 = "UPDATE $relie SET supprimer = 1 WHERE " .$table . "_id = $id";
         if(self::connexion()->query($requete1)){
-            
             if(self::drop($table,$id)){
                 return true;
-            } else {
-                
             }
         }
+        
         Session::messages("danger","Les détails du $table n°$id n'ont pas pu être supprimés ce qui a mis fin à l'opération");
         return false;
     }
-   /**
+
+    /**
+     * Besoin de la table en question et de l'id de la ligne a récupérer
+     */
+    static function recover(string $table, int $id){
+        $textRequete = "UPDATE $table SET supprimer = 0 WHERE id = $id";
+        // d_exit($textRequete);
+        if (self::connexion()->query($textRequete)){
+            Session::messages("success", "$table n°$id à bien été récupéré"  );
+            return true;
+        } 
+        Session::messages("danger","$table n°$id n'a pas pu etre récupéré");
+        return false;
+    }
+
+    /**
+     * Besoin de la table en question et de l'id ansi que l'entité reliée à la ligne a récupérer
+     */
+    static function recoverRelie(string $table, int $id,string $relie){
+        $textRequete1 = "UPDATE $relie SET supprimer = 0 WHERE " .$table . "_id = $id";
+        // d_exit($textRequete1);
+        if (self::connexion()->query($textRequete1)){
+            if (self::recover($table,$id)){
+                return true;
+            }
+            Session::messages("danger", "$table n°$id n'a pas pu etre récupéré"  );
+            // re-supprime pour l'uniformité
+            self::dropRelie($table,$id,$relie);
+            return false;
+        } 
+        Session::messages("danger","$table n°$id n'a pas pu etre récupéré");
+        return false;
+    }
+
+    /**
      * dans le tableau des valeurs doit ressembler a ça :
      * ["nom" => $nom, "prenom" => $prenom ...]
      *      
-    */
+     */
     static function update(string $table, array $valeurs,int $id) {
         $textRequete = "UPDATE $table SET ";
         $compte = 0;

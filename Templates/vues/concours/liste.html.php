@@ -70,11 +70,11 @@
 
 
 
-<div class="d-flex justify-content-around">
-    <a href="<?= lien("don", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
+<div class="d-flex justify-content-around mb-3">
+    <a href="<?= lien("concours", "afficher",$prev)  ?>" class="btn btn-primary <?= $prev < 1 ? 'disabled' : '' ?>">
         précédent
     </a>
-    <a href="<?=lien("don", "afficher",$next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
+    <a href="<?=lien("concours", "afficher",$next)  ?>" class="btn btn-primary <?=  $pageMax ? 'disabled' : '' ?>">
         suivant
     </a>
 </div>
@@ -91,5 +91,5 @@
 
 
 <script>
-    var lien = "<?= lien('don',"supprimer") ?>";
+    var lien = "<?= lien('concours',"supprimer") ?>";
 </script>

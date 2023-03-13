@@ -71,6 +71,10 @@ class Don  {
      */ 
     public function getDonataire()
     {
+        if (is_numeric($this->donataire)){
+            $user = $this->getUser();
+            return $user->getPrenom(). " " . $user->getNom();
+        }
         return $this->donataire;
     }
 

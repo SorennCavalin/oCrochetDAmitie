@@ -23,6 +23,10 @@ class DonController extends BaseController{
 
        
         $dons = Bdd::selection(["table" => "don", "where" => "LIMIT " . ($page == 1 ? "" : "$offset," ) . " $nbParPage"]);
+        
+        // foreach ($dons as $don ){
+        //     var_dump($don->getUser());
+        // }die;
 
         $pageMax =  count($dons) !== 10 ?  true : false;  //ceil($nbLignes / $nbParPage);
         
@@ -125,11 +129,21 @@ class DonController extends BaseController{
 
         if (!Session::isAdmin()){
             $this->redirectionError();
-
         }
-        Bdd::dropRelie("don",$id,"don_details");
+        Bdd::dropRelie("don",$id,'don_details');
         $this->redirection(lien("don"));
         
     }
+
+    public function recover(int $id) {
+        if (!Session::isAdmin()){
+            $this->redirectionError();
+        }
+
+        Bdd::recoverRelie('don',$id,'don_details');
+        $this->redirection(lien("don"));
+
+    }
+
 
 }
