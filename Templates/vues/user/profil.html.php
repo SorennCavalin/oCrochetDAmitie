@@ -47,7 +47,7 @@
                     </h4>
 
                     <p>
-                        <?= "vous avez envoyé " . count($userDons) . "dons pour un total de " . $totalDons . " objets donnés " ?>
+                        <?= "vous avez envoyé " . count($userDons) . " dons pour un total de " . $totalDons . " objets donnés " ?>
                     </p>
 
                     <p>

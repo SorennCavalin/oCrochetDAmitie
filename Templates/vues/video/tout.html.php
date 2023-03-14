@@ -6,6 +6,7 @@
         <img src="<?= imgLink("podcast.jpg")?>" alt="Podcasts">
     </div>
 
+    <div class="ligne"> <a href="<?= lien("video","accueil") ?>" class="button">retourner à l'accueil</a>  </div>
     <div class="toutes-les-videos">
         <?php foreach ($videos as $video) :?>
             <div class='video'>

@@ -11,7 +11,7 @@ class AccueilController extends BaseController {
 
     public function afficher()
     {
-        setcookie("cookieTest", "test ok", time() + (86400), "/"); // 86400 = 1 day
+        // setcookie("cookieTest", "test ok", time() + (86400), "/"); // 86400 = 1 day
 
         $this->affichage("accueil.html.php", [
             "css" => "accueil"
@@ -19,9 +19,8 @@ class AccueilController extends BaseController {
     }
     public function afficherAdmin()
     {
-
-        if (!empty($_POST)){
-            var_dump($_POST); exit;
+        if (!Session::isAdmin()){
+            return $this->redirection("accueil");
         }
         
         $this->affichageAdmin("stats.html.php",[

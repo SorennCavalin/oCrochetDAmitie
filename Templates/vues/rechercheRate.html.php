@@ -1,4 +1,4 @@
-<div class='w-100 d-flex flex-column align-center justify-content-center'>
+<div class='w-100 p-5 m-3 d-flex flex-column align-center justify-content-center'>
     <h5>
         Aucun résultat pour la recherche suivante:
     </h5>

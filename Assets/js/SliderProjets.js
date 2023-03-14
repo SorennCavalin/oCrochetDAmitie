@@ -32,8 +32,7 @@ window.addEventListener("load", () => {
             this.getDivProjet().append(this.getProjet());
         }
 
-        /**
-         * change l'idActuel et affiche le nouveau projet actif
+        /** change l'idActuel et affiche le nouveau projet actif
          * 
          * @param {string} action 
          * L'action effectuée par la fonction (+ ou -)

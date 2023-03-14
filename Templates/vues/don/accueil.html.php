@@ -14,7 +14,7 @@
             <?php foreach ($dons as $don) : ?>
                 <div class="don">
                     <h5>
-                        don de <?= is_numeric($don->getDonataire()) ? $don->getUser()->getPrenom() . " " . $don->getUser()->getNom() : $don->getDonataire()  ?>
+                        don de <?= $don->getDonataire()  ?>
                     </h5>
                     <p>
                         <?= $don->getTaille() > 1 ? "Un total de " . $don->getTaille() . " objets donnés!" : "1 objet donné " ?>
