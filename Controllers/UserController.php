@@ -106,7 +106,7 @@ class UserController extends BaseController{
         if (!empty($_POST)){
 
             
-            if($form = Verificateur::verifyModifUser($_POST,$user, true) === true){
+            if(($form = Verificateur::verifyModifUser($_POST,$user)) === true){
                 $this->redirection(lien("user"));
             } else {
                 return $this->affichageAdmin("user/form.html.php",[

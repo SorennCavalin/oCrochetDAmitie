@@ -42,7 +42,7 @@ window.addEventListener("load", () => {
                     success: function () {
                         // change le span a coté de la checkbox cliqué si le changement réussi
                         etat.html(`${ checkVal ? "reçu" : "attente" }`)
-                        // retire div bloquage
+                        // retire div blocage
                         $('#div_blocage').remove();
                     },
                     error: function () {
@@ -58,7 +58,7 @@ window.addEventListener("load", () => {
                 // retire les evenement click sur les botutons lorsqu'ils ne sont pas affichés
                 $('#confirmer').off("click");
                 $('#confirmer').off("click");
-                // retire div bloquage
+                // retire div blocage
                 $('#div_blocage').remove();
             })
         })

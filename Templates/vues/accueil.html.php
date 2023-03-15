@@ -3,7 +3,7 @@
         <img src="<?= imgLink("banner2.jpg") ?>" alt="Banner">
 </div>
 
-<div id="accueil">
+<div id="accueil" class=" text-center">
     <h1>L'entraide n'a pas de limite</h1>
     <p>
         En 1901, une loi a vu le jour dans le but de permettre des groupe de personnes de créer des association ne recherchant pas le profit.

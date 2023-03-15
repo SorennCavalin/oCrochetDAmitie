@@ -96,7 +96,7 @@ class BaseController {
         exit;
     }
     public function redirectionError(){
-        header(lien("erreur","404"));
+        header(lien("accueil"));
         exit;
     }
 }

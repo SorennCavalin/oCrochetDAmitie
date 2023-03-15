@@ -73,27 +73,7 @@ class Projet{
 
         return $this;
     }
-
-    /**
-     * Get the value of actif
-     */ 
-    public function getActif()
-    {
-        return $this->actif;
-    }
-
-    /**
-     * Set the value of actif
-     *
-     * @return  self
-     */ 
-    public function setActif($actif)
-    {
-        $this->actif = $actif;
-
-        return $this;
-    }
-
+    
     /**
      * Get the value of date_debut
      */ 

@@ -20,8 +20,8 @@ window.addEventListener("load", () => {
         highlight() {
             // pose la vidéo dans la div highlight
             this.getVideo().appendTo("#highlight");
-            // retire la div bloquage
-            this.getVideo().find('.div_bloquage').remove();
+            // retire la div blocage
+            this.getVideo().find('.div_blocage').remove();
             // retire l'eventement click pour changer la vidéo
             $('#highlight .case').off("click")
             // modifie la taille du iframe pour aller avec la div highlight
@@ -35,8 +35,8 @@ window.addEventListener("load", () => {
         }
         
         changeHighlight() {
-            // pose la div de bloquage du clique
-            this.setBloquage($('#highlight .case'));
+            // pose la div de blocage du clique
+            this.setBlocage($('#highlight .case'));
             // remet une taille adéquate pour la div grille (n'importe quelle [1,2, etc] aurait suffit elle font toute la meme taille)
             this.setHeight($('#highlight iframe'), $('.grille .case')[0])
             // remet l'event click
@@ -54,9 +54,9 @@ window.addEventListener("load", () => {
             })
         }
 
-        setBloquage(cible){
+        setBlocage(cible){
             cible = $(cible);
-            cible.prepend("<div class='div_bloquage'></div>");
+            cible.prepend("<div class='div_blocage'></div>");
         }
 
         setHeight(cible, parent){
@@ -69,7 +69,7 @@ window.addEventListener("load", () => {
         }
 
         init() {
-            // initialise l'objet en lançant les fonction necessaires
+            // initialise l'objet en lançant les fonctions necessaires
 
             // pose des id pour reconnaitre et manipuler les vidéos 
             let nb = 0
@@ -79,7 +79,7 @@ window.addEventListener("load", () => {
             })
 
             $('.grille .case').each((index, cible) => {
-                this.setBloquage(cible)
+                this.setBlocage(cible)
                 this.setHeight($(cible).find("iframe"), cible)
             })
 

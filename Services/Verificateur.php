@@ -321,7 +321,7 @@ class Verificateur {
         }
 
         if(Bdd::selectionId($table,$id)){
-            return true;
+            return $id;
         }
         return false;
     }
@@ -414,8 +414,6 @@ class Verificateur {
             if ($adresseVerifie = self::verifyString($adresse,"",["stringVerifie" => "adresse","verifierTaille" => false])){
                 $tableau["adresse"] = $adresseVerifie;
             }
-        } else {
-             Session::messages("danger","Veuillez rentrer une adresse");
         }
 
         // vérification du numéro de téléphone avec verifyPhone ligne 244
@@ -530,7 +528,7 @@ class Verificateur {
         }
 
         if (isset($adresse) && !empty($adresse)){
-            if ($adresseVerifie = self::verifyString($adresse,$user->getAdresse(),["stringVerifie" => "adresse","verifierTaille" => false])){
+            if ($adresseVerifie = self::verifyString($adresse,$user->getAdresse() ?? "",["stringVerifie" => "adresse","verifierTaille" => false])){
                 if ($adresseVerifie !== 1){
                     $tableau["adresse"] = $adresseVerifie;
                 }
@@ -1229,8 +1227,8 @@ class Verificateur {
         extract($form);
 
         if(isset($projet) && $projet != 0){
-            if (is_int((int)$projet)){
-                if($projetVerifie = self::verifyIdRelie((int)$projet,"projet")){
+            if (is_numeric($projet)){
+                if($projetVerifie = self::verifyIdRelie($projet,"projet")){
                     $tableau["projet_id"] = $projetVerifie;
                 } else {
                     Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
@@ -1304,9 +1302,11 @@ class Verificateur {
         $tableau = [];
 
         if(isset($projet)){
-            if (is_int((int)$projet) && $projet != $concours->getProjet_id()){
-                if($projetVerifie = self::verifyIdRelie((int)$projet,"projet")){
-                    $tableau["projet_id"] = $projetVerifie;
+            if (is_numeric($projet) && $projet != $concours->getProjet_id()){
+                if($projetVerifie = self::verifyIdRelie($projet,"projet",$concours->getProjet_Id() ?? "") ){
+                    if ($projetVerifie != 1){
+                        $tableau["projet_id"] = $projetVerifie;
+                    }
                 } else {
                     Session::messages("danger" , "Le projet sélectionné n'est pas reconnu par le serveur");
                 }
