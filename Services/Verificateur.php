@@ -1018,8 +1018,6 @@ class Verificateur {
         } else {
             return $form;
         }
-
-       
     } 
     
     /** 
